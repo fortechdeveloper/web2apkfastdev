@@ -13,7 +13,8 @@ const API_URL =
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
 
 function sendJson(res, status, data) {
-  res.status(status).setHeader("Content-Type", "application/json");
+  res.status(status);
+  res.setHeader("Content-Type", "application/json");
   res.end(JSON.stringify(data));
 }
 
@@ -31,7 +32,9 @@ function parseMultipart(req) {
         },
       });
     } catch (error) {
-      reject(new Error(`Request multipart tidak valid: ${error.message}`));
+      reject(
+        new Error(`Request multipart tidak valid: ${error.message}`)
+      );
       return;
     }
 
@@ -77,9 +80,7 @@ function parseMultipart(req) {
         limitReached = true;
       });
 
-      stream.on("error", (error) => {
-        fail(error);
-      });
+      stream.on("error", fail);
 
       stream.on("end", () => {
         if (fileTooLarge || !info.filename) return;
@@ -101,9 +102,7 @@ function parseMultipart(req) {
       fail(new Error("Jumlah field form terlalu banyak."));
     });
 
-    busboy.on("error", (error) => {
-      fail(error);
-    });
+    busboy.on("error", fail);
 
     busboy.on("close", () => {
       if (settled) return;
@@ -111,7 +110,7 @@ function parseMultipart(req) {
       if (limitReached) {
         fail(
           new Error(
-            "Upload melebihi batas. Maksimal 4 MB per file pada konfigurasi ini."
+            "Upload melebihi batas. Maksimal 4 MB per file."
           )
         );
         return;
@@ -121,34 +120,42 @@ function parseMultipart(req) {
       resolve({ fields, files });
     });
 
-    req.on("error", (error) => {
-      fail(error);
-    });
-
+    req.on("error", fail);
     req.pipe(busboy);
   });
 }
 
 function normalizeDownloadUrl(payload) {
-  if (
-    payload &&
-    typeof payload.downloadUrl === "string"
-  ) {
+  if (payload && typeof payload.downloadUrl === "string") {
     try {
       const download = new URL(payload.downloadUrl);
 
-      // Dokumentasi menampilkan hostname lama "rfdevy".
-      // Gunakan hostname yang benar jika respons API masih memakai yang lama.
       if (download.hostname === "rfweb2apk.rfdevy.com") {
         download.hostname = "rfweb2apk.rfdevv.com";
         payload.downloadUrl = download.toString();
       }
     } catch {
-      // Biarkan URL asli jika formatnya tidak valid.
+      // Biarkan respons asli jika URL tidak valid.
     }
   }
 
   return payload;
+}
+
+function getTextField(fields, names) {
+  for (const name of names) {
+    if (typeof fields[name] === "string" && fields[name].trim()) {
+      return fields[name].trim();
+    }
+  }
+
+  return "";
+}
+
+function getHtmlFile(files) {
+  return files.find((file) =>
+    ["html", "htmlFile"].includes(file.fieldName)
+  );
 }
 
 export default async function handler(req, res) {
@@ -182,17 +189,20 @@ export default async function handler(req, res) {
 
     return sendJson(res, 400, {
       success: false,
-      error: error.message || "Gagal membaca file upload.",
+      error: error.message || "Gagal membaca upload.",
     });
   }
 
   const { fields, files } = parsed;
 
-  const appName = String(fields.appName || "").trim();
-  const packageName = String(fields.packageName || "").trim();
-  const url = String(fields.url || "").trim();
+  const appName = getTextField(fields, ["appName"]);
+  const packageName = getTextField(fields, ["packageName"]);
 
-  const htmlFile = files.find((file) => file.fieldName === "html");
+  // Mendukung nama field URL dari versi frontend yang berbeda.
+  const url = getTextField(fields, ["url", "websiteUrl"]);
+
+  // Mendukung nama field file HTML dari versi frontend berbeda.
+  const htmlFile = getHtmlFile(files);
 
   if (!appName || !packageName) {
     return sendJson(res, 400, {
@@ -201,7 +211,11 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(packageName)) {
+  if (
+    !/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(
+      packageName
+    )
+  ) {
     return sendJson(res, 400, {
       success: false,
       error:
@@ -209,6 +223,7 @@ export default async function handler(req, res) {
     });
   }
 
+  // Harus memilih tepat satu sumber: URL atau file HTML.
   if (Boolean(url) === Boolean(htmlFile)) {
     return sendJson(res, 400, {
       success: false,
@@ -224,25 +239,29 @@ export default async function handler(req, res) {
       if (!["http:", "https:"].includes(parsedUrl.protocol)) {
         throw new Error("Protokol URL tidak didukung.");
       }
+
+      if (!parsedUrl.hostname.includes(".")) {
+        throw new Error("Hostname URL tidak valid.");
+      }
     } catch {
       return sendJson(res, 400, {
         success: false,
-        error: "URL website tidak valid.",
+        error:
+          "URL website tidak valid. Gunakan URL lengkap, misalnya https://example.com",
       });
     }
   }
 
   const form = new FormData();
 
-  // Field wajib
   form.append("appName", appName);
   form.append("packageName", packageName);
 
   if (url) {
+    // API Builder menerima field bernama "url".
     form.append("url", url);
   }
 
-  // Field opsional
   const allowedFields = [
     "splashType",
     "splashHtml",
@@ -252,18 +271,26 @@ export default async function handler(req, res) {
   ];
 
   for (const name of allowedFields) {
-    if (fields[name] !== undefined && fields[name] !== "") {
+    if (
+      typeof fields[name] === "string" &&
+      fields[name].trim() !== ""
+    ) {
       form.append(name, fields[name]);
     }
   }
 
-  // Teruskan semua file dengan nama field dan nama file aslinya.
+  // Teruskan semua file dan samakan nama field HTML menjadi "html".
   for (const file of files) {
+    const upstreamFieldName =
+      ["html", "htmlFile"].includes(file.fieldName)
+        ? "html"
+        : file.fieldName;
+
     const blob = new Blob([file.buffer], {
       type: file.mimeType,
     });
 
-    form.append(file.fieldName, blob, file.filename);
+    form.append(upstreamFieldName, blob, file.filename);
   }
 
   let upstreamResponse;
@@ -273,8 +300,6 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "X-API-Key": apiKey,
-        // Jangan mengatur Content-Type secara manual.
-        // fetch akan membuat multipart boundary secara otomatis.
       },
       body: form,
       signal: AbortSignal.timeout(240000),
@@ -283,27 +308,24 @@ export default async function handler(req, res) {
     console.error("API Builder connection error:", {
       message: error.message,
       code: error.cause?.code,
-      hostname: error.cause?.hostname,
       endpoint: API_URL,
     });
 
-    const dnsCodes = [
-      "ENOTFOUND",
-      "EAI_AGAIN",
-      "ENODATA",
-    ];
+    const dnsCodes = ["ENOTFOUND", "EAI_AGAIN", "ENODATA"];
 
     if (dnsCodes.includes(error.cause?.code)) {
       return sendJson(res, 502, {
         success: false,
         error:
-          "DNS API Builder gagal ditemukan. Periksa domain rfweb2apk.rfdevv.com.",
+          "DNS API Builder gagal ditemukan. Periksa domain API Builder.",
         code: error.cause.code,
       });
     }
 
-    if (error.name === "TimeoutError" ||
-        error.name === "AbortError") {
+    if (
+      error.name === "TimeoutError" ||
+      error.name === "AbortError"
+    ) {
       return sendJson(res, 504, {
         success: false,
         error:
