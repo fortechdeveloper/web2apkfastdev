@@ -4,792 +4,693 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f9ff">
+  <meta name="theme-color" content="#080d1b">
   <title>Tools — FortechDev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
     :root {
-      --bg: #f5f9ff;
-      --card: rgba(255,255,255,.82);
-      --line: rgba(91,145,220,.19);
-      --text: #18243b;
-      --muted: #78869d;
-      --blue: #3478f6;
-      --blue2: #79b7ff;
-      --soft: #eaf3ff;
-      --shadow: 0 12px 34px rgba(48,94,160,.09);
+      color-scheme: dark;
+      --bg: #080d1b;
+      --panel: rgba(17, 28, 50, .85);
+      --panel2: #101a30;
+      --border: rgba(148, 174, 220, .15);
+      --text: #f3f7ff;
+      --muted: #8d9bb5;
+      --blue: #79c8ff;
+      --purple: #a78bfa;
+      --green: #5ce1b5;
+      --red: #ff8798;
+      font-family: Inter, system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; }
-
+    html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
     body {
       margin: 0;
+      min-height: 100vh;
+      padding-bottom: calc(105px + env(safe-area-inset-bottom));
       color: var(--text);
       background:
-        radial-gradient(ellipse at 5% 0%, #e1efff 0, transparent 35%),
-        radial-gradient(ellipse at 100% 45%, #e8e9ff 0, transparent 35%),
+        radial-gradient(ellipse at 10% 0%, rgba(45, 115, 200, .17), transparent 36%),
+        radial-gradient(ellipse at 100% 40%, rgba(120, 70, 220, .1), transparent 30%),
         var(--bg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
 
-    button, input, select { font: inherit; }
-    button, a { touch-action: manipulation; }
-    button { cursor: pointer; }
-
-    .app {
-      width: 100%;
-      max-width: 520px;
-      min-height: 100dvh;
-      margin: 0 auto;
-      padding: 16px 16px calc(108px + env(safe-area-inset-bottom));
-      position: relative;
-    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
 
     .topbar {
+      min-height: 76px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin: 2px 0 26px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(8,13,27,.85);
+      backdrop-filter: blur(20px);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text);
-      font-weight: 850;
-      font-size: 19px;
-      text-decoration: none;
-    }
-
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
     .brand-icon {
-      width: 42px;
-      height: 42px;
       display: grid;
       place-items: center;
-      border-radius: 15px;
-      background: linear-gradient(145deg, #fff, #e4f0ff);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      color: var(--blue);
-    }
-
-    .blue { color: var(--blue); }
-
-    .icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 15px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: var(--text);
-    }
-
-    .hero { margin: 0 2px 22px; }
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #e7f1ff;
-      color: var(--blue);
-      font-size: 10px;
-      font-weight: 850;
-      letter-spacing: 1px;
-    }
-
-    h1 {
-      font-size: clamp(29px, 8vw, 36px);
-      line-height: 1.12;
-      letter-spacing: -1.2px;
-      margin: 15px 0 9px;
-    }
-
-    .hero p, .sub {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.65;
-      margin: 0;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.9);
-      outline: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 17px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .panel-heading {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      margin-bottom: 17px;
-    }
-
-    .tool-icon {
-      flex: 0 0 45px;
       width: 45px;
       height: 45px;
-      display: grid;
-      place-items: center;
       border-radius: 15px;
-      background: linear-gradient(145deg, #f5f9ff, #e2edff);
-      border: 1px solid var(--line);
       color: var(--blue);
+      background: linear-gradient(145deg, #1c3a60, #101a30);
+      border: 1px solid var(--border);
     }
+    .brand-icon svg { width: 24px; }
+    .brand small { display: block; margin-top: 4px; font-size: 9px; letter-spacing: 2px; color: var(--blue); }
+    .header-status { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 6px; }
+    .online-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 12px #5ce1b566; }
 
-    h2 { margin: 0 0 4px; font-size: 17px; }
-    h3 { font-size: 15px; margin: 0 0 6px; }
-    .panel-heading p { margin: 0; color: var(--muted); font-size: 12px; }
+    main { width: min(100% - 28px, 680px); margin: 0 auto; }
+
+    .hero { padding: 30px 3px 22px; animation: rise .4s ease both; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 2px; }
+    .eyebrow svg { width: 17px; }
+    h1 { margin: 18px 0 10px; font-size: clamp(31px, 8vw, 45px); line-height: 1.12; letter-spacing: -1.8px; }
+    h1 span { background: linear-gradient(100deg, #e8f6ff, #79c8ff, #a78bfa); background-clip: text; color: transparent; }
+    .hero p { margin: 0; max-width: 430px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+
+    .search-panel {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 16px;
+      background: linear-gradient(145deg, rgba(19,31,55,.9), rgba(10,17,33,.94));
+      box-shadow: 0 20px 55px #0002, inset 0 1px #ffffff08;
+      animation: rise .5s ease both;
+    }
 
     .tool-tabs {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 7px;
-      margin-bottom: 17px;
+      margin-bottom: 21px;
     }
 
     .tool-tab {
-      min-width: 0;
-      padding: 12px 4px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #65748d;
-      font-size: 11px;
-      font-weight: 800;
-      transition: .2s ease;
-    }
-
-    .tool-tab i {
-      display: block;
-      margin: 0 auto 6px;
-      width: 18px;
-      height: 18px;
-    }
-
-    .tool-tab.active {
-      background: #e9f2ff;
-      border-color: #a7ccff;
-      color: var(--blue);
-      box-shadow: inset 0 0 0 1px rgba(52,120,246,.06);
-    }
-
-    .mode-switch {
-      display: flex;
-      gap: 7px;
-      margin: 0 0 14px;
-    }
-
-    .mode-btn {
-      flex: 1;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--muted);
-      padding: 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    .mode-btn.active {
-      color: var(--blue);
-      border-color: #a7ccff;
-      background: var(--soft);
-    }
-
-    label {
-      display: block;
-      margin: 14px 0 7px;
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    input {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px 13px;
-      background: rgba(255,255,255,.9);
-      color: var(--text);
-      outline: none;
-      font-size: 13px;
-      transition: border .2s, box-shadow .2s;
-    }
-
-    input:focus {
-      border-color: #8bbaff;
-      box-shadow: 0 0 0 3px rgba(52,120,246,.09);
-    }
-
-    input::placeholder { color: #a3aec0; }
-
-    .primary-btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 9px;
-      width: 100%;
-      border: 0;
-      border-radius: 15px;
-      padding: 14px;
-      margin-top: 15px;
-      background: linear-gradient(135deg, #438bff, #2867ed);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 850;
-      box-shadow: 0 8px 18px rgba(52,120,246,.2);
-      transition: transform .15s, opacity .15s;
-    }
-
-    .primary-btn:active { transform: scale(.98); }
-    .primary-btn:disabled { opacity: .6; cursor: wait; }
-
-    .notice {
-      margin-top: 13px;
-      padding: 11px 12px;
-      border: 1px solid var(--line);
-      background: #f1f6ff;
-      border-radius: 13px;
-      color: #64738c;
-      font-size: 11px;
-      line-height: 1.55;
-    }
-
-    .status {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      font-size: 12px;
-      line-height: 1.6;
-      padding: 12px;
-      margin-top: 14px;
-      border-radius: 13px;
-      background: #f0f5fc;
-      color: #51617a;
-    }
-
-    .status.error { color: #a52c45; background: #fff0f2; }
-    .status.success { color: #17734c; background: #eafaf2; }
-
-    .results {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .media-card {
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: #fff;
-      min-width: 0;
-    }
-
-    .media-card img {
-      display: block;
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      background: #eaf1fa;
-    }
-
-    .media-info { padding: 10px; }
-    .media-info p {
-      font-size: 11px;
-      line-height: 1.5;
-      margin: 0 0 8px;
-      color: var(--muted);
-      overflow-wrap: anywhere;
-    }
-
-    .small-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 9px 6px;
-      border-radius: 10px;
-      background: #eaf2ff;
-      color: var(--blue);
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      z-index: 10;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(100%, 520px);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 11px 8px calc(12px + env(safe-area-inset-bottom));
-      border: 1px solid rgba(135,174,228,.2);
-      border-bottom: 0;
-      border-radius: 23px 23px 0 0;
-      background: rgba(255,255,255,.88);
-      box-shadow: 0 -8px 28px rgba(45,84,140,.08);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      color: #8794a9;
+      justify-content: center;
+      gap: 8px;
+      min-height: 76px;
+      padding: 10px 4px;
+      color: #8798b4;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(255,255,255,.02);
+      cursor: pointer;
       font-size: 10px;
-      font-weight: 750;
-      padding: 4px;
+      font-weight: 700;
+      transition: .2s ease;
     }
 
-    .nav-item i { width: 21px; height: 21px; }
-    .nav-item.active { color: var(--blue); }
+    .tool-tab svg { width: 21px; height: 21px; }
+    .tool-tab.active { color: var(--blue); border-color: #79c8ff50; background: linear-gradient(145deg, #24518144, #17213a77); box-shadow: inset 0 1px #ffffff08; }
+    .tool-tab:active { transform: scale(.97); }
 
-    [hidden] { display: none !important; }
+    .tool-section { display: none; }
+    .tool-section.active { display: block; animation: rise .25s ease both; }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .panel { animation: rise .35s ease both; }
-      @keyframes rise {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
+    .section-heading { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; }
+    .section-icon { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; flex-shrink: 0; color: var(--blue); background: #1a3857; border: 1px solid #79c8ff20; }
+    .section-icon svg { width: 22px; height: 22px; }
+    .section-heading h2 { font-size: 16px; margin: 0 0 5px; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .field { display: block; margin-bottom: 15px; }
+    .field > span { display: block; margin-bottom: 8px; color: #dce8fb; font-size: 11px; font-weight: 700; }
+
+    .field input {
+      width: 100%;
+      min-height: 47px;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: #070c19a8;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .field input:focus { border-color: #79c8ff88; box-shadow: 0 0 0 3px #79c8ff12; }
+    .field input::placeholder { color: #667792; }
+
+    .action-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 9px; }
+    .btn {
+      min-height: 47px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 13px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #ffffff08;
+      color: #dce8fb;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s, filter .2s, opacity .2s;
+    }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .btn-primary { color: #07101f; border-color: #a9dcff55; background: linear-gradient(110deg,#a0e2ff,#70b9ff 65%,#a8a0ff); }
+    .btn:hover { filter: brightness(1.07); }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .55; cursor: wait; }
+
+    .tip { margin: 13px 0 0; font-size: 10px; line-height: 1.7; color: #8293af; }
+
+    .status {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 14px;
+      background: #070c19aa;
+      border: 1px solid var(--border);
+    }
+    .status-icon { flex-shrink: 0; width: 17px; height: 17px; color: var(--blue); }
+    .status p { margin: 0; color: #c6d4e9; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+    .status.error .status-icon { color: var(--red); }
+    .status.success .status-icon { color: var(--green); }
+
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #79c8ff33; border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
+
+    .results { margin-top: 18px; }
+    .results-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .results-heading h3 { margin: 0; font-size: 13px; }
+    .count { color: var(--blue); font-size: 10px; }
+
+    .result-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #ffffff04;
+      min-width: 0;
+    }
+
+    .result-thumb {
+      width: 68px;
+      height: 78px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border-radius: 11px;
+      background: #19243b;
+    }
+
+    .result-body { min-width: 0; flex: 1; }
+    .result-body h4 { margin: 2px 0 6px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+    .result-body p { margin: 0 0 10px; color: var(--muted); font-size: 10px; line-height: 1.6; overflow-wrap: anywhere; }
+    .result-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .small-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 9px; background: #ffffff08; font-size: 10px; font-weight: 700; }
+    .small-btn svg { width: 13px; height: 13px; }
+    .small-btn.primary { color: var(--blue); border-color: #79c8ff30; }
+    .empty { text-align: center; padding: 23px 12px; border: 1px dashed var(--border); border-radius: 15px; color: var(--muted); font-size: 11px; line-height: 1.8; }
+
+    .disclaimer { margin: 16px 2px 20px; color: #71819c; font-size: 10px; line-height: 1.8; }
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 20;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 5px;
+      padding: 9px 10px calc(10px + env(safe-area-inset-bottom));
+      border: 1px solid rgba(146,180,231,.13);
+      border-bottom: 0;
+      border-radius: 25px 25px 0 0;
+      background: rgba(8,14,29,.92);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 -10px 40px #0003;
+    }
+
+    .nav-item { min-height: 65px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; border-radius: 16px; color: #7889a7; font-size: 10px; font-weight: 700; }
+    .nav-item svg { width: 21px; height: 21px; }
+    .nav-item.active { color: var(--blue); background: linear-gradient(145deg,#4799ff22,#3266b30c); }
+
+    .hidden { display: none !important; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (min-width: 560px) {
+      .topbar { padding-left: max(24px, calc((100vw - 680px)/2)); padding-right: max(24px, calc((100vw - 680px)/2)); }
+      main { width: min(100% - 40px, 680px); }
+      .search-panel { padding: 23px; }
+      .bottom-nav { left: 50%; right: auto; width: min(100%,680px); transform: translateX(-50%); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
+
 <body>
-  <main class="app">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-icon"><i data-lucide="layers"></i></span>
-        <span>Fortech<span class="blue">Dev</span></span>
-      </a>
-      <button class="icon-btn" id="clearBtn" type="button" aria-label="Reset form">
-        <i data-lucide="rotate-ccw"></i>
-      </button>
-    </header>
+  <header class="topbar">
+    <a class="brand" href="./index.html">
+      <span class="brand-icon"><i data-lucide="layers"></i></span>
+      <span>FortechDev<small>TOOLS CENTER</small></span>
+    </a>
+    <div class="header-status"><span class="online-dot"></span> Tools</div>
+  </header>
 
+  <main>
     <section class="hero">
-      <span class="eyebrow"><i data-lucide="sparkles"></i> FORTECH TOOLS</span>
-      <h1>Tools untuk <span class="blue">kamu.</span></h1>
-      <p>Downloader dan pencarian media dalam satu tempat.</p>
+      <div class="eyebrow"><i data-lucide="wrench"></i> FORTECH UTILITIES</div>
+      <h1>Tools <span>Center.</span></h1>
+      <p>Berbagai alat praktis dalam satu tempat. Pilih tools, masukkan link atau kata kunci, lalu jalankan.</p>
     </section>
 
-    <section class="panel">
-      <div class="panel-heading">
-        <span class="tool-icon"><i data-lucide="wrench"></i></span>
-        <div>
-          <h2 id="toolTitle">TikTok Downloader</h2>
-          <p id="toolSubtitle">Unduh video TikTok tanpa watermark.</p>
-        </div>
-      </div>
-
+    <section class="search-panel">
       <div class="tool-tabs" role="tablist" aria-label="Pilih tools">
-        <button class="tool-tab active" data-tool="tiktok" type="button" role="tab" aria-selected="true">
-          <i data-lucide="clapperboard"></i>TikTok
+        <button class="tool-tab active" data-tab="tiktok" role="tab" aria-selected="true">
+          <i data-lucide="clapperboard"></i><span>TikTok</span>
         </button>
-        <button class="tool-tab" data-tool="pinterest" type="button" role="tab" aria-selected="false">
-          <i data-lucide="images"></i>Pinterest
+        <button class="tool-tab" data-tab="pinterest" role="tab" aria-selected="false">
+          <i data-lucide="images"></i><span>Pinterest</span>
         </button>
-        <button class="tool-tab" data-tool="happymod" type="button" role="tab" aria-selected="false">
-          <i data-lucide="gamepad-2"></i>HappyMod
+        <button class="tool-tab" data-tab="happymod" role="tab" aria-selected="false">
+          <i data-lucide="gamepad-2"></i><span>HappyMod</span>
         </button>
       </div>
 
-      <div id="modeSwitch" class="mode-switch" hidden>
-        <button class="mode-btn active" data-mode="search" type="button">Cari</button>
-        <button class="mode-btn" data-mode="download" type="button">Unduh dari URL</button>
-      </div>
-
-      <form id="toolForm">
-        <label id="queryLabel" for="toolInput">Link video TikTok</label>
-        <input id="toolInput" name="input" type="url"
-               placeholder="https://www.tiktok.com/@user/video/..."
-               autocomplete="url" required>
-
-        <button class="primary-btn" id="submitBtn" type="submit">
-          <i data-lucide="download"></i><span>Proses sekarang</span>
-        </button>
-      </form>
-
-      <div class="notice" id="toolNotice">
-        Tempel link TikTok publik. Ketersediaan media bergantung pada layanan sumber.
-      </div>
-
-      <div id="toolStatus" class="status" hidden aria-live="polite"></div>
-      <div id="toolResults" class="results" hidden></div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-heading">
-        <span class="tool-icon"><i data-lucide="grid-2x2"></i></span>
-        <div>
-          <h2>Tools lainnya</h2>
-          <p>Menu baru akan ditambahkan bertahap.</p>
+      <section class="tool-section active" id="section-tiktok">
+        <div class="section-heading">
+          <span class="section-icon"><i data-lucide="clapperboard"></i></span>
+          <div><h2>TikTok Downloader</h2><p>Ambil informasi media dari link TikTok.</p></div>
         </div>
+        <form data-tool-form="tiktok">
+          <label class="field">
+            <span>Link video TikTok</span>
+            <input name="url" type="url" placeholder="https://www.tiktok.com/@user/video/..." required>
+          </label>
+          <button class="btn btn-primary" type="submit" style="width:100%">
+            <i data-lucide="download"></i> Proses link TikTok
+          </button>
+          <p class="tip">Hasil bergantung pada ketersediaan video dan layanan sumber.</p>
+        </form>
+      </section>
+
+      <section class="tool-section" id="section-pinterest">
+        <div class="section-heading">
+          <span class="section-icon"><i data-lucide="images"></i></span>
+          <div><h2>Pinterest Search & Downloader</h2><p>Cari gambar atau proses link Pinterest.</p></div>
+        </div>
+        <form data-tool-form="pinterest-search">
+          <label class="field">
+            <span>Kata kunci pencarian</span>
+            <input name="query" placeholder="Contoh: anime wallpaper" required>
+          </label>
+          <button class="btn btn-primary" type="submit" style="width:100%">
+            <i data-lucide="search"></i> Cari di Pinterest
+          </button>
+        </form>
+        <div style="height:1px;background:var(--border);margin:19px 0"></div>
+        <form data-tool-form="pinterest-download">
+          <label class="field">
+            <span>Link Pin Pinterest</span>
+            <input name="url" type="url" placeholder="https://www.pinterest.com/pin/..." required>
+          </label>
+          <button class="btn" type="submit" style="width:100%">
+            <i data-lucide="download"></i> Proses link Pinterest
+          </button>
+        </form>
+      </section>
+
+      <section class="tool-section" id="section-happymod">
+        <div class="section-heading">
+          <span class="section-icon"><i data-lucide="gamepad-2"></i></span>
+          <div><h2>HappyMod Search & Downloader</h2><p>Cari aplikasi dan lihat detail yang tersedia.</p></div>
+        </div>
+        <form data-tool-form="happymod-search">
+          <label class="field">
+            <span>Nama aplikasi</span>
+            <input name="query" placeholder="Contoh: nama aplikasi" required>
+          </label>
+          <button class="btn btn-primary" type="submit" style="width:100%">
+            <i data-lucide="search"></i> Cari aplikasi
+          </button>
+        </form>
+        <div style="height:1px;background:var(--border);margin:19px 0"></div>
+        <form data-tool-form="happymod-download">
+          <label class="field">
+            <span>Link aplikasi atau judul</span>
+            <input name="target" placeholder="Masukkan URL atau judul aplikasi" required>
+          </label>
+          <button class="btn" type="submit" style="width:100%">
+            <i data-lucide="package"></i> Ambil detail aplikasi
+          </button>
+        </form>
+        <p class="tip">Unduh hanya aplikasi yang kamu percaya. File APK dari sumber pihak ketiga bisa berisiko.</p>
+      </section>
+
+      <div class="status hidden" id="statusBox" role="status" aria-live="polite">
+        <i class="status-icon" data-lucide="info"></i>
+        <p id="statusText"></p>
       </div>
-      <p class="sub">Halaman ini disiapkan agar tools berikutnya dapat ditambahkan tanpa mengubah halaman Build APK.</p>
+
+      <section class="results hidden" id="resultsSection">
+        <div class="results-heading">
+          <h3>Hasil</h3>
+          <span class="count" id="resultCount"></span>
+        </div>
+        <div id="resultsList"></div>
+      </section>
     </section>
 
-    <nav class="bottom-nav" aria-label="Navigasi utama">
-      <a class="nav-item" href="index.html"><i data-lucide="rocket"></i><span>Build</span></a>
-      <a class="nav-item active" href="tools.html"><i data-lucide="wrench"></i><span>Tools</span></a>
-      <a class="nav-item" href="pricing.html"><i data-lucide="gem"></i><span>Akses</span></a>
-      <a class="nav-item" href="akun.html"><i data-lucide="user-round"></i><span>Akun</span></a>
-    </nav>
+    <p class="disclaimer">
+      Gunakan tools sesuai ketentuan layanan dan hukum yang berlaku. Hormati hak cipta serta privasi pemilik konten. FortechDev tidak menjamin semua link dapat diproses.
+    </p>
   </main>
 
-  <script>
-    lucide.createIcons();
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a class="nav-item" href="./index.html"><i data-lucide="rocket"></i><span>Build</span></a>
+    <a class="nav-item active" href="./tools.html" aria-current="page"><i data-lucide="wrench"></i><span>Tools</span></a>
+    <a class="nav-item" href="./pricing.html"><i data-lucide="gem"></i><span>Akses</span></a>
+    <a class="nav-item" href="./akun.html"><i data-lucide="user-round"></i><span>Akun</span></a>
+  </nav>
 
-    const tools = {
-      tiktok: {
-        title: "TikTok Downloader",
-        subtitle: "Unduh video TikTok tanpa watermark.",
-        label: "Link video TikTok",
-        placeholder: "https://www.tiktok.com/@user/video/...",
-        type: "url",
-        notice: "Tempel link TikTok publik. Ketersediaan media bergantung pada layanan sumber."
-      },
-      pinterest: {
-        title: "Pinterest Search & Downloader",
-        subtitle: "Cari gambar atau ambil media dari pin.",
-        label: "Kata kunci pencarian",
-        placeholder: "Contoh: anime wallpaper",
-        type: "search",
-        notice: "Pilih Cari untuk menemukan pin atau Unduh dari URL untuk mengambil media."
-      },
-      happymod: {
-        title: "HappyMod Search & Downloader",
-        subtitle: "Cari aplikasi dan lihat sumber unduhnya.",
-        label: "Nama aplikasi",
-        placeholder: "Contoh: nama aplikasi atau game",
-        type: "search",
-        notice: "Periksa sumber, izin, dan keamanan file APK sebelum memasangnya."
-      }
+  <script>
+    /*
+      Endpoint backend yang perlu disediakan:
+      POST /api/tools/tiktok
+      POST /api/tools/pinterest/search
+      POST /api/tools/pinterest/download
+      POST /api/tools/happymod/search
+      POST /api/tools/happymod/download
+
+      Jangan memasukkan API key rahasia ke file HTML ini.
+    */
+
+    const API_ROUTES = {
+      tiktok: "/api/tools/tiktok",
+      "pinterest-search": "/api/tools/pinterest/search",
+      "pinterest-download": "/api/tools/pinterest/download",
+      "happymod-search": "/api/tools/happymod/search",
+      "happymod-download": "/api/tools/happymod/download"
     };
 
-    let currentTool = "tiktok";
-    let currentMode = "search";
+    const tabButtons = [...document.querySelectorAll(".tool-tab")];
+    const sections = [...document.querySelectorAll(".tool-section")];
+    const statusBox = document.querySelector("#statusBox");
+    const statusText = document.querySelector("#statusText");
+    const resultsSection = document.querySelector("#resultsSection");
+    const resultsList = document.querySelector("#resultsList");
+    const resultCount = document.querySelector("#resultCount");
 
-    const form = document.getElementById("toolForm");
-    const input = document.getElementById("toolInput");
-    const label = document.getElementById("queryLabel");
-    const modeSwitch = document.getElementById("modeSwitch");
-    const statusBox = document.getElementById("toolStatus");
-    const resultsBox = document.getElementById("toolResults");
-    const submitBtn = document.getElementById("submitBtn");
-    const submitText = submitBtn.querySelector("span");
-
-    function updateTool() {
-      const config = tools[currentTool];
-
-      document.getElementById("toolTitle").textContent = config.title;
-      document.getElementById("toolSubtitle").textContent = config.subtitle;
-      document.getElementById("toolNotice").textContent = config.notice;
-
-      document.querySelectorAll(".tool-tab").forEach(button => {
-        const active = button.dataset.tool === currentTool;
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-selected", String(active));
-      });
-
-      modeSwitch.hidden = currentTool === "tiktok";
-
-      if (currentTool === "tiktok") {
-        currentMode = "download";
-      } else if (!["search", "download"].includes(currentMode)) {
-        currentMode = "search";
-      }
-
-      document.querySelectorAll(".mode-btn").forEach(button => {
-        button.classList.toggle("active", button.dataset.mode === currentMode);
-      });
-
-      const downloading = currentMode === "download";
-      label.textContent =
-        currentTool === "tiktok" ? config.label :
-        currentTool === "pinterest" ? (downloading ? "Link pin Pinterest" : "Kata kunci pencarian") :
-        (downloading ? "Link halaman HappyMod" : "Nama aplikasi");
-
-      input.type = downloading ? "url" : "text";
-      input.placeholder = downloading
-        ? (currentTool === "pinterest"
-            ? "https://www.pinterest.com/pin/..."
-            : currentTool === "happymod"
-              ? "https://happymod.to/..."
-              : config.placeholder)
-        : config.placeholder;
-
-      submitText.textContent = downloading ? "Proses unduhan" : "Cari sekarang";
-      submitBtn.querySelector("i").setAttribute("data-lucide", downloading ? "download" : "search");
-      lucide.createIcons();
-    }
-
-    document.querySelectorAll(".tool-tab").forEach(button => {
+    tabButtons.forEach(button => {
       button.addEventListener("click", () => {
-        currentTool = button.dataset.tool;
-        input.value = "";
-        clearOutput();
-        updateTool();
+        const tab = button.dataset.tab;
+
+        tabButtons.forEach(item => {
+          const active = item === button;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-selected", String(active));
+        });
+
+        sections.forEach(section => {
+          section.classList.toggle("active", section.id === `section-${tab}`);
+        });
+
+        hideStatus();
+        resultsSection.classList.add("hidden");
       });
     });
 
-    document.querySelectorAll(".mode-btn").forEach(button => {
-      button.addEventListener("click", () => {
-        currentMode = button.dataset.mode;
-        clearOutput();
-        updateTool();
-      });
-    });
+    function showStatus(message, type = "info", loading = false) {
+      statusBox.classList.remove("hidden", "error", "success");
+      if (type === "error") statusBox.classList.add("error");
+      if (type === "success") statusBox.classList.add("success");
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      input.value = "";
-      clearOutput();
-      input.focus();
-    });
+      const iconName = loading ? "loader-circle" :
+        type === "error" ? "circle-alert" :
+        type === "success" ? "check-circle-2" : "info";
 
-    function clearOutput() {
-      statusBox.hidden = true;
-      resultsBox.hidden = true;
-      statusBox.className = "status";
-      statusBox.textContent = "";
-      resultsBox.replaceChildren();
+      statusBox.querySelector(".status-icon").setAttribute("data-lucide", iconName);
+      statusText.textContent = message;
+
+      if (window.lucide) lucide.createIcons();
+      if (loading) statusBox.querySelector(".status-icon").classList.add("spinner");
     }
 
-    function showStatus(message, type = "") {
-      statusBox.hidden = false;
-      statusBox.className = "status" + (type ? " " + type : "");
-      statusBox.textContent = message;
+    function hideStatus() {
+      statusBox.classList.add("hidden");
+      statusBox.classList.remove("error", "success");
     }
 
-    function safeUrl(value) {
-      if (!value || typeof value !== "string") return null;
+    function safeHttpUrl(value) {
+      if (typeof value !== "string" || !value.trim()) return null;
       try {
-        const url = new URL(value);
-        if (url.protocol === "https:" || url.protocol === "http:") return url.href;
-      } catch {}
-      return null;
-    }
-
-    function makeLink(url, text) {
-      const safe = safeUrl(url);
-      if (!safe) return null;
-
-      const a = document.createElement("a");
-      a.className = "small-link";
-      a.href = safe;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = text;
-      return a;
-    }
-
-    function renderCards(items) {
-      resultsBox.replaceChildren();
-      const validItems = (items || []).filter(Boolean);
-
-      if (!validItems.length) {
-        showStatus("Tidak ada hasil yang bisa ditampilkan.", "error");
-        return;
-      }
-
-      validItems.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "media-card";
-
-        const imageUrl = safeUrl(
-          item.image || item.thumbnail || item.preview || item.icon
-        );
-
-        if (imageUrl) {
-          const image = document.createElement("img");
-          image.src = imageUrl;
-          image.alt = item.title || "Media";
-          image.loading = "lazy";
-          image.referrerPolicy = "no-referrer";
-          image.onerror = () => image.remove();
-          card.appendChild(image);
-        }
-
-        const info = document.createElement("div");
-        info.className = "media-info";
-
-        const title = document.createElement("h3");
-        title.textContent = item.title || item.type || "Hasil media";
-        info.appendChild(title);
-
-        if (item.description || item.duration || item.quality) {
-          const description = document.createElement("p");
-          description.textContent = [
-            item.description,
-            item.duration ? "Durasi: " + item.duration : "",
-            item.quality || ""
-          ].filter(Boolean).join(" · ");
-          info.appendChild(description);
-        }
-
-        const downloadUrl = safeUrl(
-          item.downloadUrl || item.download_url || item.video ||
-          item.url || item.image
-        );
-
-        const link = makeLink(downloadUrl, "Buka / Unduh");
-        if (link) info.appendChild(link);
-
-        const pinLink = makeLink(item.pin, "Buka pin");
-        if (pinLink) {
-          pinLink.style.marginTop = "6px";
-          info.appendChild(pinLink);
-        }
-
-        card.appendChild(info);
-        resultsBox.appendChild(card);
-      });
-
-      resultsBox.hidden = false;
-    }
-
-    async function callToolApi() {
-      const value = input.value.trim();
-      if (!value) throw new Error("Masukkan link atau kata kunci terlebih dahulu.");
-
-      let endpoint;
-      let body;
-
-      if (currentTool === "tiktok") {
-        endpoint = "/api/tools/tiktok";
-        body = { url: value };
-      } else if (currentTool === "pinterest" && currentMode === "search") {
-        endpoint = "/api/tools/pinterest/search";
-        body = { query: value, limit: 10 };
-      } else if (currentTool === "pinterest") {
-        endpoint = "/api/tools/pinterest/download";
-        body = { url: value };
-      } else if (currentTool === "happymod" && currentMode === "search") {
-        endpoint = "/api/tools/happymod/search";
-        body = { query: value, limit: 10 };
-      } else {
-        endpoint = "/api/tools/happymod/download";
-        body = { url: value };
-      }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-
-      const raw = await response.text();
-      let data;
-
-      try {
-        data = JSON.parse(raw);
+        const url = new URL(value, window.location.origin);
+        if (!["http:", "https:"].includes(url.protocol)) return null;
+        return url.href;
       } catch {
-        throw new Error(
-          response.status === 404
-            ? "Endpoint backend belum tersedia. API scraper perlu dipasang di server."
-            : "Server mengembalikan respons yang tidak valid."
-        );
+        return null;
       }
-
-      if (!response.ok || data.status === false || data.success === false) {
-        throw new Error(data.error || data.message || `Permintaan gagal (HTTP ${response.status}).`);
-      }
-
-      return data;
     }
 
-    form.addEventListener("submit", async event => {
-      event.preventDefault();
-      clearOutput();
+    function makeLink(label, url, primary = false) {
+      const safeUrl = safeHttpUrl(url);
+      if (!safeUrl) return null;
 
-      submitBtn.disabled = true;
-      submitText.textContent = "Memproses...";
-      showStatus("Sedang menghubungi layanan...");
+      const link = document.createElement("a");
+      link.className = `small-btn${primary ? " primary" : ""}`;
+      link.href = safeUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = label;
+      return link;
+    }
 
-      try {
-        const data = await callToolApi();
-        showStatus("Permintaan berhasil.", "success");
+    function makeResultCard({ title, description, image, links = [] }) {
+      const card = document.createElement("article");
+      card.className = "result-card";
 
-        let items = [];
-
-        if (currentTool === "tiktok") {
-          items = (data.medias || data.results || []).map(media => ({
-            title: media.type === "video" ? "Video TikTok" :
-                   media.type === "audio" ? "Audio TikTok" : "Foto TikTok",
-            type: media.type,
-            url: media.url,
-            downloadUrl: media.url,
-            thumbnail: media.thumbnail || media.preview,
-            duration: media.duration,
-            quality: media.quality
-          }));
-        } else if (currentTool === "pinterest" && currentMode === "search") {
-          items = (data.results || data.data || []).map(item => ({
-            ...item,
-            url: item.image || item.video || item.pin
-          }));
-        } else if (currentTool === "happymod" && currentMode === "search") {
-          items = (data.results || data.data || []).map(item => ({
-            ...item,
-            url: item.url,
-            image: item.icon
-          }));
-        } else {
-          const result = data.result || data.download || data;
-          items = [
-            ...(result.video ? [{
-              title: data.title || "Video",
-              type: "video",
-              url: result.video,
-              downloadUrl: result.video
-            }] : []),
-            ...(result.image ? [{
-              title: data.title || "Gambar",
-              type: "image",
-              url: result.image,
-              image: result.image,
-              downloadUrl: result.image
-            }] : []),
-            ...(result.url || result.apk_url ? [{
-              title: data.title || "File unduhan",
-              url: result.url || result.apk_url,
-              downloadUrl: result.url || result.apk_url,
-              image: data.icon
-            }] : [])
-          ];
-        }
-
-        if (!items.length && data.results) items = data.results;
-        renderCards(items);
-      } catch (error) {
-        showStatus(error.message || "Terjadi kesalahan.", "error");
-      } finally {
-        submitBtn.disabled = false;
-        updateTool();
+      if (image && safeHttpUrl(image)) {
+        const img = document.createElement("img");
+        img.className = "result-thumb";
+        img.src = safeHttpUrl(image);
+        img.alt = "";
+        img.loading = "lazy";
+        img.referrerPolicy = "no-referrer";
+        img.onerror = () => img.remove();
+        card.appendChild(img);
       }
+
+      const body = document.createElement("div");
+      body.className = "result-body";
+
+      const heading = document.createElement("h4");
+      heading.textContent = title || "Hasil";
+      body.appendChild(heading);
+
+      if (description) {
+        const desc = document.createElement("p");
+        desc.textContent = description;
+        body.appendChild(desc);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "result-actions";
+
+      links.forEach(item => {
+        const link = makeLink(item.label, item.url, item.primary);
+        if (link) actions.appendChild(link);
+      });
+
+      if (actions.childElementCount) body.appendChild(actions);
+      card.appendChild(body);
+      return card;
+    }
+
+    function displayResults(data, mode) {
+      resultsList.replaceChildren();
+      const cards = [];
+
+      if (mode === "tiktok") {
+        const medias = Array.isArray(data.medias) ? data.medias : [];
+        medias.forEach(media => {
+          cards.push(makeResultCard({
+            title: media.type === "audio" ? "Audio TikTok" :
+              media.type === "image" ? "Foto TikTok" : (data.title || "Video TikTok"),
+            description: [
+              data.author?.nickname ? `Pembuat: ${data.author.nickname}` : "",
+              media.duration ? `Durasi: ${media.duration}` : "",
+              media.quality || ""
+            ].filter(Boolean).join(" · "),
+            image: media.thumbnail || data.author?.avatar,
+            links: [
+              { label: "Buka media", url: media.url, primary: true },
+              { label: "Preview", url: media.preview }
+            ]
+          }));
+        });
+
+        if (!cards.length && data.source) {
+          cards.push(makeResultCard({
+            title: data.title || "TikTok",
+            description: "Server tidak mengembalikan URL media. Kamu bisa membuka link sumber.",
+            links: [{ label: "Buka TikTok", url: data.source, primary: true }]
+          }));
+        }
+      } else if (mode === "pinterest-search") {
+        const items = Array.isArray(data.results) ? data.results : [];
+        items.forEach(item => {
+          cards.push(makeResultCard({
+            title: item.title || "Pinterest media",
+            description: item.description || item.pinner?.name || "",
+            image: item.image,
+            links: [
+              { label: "Buka gambar", url: item.image, primary: true },
+              { label: "Buka pin", url: item.pin || item.url },
+              { label: "Buka video", url: item.video }
+            ]
+          }));
+        });
+      } else if (mode === "pinterest-download") {
+        const media = data.result || {};
+        cards.push(makeResultCard({
+          title: data.title || "Pinterest media",
+          description: data.description || data.mediaType || "",
+          image: media.image,
+          links: [
+            { label: "Buka gambar", url: media.image, primary: true },
+            { label: "Buka video", url: media.video },
+            { label: "Buka sumber", url: data.url }
+          ]
+        }));
+      } else if (mode === "happymod-search") {
+        const items = Array.isArray(data.results) ? data.results : [];
+        items.forEach(item => {
+          cards.push(makeResultCard({
+            title: item.title || "Aplikasi",
+            description: item.rating ? `Rating: ${item.rating}` : "Hasil pencarian aplikasi",
+            image: item.icon,
+            links: [{ label: "Detail aplikasi", url: item.url, primary: true }]
+          }));
+        });
+      } else if (mode === "happymod-download") {
+        const download = data.download || {};
+        const versions = Array.isArray(download.versions) ? download.versions : [];
+        const allLinks = [
+          { label: "Halaman sumber", url: data.source },
+          { label: "Halaman download", url: download.web_url },
+          { label: "Link APK", url: download.url, primary: true }
+        ];
+
+        cards.push(makeResultCard({
+          title: data.title || "Detail aplikasi",
+          description: [
+            data.version ? `Versi: ${data.version}` : "",
+            data.size ? `Ukuran: ${data.size}` : "",
+            data.developer ? `Developer: ${data.developer}` : "",
+            data.package ? `Package: ${data.package}` : ""
+          ].filter(Boolean).join(" · "),
+          image: data.icon,
+          links: allLinks
+        }));
+
+        versions.forEach(version => {
+          cards.push(makeResultCard({
+            title: version.name || "Versi aplikasi",
+            description: [version.version, version.size].filter(Boolean).join(" · "),
+            links: [{ label: "Buka versi", url: version.url, primary: true }]
+          }));
+        });
+      }
+
+      if (!cards.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = data.error || "Tidak ada hasil yang bisa ditampilkan.";
+        resultsList.appendChild(empty);
+      } else {
+        cards.forEach(card => resultsList.appendChild(card));
+      }
+
+      resultCount.textContent = `${cards.length} hasil`;
+      resultsSection.classList.remove("hidden");
+    }
+
+    document.querySelectorAll("[data-tool-form]").forEach(form => {
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const mode = form.dataset.toolForm;
+        const endpoint = API_ROUTES[mode];
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner"></span> Memproses...';
+        resultsSection.classList.add("hidden");
+        showStatus("Menghubungi server tools...", "info", true);
+
+        try {
+          const formData = new FormData(form);
+          const payload = Object.fromEntries(formData.entries());
+
+          // Semua request memakai route backend same-origin.
+          // Scraper Node.js harus dijalankan di server, bukan langsung di browser.
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const raw = await response.text();
+          let data;
+
+          try {
+            data = JSON.parse(raw);
+          } catch {
+            throw new Error(
+              response.status === 404
+                ? `Endpoint ${endpoint} belum tersedia. Backend tools perlu dipasang.`
+                : `Server mengembalikan respons yang tidak valid (HTTP ${response.status}).`
+            );
+          }
+
+          if (!response.ok || data.status === false || data.success === false) {
+            throw new Error(data.error || `Permintaan gagal (HTTP ${response.status}).`);
+          }
+
+          displayResults(data, mode);
+          showStatus("Permintaan selesai. Periksa hasil di bawah.", "success");
+        } catch (error) {
+          showStatus(error.message || "Gagal menghubungi server tools.", "error");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          if (window.lucide) lucide.createIcons();
+        }
+      });
     });
 
-    updateTool();
+    if (window.lucide) lucide.createIcons();
   </script>
 </body>
 </html>
