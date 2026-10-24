@@ -14,54 +14,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* ============================================================
-       AUTH PAGE — extends style.css
-       ============================================================ */
+    .auth-hero { padding: 22px 0 20px; text-align: center; }
+    .auth-hero h1 span { color: var(--blue); background: none; -webkit-text-fill-color: var(--blue); }
+    .auth-hero > p { margin-left: auto; margin-right: auto; max-width: 340px; }
 
-    .auth-hero {
-      padding: 22px 0 20px;
-      text-align: center;
-    }
-    .auth-hero h1 span {
-      color: var(--blue);
-      background: none;
-      -webkit-text-fill-color: var(--blue);
-    }
-    .auth-hero > p {
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 340px;
-    }
-
-    .auth-panel {
-      padding: 20px;
-      margin-bottom: 15px;
-    }
+    .auth-panel { padding: 20px; margin-bottom: 15px; }
 
     .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
-      margin-bottom: 20px;
-      padding: 4px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+      margin-bottom: 20px; padding: 4px;
       border: 1px solid rgba(155, 170, 210, .1);
-      border-radius: 13px;
-      background: rgba(5, 9, 18, .45);
+      border-radius: 13px; background: rgba(5, 9, 18, .45);
     }
     .auth-tab {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-height: 39px;
-      padding: 8px 5px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      background: transparent;
-      color: #8491ae;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 39px; padding: 8px 5px;
+      border: 1px solid transparent; border-radius: 10px;
+      background: transparent; color: #8491ae;
+      font-size: 11px; font-weight: 700; cursor: pointer;
       transition: all .2s ease;
     }
     .auth-tab svg { width: 14px; height: 14px; }
@@ -83,42 +53,28 @@
     .input-wrap.valid { border-color: rgba(105, 228, 177, .45); }
 
     .field-error {
-      display: none;
-      margin-top: 6px;
-      color: #ff8a8a;
-      font-size: 10px;
-      line-height: 1.5;
-      align-items: center;
-      gap: 5px;
+      display: none; margin-top: 6px;
+      color: #ff8a8a; font-size: 10px; line-height: 1.5;
+      align-items: center; gap: 5px;
     }
     .field-error svg { width: 11px; height: 11px; flex: 0 0 auto; }
     .field-error.visible { display: flex; }
 
     .password-toggle {
-      display: grid;
-      place-items: center;
-      width: 26px;
-      height: 26px;
-      border: 0;
-      border-radius: 7px;
+      display: grid; place-items: center;
+      width: 26px; height: 26px;
+      border: 0; border-radius: 7px;
       background: rgba(255, 255, 255, .04);
-      color: var(--muted);
-      cursor: pointer;
-      flex: 0 0 auto;
+      color: var(--muted); cursor: pointer; flex: 0 0 auto;
       transition: color .15s, background .15s;
     }
     .password-toggle:hover { color: #c5cee4; background: rgba(255, 255, 255, .08); }
     .password-toggle svg { width: 13px; height: 13px; }
 
     .strength-wrap { display: grid; gap: 6px; margin-top: 8px; }
-    .strength-bars {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3px;
-    }
+    .strength-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
     .strength-bars span {
-      height: 3px;
-      border-radius: 3px;
+      height: 3px; border-radius: 3px;
       background: rgba(160, 177, 219, .12);
       transition: background .2s;
     }
@@ -127,10 +83,8 @@
     .strength-bars.s3 span:nth-child(-n+3) { background: #66d9ef; }
     .strength-bars.s4 span { background: #69e4b1; }
     .strength-label {
-      color: var(--muted);
-      font-size: 9.5px;
-      display: flex;
-      justify-content: space-between;
+      color: var(--muted); font-size: 9.5px;
+      display: flex; justify-content: space-between;
     }
     .strength-label b { font-weight: 700; }
     .strength-label b[data-level="1"] { color: #ff8a8a; }
@@ -139,18 +93,12 @@
     .strength-label b[data-level="4"] { color: #8ee8c3; }
 
     .captcha-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: stretch;
-      gap: 8px;
+      display: grid; grid-template-columns: auto 1fr auto;
+      align-items: stretch; gap: 8px;
     }
     .captcha-challenge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-width: 110px;
-      padding: 0 14px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      min-width: 110px; padding: 0 14px;
       border: 1px solid rgba(155, 170, 210, .14);
       border-radius: 13px;
       background:
@@ -163,38 +111,25 @@
         ),
         rgba(6, 10, 20, .5);
       font-family: 'Courier New', ui-monospace, monospace;
-      font-weight: 800;
-      font-size: 17px;
-      color: #dce3ff;
+      font-weight: 800; font-size: 17px; color: #dce3ff;
       letter-spacing: 2px;
-      user-select: none;
-      -webkit-user-select: none;
-      position: relative;
-      overflow: hidden;
+      user-select: none; -webkit-user-select: none;
+      position: relative; overflow: hidden;
     }
     .captcha-challenge::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: linear-gradient(transparent 45%, rgba(117, 144, 255, .1) 45%, rgba(117, 144, 255, .1) 55%, transparent 55%);
       pointer-events: none;
     }
     .captcha-challenge.strike::after {
-      content: '';
-      position: absolute;
-      left: 8%; right: 8%;
-      top: 50%;
-      height: 1px;
-      background: rgba(161, 122, 255, .4);
-      transform: rotate(-4deg);
-      pointer-events: none;
+      content: ''; position: absolute;
+      left: 8%; right: 8%; top: 50%;
+      height: 1px; background: rgba(161, 122, 255, .4);
+      transform: rotate(-4deg); pointer-events: none;
     }
     .captcha-input-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      height: 48px;
-      padding: 0 12px;
+      display: flex; align-items: center; gap: 8px;
+      height: 48px; padding: 0 12px;
       border: 1px solid rgba(155, 170, 210, .13);
       border-radius: 13px;
       background: rgba(6, 10, 20, .4);
@@ -209,26 +144,18 @@
       box-shadow: 0 0 0 3px rgba(255, 110, 110, .08);
     }
     .captcha-input-wrap input {
-      width: 100%;
-      min-width: 0;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      outline: 0;
-      letter-spacing: 1px;
+      width: 100%; min-width: 0;
+      border: 0; background: transparent;
+      color: var(--text); font-size: 13px; font-weight: 700;
+      outline: 0; letter-spacing: 1px;
     }
     .captcha-refresh {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      min-width: 44px;
+      display: grid; place-items: center;
+      width: 44px; min-width: 44px;
       border: 1px solid rgba(155, 170, 210, .13);
       border-radius: 13px;
       background: rgba(255, 255, 255, .03);
-      color: var(--muted);
-      cursor: pointer;
+      color: var(--muted); cursor: pointer;
       transition: color .15s, background .15s, transform .2s;
     }
     .captcha-refresh:hover { color: #c5cee4; background: rgba(255, 255, 255, .07); }
@@ -236,20 +163,13 @@
     .captcha-refresh svg { width: 16px; height: 16px; }
 
     .auth-submit {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      width: 100%;
-      min-height: 49px;
-      margin-top: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      width: 100%; min-height: 49px; margin-top: 6px;
       border: 1px solid rgba(192, 201, 255, .23);
       border-radius: 14px;
       background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8);
       box-shadow: 0 12px 28px rgba(92, 95, 231, .22);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
+      color: #fff; font-size: 12px; font-weight: 700;
       cursor: pointer;
       transition: transform .2s, box-shadow .2s, opacity .2s;
     }
@@ -259,8 +179,7 @@
     .auth-submit svg { width: 16px; height: 16px; }
 
     .auth-submit .btn-spinner {
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border: 2px solid rgba(255, 255, 255, .3);
       border-top-color: #fff;
       border-radius: 50%;
@@ -269,11 +188,8 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .auth-alert {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      padding: 11px 12px;
-      border-radius: 11px;
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 11px 12px; border-radius: 11px;
       border: 1px solid rgba(255, 110, 110, .18);
       background: rgba(255, 110, 110, .06);
       animation: slideIn .25s ease;
@@ -290,12 +206,7 @@
     .auth-alert:not(.success):not(.info) svg { color: #ff8a8a; }
     .auth-alert.success svg { color: #8ee8c3; }
     .auth-alert.info svg { color: #9eafff; }
-    .auth-alert p {
-      margin: 0;
-      font-size: 10.5px;
-      line-height: 1.6;
-      color: #ffb4b4;
-    }
+    .auth-alert p { margin: 0; font-size: 10.5px; line-height: 1.6; color: #ffb4b4; }
     .auth-alert.success p { color: #8ee8c3; }
     .auth-alert.info p { color: #b8c4e0; }
     @keyframes slideIn {
@@ -304,72 +215,47 @@
     }
 
     .auth-footer-links {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 16px;
-      padding-top: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-top: 16px; padding-top: 16px;
       border-top: 1px solid rgba(160, 177, 219, .1);
-      font-size: 10px;
-      color: var(--muted);
+      font-size: 10px; color: var(--muted);
     }
     .auth-footer-links button {
-      border: 0;
-      background: transparent;
-      color: #9eafff;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 6px;
-      transition: background .15s;
+      border: 0; background: transparent;
+      color: #9eafff; font-size: 10px; font-weight: 700;
+      cursor: pointer; padding: 4px 6px;
+      border-radius: 6px; transition: background .15s;
     }
     .auth-footer-links button:hover { background: rgba(117, 144, 255, .08); }
     .auth-footer-links span { color: #4a5570; }
 
     .session-check {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: grid;
-      place-items: center;
+      position: fixed; inset: 0; z-index: 100;
+      display: grid; place-items: center;
       background: rgba(9, 13, 24, .92);
       backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
+      opacity: 0; pointer-events: none;
       transition: opacity .25s;
     }
-    .session-check.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .session-check.visible { opacity: 1; pointer-events: auto; }
     .session-check-inner {
-      display: grid;
-      place-items: center;
-      gap: 14px;
+      display: grid; place-items: center; gap: 14px;
       text-align: center;
     }
     .session-check-inner .spinner {
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       border: 2px solid rgba(117, 144, 255, .2);
       border-top-color: var(--blue);
       border-radius: 50%;
       animation: spin .7s linear infinite;
     }
-    .session-check-inner p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 11px;
-    }
+    .session-check-inner p { margin: 0; color: var(--muted); font-size: 11px; }
 
     @media (max-width: 380px) {
       .auth-panel { padding: 16px; }
       .captcha-challenge { min-width: 95px; font-size: 15px; padding: 0 10px; }
       .captcha-row { gap: 6px; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -627,27 +513,32 @@
   (function () {
     'use strict';
 
-    /* ============================================================
-       KONFIGURASI
-       Kredensial Supabase TIDAK di-hardcode.
-       Diambil dari /api/config (Vercel serverless function)
-       yang membaca env var SUPABASE_URL & SUPABASE_ANON_KEY.
-       ============================================================ */
-
     const CONFIG_ENDPOINT = '/api/config';
     const REDIRECT_AFTER_LOGIN = 'index.html';
+    const CONFIG_CACHE_KEY = 'fortech-config-cache:v1';
 
     let supabase = null;
+    let supabaseConfig = null;
     let configError = null;
 
-    /* ============================================================
-       UTIL
-       ============================================================ */
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
     const show = (el) => el && el.classList.remove('hidden');
     const hide = (el) => el && el.classList.add('hidden');
 
+    /* ---------- Helper: simpan config ke cache ---------- */
+    function cacheConfig() {
+      if (!supabaseConfig) return;
+      try {
+        localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify({
+          supabaseUrl: supabaseConfig.supabaseUrl,
+          supabaseAnonKey: supabaseConfig.supabaseAnonKey,
+          cachedAt: Date.now(),
+        }));
+      } catch (_) { /* ignore */ }
+    }
+
+    /* ---------- Field errors ---------- */
     function setFieldError(fieldId, message) {
       const errEl = document.querySelector('.field-error[data-for="' + fieldId + '"]');
       const input = document.getElementById(fieldId);
@@ -734,9 +625,7 @@
       overlay.classList.toggle('visible', visible);
     }
 
-    /* ============================================================
-       LOAD CONFIG DARI /api/config
-       ============================================================ */
+    /* ---------- Load config ---------- */
     async function loadConfig() {
       setSessionOverlay('Memuat konfigurasi…', true);
       try {
@@ -760,6 +649,11 @@
           throw new Error('Respons /api/config tidak lengkap.');
         }
 
+        supabaseConfig = {
+          supabaseUrl: json.supabaseUrl,
+          supabaseAnonKey: json.supabaseAnonKey,
+        };
+
         if (!window.supabase || typeof window.supabase.createClient !== 'function') {
           throw new Error('Library Supabase gagal dimuat. Periksa koneksi internet.');
         }
@@ -780,9 +674,7 @@
       }
     }
 
-    /* ============================================================
-       VALIDASI
-       ============================================================ */
+    /* ---------- Validasi ---------- */
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,30}$/;
     const WHATSAPP_REGEX = /^(\+62|62|0)8[0-9]{7,12}$/;
@@ -792,7 +684,6 @@
       if (!EMAIL_REGEX.test(email)) return 'Format email tidak valid.';
       return null;
     }
-
     function validateUsername(username) {
       if (!username) return 'Username wajib diisi.';
       if (username.length < 3) return 'Username minimal 3 karakter.';
@@ -800,14 +691,12 @@
       if (!USERNAME_REGEX.test(username)) return 'Hanya huruf, angka, dan underscore.';
       return null;
     }
-
     function validateWhatsApp(value) {
       if (!value) return null;
       const clean = value.replace(/[\s\-\.]/g, '');
       if (!WHATSAPP_REGEX.test(clean)) return 'Format nomor tidak valid. Contoh: 08123456789.';
       return null;
     }
-
     function validatePassword(password, isSignup) {
       if (!password) return 'Password wajib diisi.';
       const minLen = isSignup ? 6 : 1;
@@ -815,9 +704,7 @@
       return null;
     }
 
-    /* ============================================================
-       PASSWORD STRENGTH
-       ============================================================ */
+    /* ---------- Password strength ---------- */
     function getPasswordStrength(pwd) {
       let score = 0;
       if (pwd.length >= 8) score++;
@@ -827,7 +714,6 @@
       if (pwd.length >= 12 && score >= 3) score = 4;
       return Math.min(score, 4);
     }
-
     function updateStrengthMeter(pwd) {
       const bars = document.getElementById('strengthBars');
       const text = document.getElementById('strengthText');
@@ -845,9 +731,7 @@
       text.setAttribute('data-level', String(score));
     }
 
-    /* ============================================================
-       CAPTCHA
-       ============================================================ */
+    /* ---------- Captcha ---------- */
     function createCaptcha() {
       const a = Math.floor(Math.random() * 9) + 1;
       const b = Math.floor(Math.random() * 9) + 1;
@@ -855,12 +739,10 @@
       if (useMultiply) return { display: a + ' × ' + b + ' = ?', answer: String(a * b) };
       return { display: a + ' + ' + b + ' = ?', answer: String(a + b) };
     }
-
     const captchaState = {
       login: createCaptcha(),
       signup: createCaptcha(),
     };
-
     function renderCaptcha(key) {
       const challengeEl = document.getElementById(key + 'CaptchaChallenge');
       const input = document.getElementById(key + 'Captcha');
@@ -870,12 +752,10 @@
       if (wrap) wrap.classList.remove('invalid');
       setFieldError(key + 'Captcha', null);
     }
-
     function refreshCaptcha(key) {
       captchaState[key] = createCaptcha();
       renderCaptcha(key);
     }
-
     function verifyCaptcha(key) {
       const input = document.getElementById(key + 'Captcha');
       if (!input) return false;
@@ -893,9 +773,7 @@
       return true;
     }
 
-    /* ============================================================
-       TOAST
-       ============================================================ */
+    /* ---------- Toast ---------- */
     let toastTimer = null;
     function toast(message, type) {
       const el = document.getElementById('toast');
@@ -907,9 +785,7 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
     }
 
-    /* ============================================================
-       TAB SWITCHING
-       ============================================================ */
+    /* ---------- Tab switching ---------- */
     function setTab(tab) {
       const loginForm = document.getElementById('loginForm');
       const signupForm = document.getElementById('signupForm');
@@ -952,9 +828,7 @@
       });
     }
 
-    /* ============================================================
-       SIGNUP
-       ============================================================ */
+    /* ---------- Signup ---------- */
     async function handleSignup(evt) {
       evt.preventDefault();
       if (!supabase) {
@@ -1032,6 +906,7 @@
         }
 
         if (data && data.session) {
+          cacheConfig();
           showAlert('signupAlert', 'Pendaftaran berhasil! Mengalihkan…', 'success');
           toast('Selamat datang, ' + username + '!', 'success');
           setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 900);
@@ -1046,9 +921,7 @@
       }
     }
 
-    /* ============================================================
-       LOGIN
-       ============================================================ */
+    /* ---------- Login ---------- */
     async function handleLogin(evt) {
       evt.preventDefault();
       if (!supabase) {
@@ -1094,6 +967,7 @@
         }
 
         if (data && data.session) {
+          cacheConfig();
           toast('Berhasil masuk!', 'success');
           setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 700);
         } else {
@@ -1106,9 +980,7 @@
       }
     }
 
-    /* ============================================================
-       FORGOT PASSWORD
-       ============================================================ */
+    /* ---------- Forgot password ---------- */
     async function handleForgotPassword() {
       if (!supabase) { toast(configError || 'Server belum siap.', 'error'); return; }
       const emailEl = document.getElementById('forgotEmail');
@@ -1145,9 +1017,7 @@
       }
     }
 
-    /* ============================================================
-       SESSION CHECK
-       ============================================================ */
+    /* ---------- Session check ---------- */
     async function checkSession() {
       if (!supabase) { setSessionOverlay('', false); return; }
       try {
@@ -1161,9 +1031,7 @@
       setSessionOverlay('', false);
     }
 
-    /* ============================================================
-       BIND EVENTS
-       ============================================================ */
+    /* ---------- Bind events ---------- */
     function bindEvents() {
       const tabLogin = document.getElementById('tabLogin');
       const tabSignup = document.getElementById('tabSignup');
@@ -1287,9 +1155,7 @@
       });
     }
 
-    /* ============================================================
-       INIT
-       ============================================================ */
+    /* ---------- Init ---------- */
     async function init() {
       if (window.lucide) window.lucide.createIcons();
 
