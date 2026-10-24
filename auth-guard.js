@@ -1,9 +1,8 @@
 /* ============================================================
-   Auth Guard v2 — instan antar navigasi
-   - Sync read session dari localStorage (persist Supabase)
-   - Cache /api/config di localStorage (TTL 1 jam)
-   - Verifikasi Supabase di background
-   - Dispatch 'authready' (cache) + 'authprofile' (verified)
+   Auth Guard v3 — fail-closed
+   - Sync check sudah dilakukan inline di <head>
+   - File ini: verify session di background, redirect kalau invalid
+   - Kalau ada error apapun → redirect ke login (bukan biarkan lolos)
    ============================================================ */
 
 (function () {
@@ -15,7 +14,6 @@
   const STORAGE_KEY = 'fortech-auth-session';
   const CONFIG_CACHE_KEY = 'fortech-config-cache:v1';
   const CONFIG_CACHE_TTL = 60 * 60 * 1000;
-  const EXPIRY_BUFFER_MS = 60 * 1000;
 
   const textEl = document.getElementById('authGuardText');
   const setStatus = (text) => { if (textEl) textEl.textContent = text; };
@@ -25,59 +23,16 @@
     return;
   }
 
-  function redirectToLogin() {
+  let redirected = false;
+  function bail(reason) {
+    if (redirected) return;
+    redirected = true;
+    if (reason) {
+      try { sessionStorage.setItem('auth-redirect-reason', reason); } catch (_) {}
+    }
     window.location.replace(LOGIN_URL);
   }
 
-  /* ============================================================
-     STEP 1 — SYNC: baca session dari localStorage
-     ============================================================ */
-  function readStoredSession() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed || !parsed.access_token || !parsed.user) return null;
-      return parsed;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  function isExpired(session) {
-    if (!session || !session.expires_at) return false;
-    return (session.expires_at * 1000) < (Date.now() - EXPIRY_BUFFER_MS);
-  }
-
-  const storedSession = readStoredSession();
-
-  if (!storedSession) {
-    redirectToLogin();
-    return;
-  }
-
-  if (isExpired(storedSession) && !storedSession.refresh_token) {
-    redirectToLogin();
-    return;
-  }
-
-  /* ============================================================
-     STEP 2 — OPTIMISTIC: session ada → tampilkan halaman
-     ============================================================ */
-  window.currentUser = storedSession.user;
-  html.classList.remove('auth-pending');
-
-  window.dispatchEvent(new CustomEvent('authready', {
-    detail: {
-      user: storedSession.user,
-      profile: null,
-      source: 'cache',
-    },
-  }));
-
-  /* ============================================================
-     STEP 3 — CONFIG CACHE
-     ============================================================ */
   function readConfigCache() {
     try {
       const raw = localStorage.getItem(CONFIG_CACHE_KEY);
@@ -86,9 +41,7 @@
       if (!parsed || !parsed.supabaseUrl || !parsed.supabaseAnonKey) return null;
       if (parsed.cachedAt && (Date.now() - parsed.cachedAt) > CONFIG_CACHE_TTL) return null;
       return parsed;
-    } catch (_) {
-      return null;
-    }
+    } catch (_) { return null; }
   }
 
   function writeConfigCache(cfg) {
@@ -98,7 +51,7 @@
         supabaseAnonKey: cfg.supabaseAnonKey,
         cachedAt: Date.now(),
       }));
-    } catch (_) { /* ignore */ }
+    } catch (_) {}
   }
 
   async function loadConfig() {
@@ -109,27 +62,38 @@
       cache: 'no-store',
       headers: { Accept: 'application/json' },
     });
-    if (!res.ok) throw new Error('Config HTTP ' + res.status);
+    if (!res.ok) throw new Error('config-http-' + res.status);
     const cfg = await res.json();
     if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) {
-      throw new Error('Config tidak lengkap');
+      throw new Error('config-incomplete');
     }
     writeConfigCache(cfg);
     return cfg;
   }
 
-  /* ============================================================
-     STEP 4 — VERIFY DI BACKGROUND
-     ============================================================ */
   async function verify() {
+    setStatus('Memuat konfigurasi…');
+
+    let cfg;
     try {
-      const cfg = await loadConfig();
+      cfg = await loadConfig();
+    } catch (err) {
+      console.error('[auth-guard] config gagal:', err);
+      setStatus('Gagal memuat. Mengalihkan…');
+      setTimeout(() => bail('config-error'), 500);
+      return;
+    }
 
-      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        throw new Error('Supabase JS belum termuat');
-      }
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+      console.error('[auth-guard] Supabase JS belum termuat');
+      setStatus('Gagal memuat library. Mengalihkan…');
+      setTimeout(() => bail('supabase-lib-missing'), 500);
+      return;
+    }
 
-      const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+    let sb;
+    try {
+      sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
         auth: {
           persistSession: true,
           autoRefreshToken: true,
@@ -138,45 +102,64 @@
         },
       });
       window.supabaseClient = sb;
-
-      const { data: { session }, error } = await sb.auth.getSession();
-
-      if (error || !session || !session.user) {
-        try { await sb.auth.signOut(); } catch (_) { /* ignore */ }
-        redirectToLogin();
-        return;
-      }
-
-      window.currentUser = session.user;
-
-      sb.auth.onAuthStateChange((event, s) => {
-        if (event === 'SIGNED_OUT') {
-          redirectToLogin();
-        } else if (event === 'TOKEN_REFRESHED' && s) {
-          window.currentUser = s.user;
-        }
-      });
-
-      try {
-        const { data, error: pErr } = await sb
-          .from('profiles')
-          .select('username, full_name, whatsapp, updated_at')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
-        if (!pErr && data) {
-          window.currentProfile = data;
-          window.dispatchEvent(new CustomEvent('authprofile', {
-            detail: { profile: data, user: session.user },
-          }));
-        }
-      } catch (_) {
-        /* profile fetch gagal bukan blocker */
-      }
     } catch (err) {
-      console.warn('[auth-guard] verify gagal:', err);
-      // Session ada di cache → biarkan halaman tampil
+      console.error('[auth-guard] createClient gagal:', err);
+      bail('client-init-failed');
+      return;
     }
+
+    setStatus('Memeriksa sesi…');
+
+    let session = null;
+    try {
+      const result = await sb.auth.getSession();
+      session = result && result.data ? result.data.session : null;
+    } catch (err) {
+      console.error('[auth-guard] getSession error:', err);
+      bail('session-error');
+      return;
+    }
+
+    if (!session || !session.user) {
+      try { await sb.auth.signOut(); } catch (_) {}
+      bail('no-session');
+      return;
+    }
+
+    window.currentUser = session.user;
+
+    sb.auth.onAuthStateChange((event, s) => {
+      if (event === 'SIGNED_OUT') {
+        bail('signed-out');
+      } else if (event === 'TOKEN_REFRESHED' && s) {
+        window.currentUser = s.user;
+      }
+    });
+
+    setStatus('Memuat profil…');
+    try {
+      const { data, error } = await sb
+        .from('profiles')
+        .select('username, full_name, whatsapp, updated_at')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+      if (!error && data) {
+        window.currentProfile = data;
+        window.dispatchEvent(new CustomEvent('authprofile', {
+          detail: { profile: data, user: session.user },
+        }));
+      }
+    } catch (_) { /* profile gagal bukan blocker */ }
+
+    html.classList.remove('auth-pending');
+
+    window.dispatchEvent(new CustomEvent('authready', {
+      detail: {
+        user: window.currentUser,
+        profile: window.currentProfile || null,
+      },
+    }));
   }
 
   if (document.readyState === 'loading') {
