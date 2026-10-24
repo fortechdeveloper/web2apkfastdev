@@ -1,10 +1,9 @@
 /* ============================================================
-   Auth Guard — wajib login untuk semua halaman kecuali login.html
-   - Fetch /api/config (Vercel serverless function)
-   - Inisialisasi Supabase client
-   - Cek session, redirect ke login.html kalau kosong
-   - Set window.supabaseClient, window.currentUser, window.currentProfile
-   - Dispatch event 'authready' untuk listener halaman
+   Auth Guard v2 — instan antar navigasi
+   - Sync read session dari localStorage (persist Supabase)
+   - Cache /api/config di localStorage (TTL 1 jam)
+   - Verifikasi Supabase di background
+   - Dispatch 'authready' (cache) + 'authprofile' (verified)
    ============================================================ */
 
 (function () {
@@ -14,46 +13,126 @@
   const LOGIN_URL = 'login.html';
   const CONFIG_ENDPOINT = '/api/config';
   const STORAGE_KEY = 'fortech-auth-session';
+  const CONFIG_CACHE_KEY = 'fortech-config-cache:v1';
+  const CONFIG_CACHE_TTL = 60 * 60 * 1000; // 1 jam
+  const EXPIRY_BUFFER_MS = 60 * 1000;       // toleransi 60 detik
 
   const textEl = document.getElementById('authGuardText');
   const setStatus = (text) => { if (textEl) textEl.textContent = text; };
 
-  // Skip guard kalau lagi di login.html
+  // Skip guard di login.html
   if (location.pathname.indexOf('login.html') !== -1) {
     html.classList.remove('auth-pending');
     return;
   }
 
-  function redirectToLogin(reason) {
-    try {
-      if (reason) sessionStorage.setItem('auth-redirect-reason', reason);
-    } catch (_) { /* ignore */ }
+  function redirectToLogin() {
     window.location.replace(LOGIN_URL);
   }
 
-  async function run() {
-    setStatus('Memuat konfigurasi…');
-
+  /* ============================================================
+     STEP 1 — SYNC: baca session dari localStorage
+     ============================================================ */
+  function readStoredSession() {
     try {
-      // 1. Ambil konfigurasi dari server
-      const res = await fetch(CONFIG_ENDPOINT, {
-        cache: 'no-store',
-        headers: { Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        throw new Error('Konfigurasi server tidak tersedia (HTTP ' + res.status + ').');
-      }
-      const cfg = await res.json();
-      if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) {
-        throw new Error('Konfigurasi Supabase tidak lengkap.');
-      }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.access_token || !parsed.user) return null;
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
 
-      // 2. Pastikan library Supabase sudah termuat
+  function isExpired(session) {
+    if (!session || !session.expires_at) return false;
+    return (session.expires_at * 1000) < (Date.now() - EXPIRY_BUFFER_MS);
+  }
+
+  const storedSession = readStoredSession();
+
+  if (!storedSession) {
+    // Tidak ada session → redirect instan
+    redirectToLogin();
+    return;
+  }
+
+  if (isExpired(storedSession) && !storedSession.refresh_token) {
+    // Expired dan tidak ada refresh token → redirect
+    redirectToLogin();
+    return;
+  }
+
+  /* ============================================================
+     STEP 2 — OPTIMISTIC: session ada → tampilkan halaman
+     ============================================================ */
+  window.currentUser = storedSession.user;
+  html.classList.remove('auth-pending');
+
+  // Dispatch event awal dengan data cache
+  window.dispatchEvent(new CustomEvent('authready', {
+    detail: {
+      user: storedSession.user,
+      profile: null,
+      source: 'cache',
+    },
+  }));
+
+  /* ============================================================
+     STEP 3 — CONFIG CACHE
+     ============================================================ */
+  function readConfigCache() {
+    try {
+      const raw = localStorage.getItem(CONFIG_CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.supabaseUrl || !parsed.supabaseAnonKey) return null;
+      if (parsed.cachedAt && (Date.now() - parsed.cachedAt) > CONFIG_CACHE_TTL) return null;
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeConfigCache(cfg) {
+    try {
+      localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify({
+        supabaseUrl: cfg.supabaseUrl,
+        supabaseAnonKey: cfg.supabaseAnonKey,
+        cachedAt: Date.now(),
+      }));
+    } catch (_) { /* ignore */ }
+  }
+
+  async function loadConfig() {
+    const cached = readConfigCache();
+    if (cached) return cached;
+
+    const res = await fetch(CONFIG_ENDPOINT, {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) throw new Error('Config HTTP ' + res.status);
+    const cfg = await res.json();
+    if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) {
+      throw new Error('Config tidak lengkap');
+    }
+    writeConfigCache(cfg);
+    return cfg;
+  }
+
+  /* ============================================================
+     STEP 4 — VERIFY DI BACKGROUND
+     ============================================================ */
+  async function verify() {
+    try {
+      const cfg = await loadConfig();
+
       if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        throw new Error('Library Supabase gagal dimuat.');
+        throw new Error('Supabase JS belum termuat');
       }
 
-      // 3. Inisialisasi client
       const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
         auth: {
           persistSession: true,
@@ -64,18 +143,18 @@
       });
       window.supabaseClient = sb;
 
-      // 4. Cek session
-      setStatus('Memeriksa sesi…');
-      const { data: { session } } = await sb.auth.getSession();
+      const { data: { session }, error } = await sb.auth.getSession();
 
-      if (!session || !session.user) {
+      if (error || !session || !session.user) {
+        // Session invalid → bersihkan & redirect
+        try { await sb.auth.signOut(); } catch (_) { /* ignore */ }
         redirectToLogin();
         return;
       }
 
       window.currentUser = session.user;
 
-      // 5. Pantau perubahan auth (logout, refresh)
+      // Pantau perubahan auth
       sb.auth.onAuthStateChange((event, s) => {
         if (event === 'SIGNED_OUT') {
           redirectToLogin();
@@ -84,45 +163,33 @@
         }
       });
 
-      // 6. Ambil profile dari tabel public.profiles
-      setStatus('Memuat profil…');
+      // Ambil profile
       try {
-        const { data, error } = await sb
+        const { data, error: pErr } = await sb
           .from('profiles')
           .select('username, full_name, whatsapp, updated_at')
           .eq('id', session.user.id)
           .maybeSingle();
 
-        if (!error && data) {
+        if (!pErr && data) {
           window.currentProfile = data;
+          window.dispatchEvent(new CustomEvent('authprofile', {
+            detail: { profile: data, user: session.user },
+          }));
         }
-      } catch (e) {
-        // Profile fetch gagal bukan blocker — user tetap bisa akses halaman
-        console.warn('[auth-guard] Profile fetch gagal:', e);
+      } catch (_) {
+        // Profile fetch gagal bukan blocker
       }
-
-      // 7. Selesai — tampilkan body
-      html.classList.remove('auth-pending');
-
-      // 8. Dispatch event untuk halaman yang butuh data user
-      window.dispatchEvent(new CustomEvent('authready', {
-        detail: {
-          user: window.currentUser,
-          profile: window.currentProfile || null,
-        },
-      }));
-
     } catch (err) {
-      console.error('[auth-guard]', err);
-      setStatus('Gagal memuat. Mengalihkan ke login…');
-      // Tetap arahkan ke login supaya user bisa retry
-      setTimeout(() => redirectToLogin('guard-error'), 700);
+      console.warn('[auth-guard] verify gagal:', err);
+      // Session ada di cache tapi verify error → biarkan halaman tampil
+      // (bisa jadi serverless /api/config down; user tetap bisa pakai halaman)
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run);
+    document.addEventListener('DOMContentLoaded', verify);
   } else {
-    run();
+    verify();
   }
 })();
