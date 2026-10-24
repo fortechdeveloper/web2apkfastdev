@@ -6,6 +6,7 @@
   const $$ = (selector) => [...document.querySelectorAll(selector)];
 
   let toastTimer = null;
+  let building = false;
 
   function refreshIcons() {
     if (window.lucide) window.lucide.createIcons();
@@ -35,7 +36,10 @@
     $("#htmlFile").required = !isUrl;
 
     $$("[data-source]").forEach((button) => {
-      button.classList.toggle("active", button.dataset.source === type);
+      button.classList.toggle(
+        "active",
+        button.dataset.source === type
+      );
     });
   }
 
@@ -51,19 +55,35 @@
   }
 
   function setSplashFields() {
-    const selected = $('input[name="splashType"]:checked')?.value || "default";
+    const selected =
+      $('input[name="splashType"]:checked')?.value || "default";
 
-    $("#splashImageField").classList.toggle("hidden", selected !== "image");
-    $("#splashHtmlField").classList.toggle("hidden", selected !== "html");
-    $("#splashVideoField").classList.toggle("hidden", selected !== "video");
+    $("#splashImageField").classList.toggle(
+      "hidden",
+      selected !== "image"
+    );
 
-    $("#splashImage").required = selected === "image";
+    $("#splashHtmlField").classList.toggle(
+      "hidden",
+      selected !== "html"
+    );
+
+    $("#splashVideoField").classList.toggle(
+      "hidden",
+      selected !== "video"
+    );
+
+    $("#splashImage").required = false;
     $("#splashHtml").required = selected === "html";
-    $("#splashVideo").required = selected === "video";
+    $("#splashVideo").required = false;
 
     $$(".choice").forEach((choice) => {
       const radio = choice.querySelector('input[type="radio"]');
-      choice.classList.toggle("selected", Boolean(radio?.checked));
+
+      choice.classList.toggle(
+        "selected",
+        Boolean(radio?.checked)
+      );
     });
   }
 
@@ -95,6 +115,7 @@
 
     $("#resultTitle").textContent = title;
     $("#resultMessage").textContent = message;
+
     card.classList.remove("hidden");
 
     if (downloadUrl) {
@@ -105,7 +126,11 @@
       link.classList.add("hidden");
     }
 
-    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
     refreshIcons();
   }
 
@@ -117,30 +142,127 @@
       data.download_url,
       data.apkUrl,
       data.apk_url,
-      data.url
+      data.url,
+      data.download?.url,
+      data.data?.downloadUrl,
+      data.data?.download_url,
+      data.data?.apkUrl,
+      data.data?.apk_url
     ];
 
     return candidates.find(
-      (value) => typeof value === "string" && value.trim()
-    ) || null;
+      (value) =>
+        typeof value === "string" &&
+        /^https?:\/\//i.test(value.trim())
+    )?.trim() || null;
   }
 
   function getServerMessage(data, fallback) {
-    if (typeof data === "string" && data.trim()) return data;
+    if (typeof data === "string" && data.trim()) {
+      return data.trim();
+    }
 
     if (data && typeof data === "object") {
-      const candidates = [data.message, data.error, data.detail];
+      const candidates = [
+        data.error,
+        data.message,
+        data.detail,
+        data.data?.error,
+        data.data?.message
+      ];
+
       const message = candidates.find(
-        (value) => typeof value === "string" && value.trim()
+        (value) =>
+          typeof value === "string" && value.trim()
       );
 
-      if (message) return message;
+      if (message) return message.trim();
     }
 
     return fallback;
   }
 
-  // Sumber website atau file HTML.
+  function getBuildFormData(form) {
+    // Ambil field standar dari form.
+    const formData = new FormData(form);
+
+    const sourceType = $("#sourceType").value;
+    const websiteUrl = $("#websiteUrl").value.trim();
+    const htmlInput = $("#htmlFile");
+    const htmlFile = htmlInput.files?.[0];
+
+    /*
+     * Hapus kedua sumber dahulu.
+     * Ini mencegah URL lama ikut terkirim saat pengguna
+     * berpindah dari mode Website ke mode File HTML.
+     */
+    formData.delete("websiteUrl");
+    formData.delete("url");
+    formData.delete("htmlFile");
+    formData.delete("html");
+    formData.delete("sourceType");
+
+    if (sourceType === "url") {
+      formData.append("url", websiteUrl);
+    } else if (sourceType === "file") {
+      if (!htmlFile) {
+        throw new Error("Pilih file HTML terlebih dahulu.");
+      }
+
+      // Nama field disamakan dengan format API Builder.
+      formData.append("html", htmlFile, htmlFile.name);
+    } else {
+      throw new Error("Pilih sumber aplikasi yang valid.");
+    }
+
+    /*
+     * Hanya kirim konfigurasi splash yang dipilih.
+     * File splash dari pilihan sebelumnya tidak ikut terkirim.
+     */
+    const splashType =
+      $('input[name="splashType"]:checked')?.value || "default";
+
+    formData.delete("splashImage");
+    formData.delete("splashVideo");
+
+    if (splashType !== "html") {
+      formData.delete("splashHtml");
+    }
+
+    if (splashType === "image") {
+      const file = $("#splashImage").files?.[0];
+
+      if (!file) {
+        throw new Error("Pilih gambar untuk splash screen.");
+      }
+
+      formData.append("splashImage", file, file.name);
+    }
+
+    if (splashType === "video") {
+      const file = $("#splashVideo").files?.[0];
+
+      if (!file) {
+        throw new Error("Pilih video untuk splash screen.");
+      }
+
+      formData.append("splashVideo", file, file.name);
+    }
+
+    if (splashType === "html") {
+      const html = $("#splashHtml").value.trim();
+
+      if (!html) {
+        throw new Error("Isi kode HTML untuk splash screen.");
+      }
+
+      formData.set("splashHtml", html);
+    }
+
+    return formData;
+  }
+
+  // Pilihan sumber aplikasi.
   $$("[data-source]").forEach((button) => {
     button.addEventListener("click", () => {
       setSource(button.dataset.source);
@@ -159,32 +281,48 @@
     radio.addEventListener("change", setSplashFields);
   });
 
-  bindFileLabel("#htmlFile", "#htmlFileName", "Belum ada file dipilih");
-  bindFileLabel("#zipFile", "#zipFileName", "Asset website (jika diperlukan)");
-  bindFileLabel("#iconFile", "#iconFileName", "PNG atau JPG");
+  bindFileLabel(
+    "#htmlFile",
+    "#htmlFileName",
+    "Belum ada file dipilih"
+  );
 
-  // Tools, Akses, dan Akun: tampilkan maintenance, tanpa halaman baru.
+  bindFileLabel(
+    "#zipFile",
+    "#zipFileName",
+    "Asset website (jika diperlukan)"
+  );
+
+  bindFileLabel(
+    "#iconFile",
+    "#iconFileName",
+    "PNG atau JPG"
+  );
+
+  // Tombol fitur maintenance yang memang menggunakan .soon-button.
   $$(".soon-button").forEach((button) => {
     button.addEventListener("click", () => {
-      toast(`Fitur ${button.dataset.soon} sedang dalam maintenance.`);
+      toast(
+        `Fitur ${button.dataset.soon || "ini"} sedang dalam maintenance.`
+      );
     });
   });
 
   // Modal bantuan.
   const helpModal = $("#helpModal");
 
-  $("#helpBtn").addEventListener("click", () => {
-    helpModal.classList.remove("hidden");
+  $("#helpBtn")?.addEventListener("click", () => {
+    helpModal?.classList.remove("hidden");
   });
 
   function closeHelp() {
-    helpModal.classList.add("hidden");
+    helpModal?.classList.add("hidden");
   }
 
-  $("#closeHelp").addEventListener("click", closeHelp);
-  $("#closeHelpBottom").addEventListener("click", closeHelp);
+  $("#closeHelp")?.addEventListener("click", closeHelp);
+  $("#closeHelpBottom")?.addEventListener("click", closeHelp);
 
-  helpModal.addEventListener("click", (event) => {
+  helpModal?.addEventListener("click", (event) => {
     if (event.target === helpModal) closeHelp();
   });
 
@@ -196,6 +334,8 @@
   $("#buildForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    if (building) return;
+
     const form = event.currentTarget;
     const button = $("#buildButton");
     const progress = $("#progressCard");
@@ -206,35 +346,98 @@
 
     const sourceType = $("#sourceType").value;
     const packageName = $("#packageName").value.trim();
+    const appName = $("#appName").value.trim();
+    const websiteUrl = $("#websiteUrl").value.trim();
+    const htmlFile = $("#htmlFile").files?.[0];
 
-    if (!/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(packageName)) {
-      toast("Package name tidak valid. Gunakan format seperti com.nama.app.");
+    if (!appName) {
+      toast("Nama aplikasi wajib diisi.");
+      $("#appName").focus();
+      return;
+    }
+
+    if (
+      !/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(
+        packageName
+      )
+    ) {
+      toast(
+        "Package name tidak valid. Contoh: com.nama.aplikasi"
+      );
+
       $("#packageName").focus();
       return;
     }
 
     if (sourceType === "url") {
       try {
-        const parsedUrl = new URL($("#websiteUrl").value.trim());
+        const parsedUrl = new URL(websiteUrl);
 
-        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-          throw new Error("URL harus memakai HTTP atau HTTPS.");
+        if (
+          !["http:", "https:"].includes(parsedUrl.protocol) ||
+          !parsedUrl.hostname.includes(".")
+        ) {
+          throw new Error("URL tidak valid.");
         }
       } catch {
-        toast("Masukkan URL website yang valid.");
+        toast(
+          "Masukkan URL website lengkap, misalnya https://example.com."
+        );
+
         $("#websiteUrl").focus();
         return;
       }
+    } else if (sourceType === "file") {
+      if (!htmlFile) {
+        toast("Pilih file HTML terlebih dahulu.");
+        $("#htmlFile").click();
+        return;
+      }
+
+      if (!/\.(html?|HTML?)$/.test(htmlFile.name)) {
+        toast("File harus berekstensi .html atau .htm.");
+        return;
+      }
+    } else {
+      toast("Pilih sumber aplikasi terlebih dahulu.");
+      return;
     }
 
     const versionCode = Number($("#versionCode").value);
 
     if (!Number.isInteger(versionCode) || versionCode < 1) {
-      toast("Version code harus berupa bilangan bulat minimal 1.");
+      toast("Version code minimal 1 dan harus bilangan bulat.");
       $("#versionCode").focus();
       return;
     }
 
+    const zipFile = $("#zipFile").files?.[0];
+
+    if (zipFile && !/\.zip$/i.test(zipFile.name)) {
+      toast("File tambahan harus berupa ZIP.");
+      return;
+    }
+
+    const iconFile = $("#iconFile").files?.[0];
+
+    if (
+      iconFile &&
+      !/\.(png|jpe?g|webp)$/i.test(iconFile.name)
+    ) {
+      toast("Ikon harus berformat PNG, JPG, atau WebP.");
+      return;
+    }
+
+    let formData;
+
+    try {
+      formData = getBuildFormData(form);
+    } catch (error) {
+      toast(error.message || "Konfigurasi aplikasi belum lengkap.");
+      return;
+    }
+
+    building = true;
     button.disabled = true;
     progress.classList.remove("hidden");
     result.classList.add("hidden");
@@ -242,25 +445,29 @@
     log.classList.add("hidden");
     log.textContent = "";
 
-    setProgress(10, "Menyiapkan build...", "Mengirim konfigurasi aplikasi.", "Mengirim");
+    setProgress(
+      10,
+      "Menyiapkan build...",
+      "Memvalidasi konfigurasi aplikasi.",
+      "Menyiapkan"
+    );
 
     try {
-      /*
-       * Request tetap menggunakan /api/build.
-       * FormData mengirim field dan file dari form.
-       * Jangan set Content-Type secara manual karena browser
-       * perlu membuat multipart boundary.
-       */
-      const formData = new FormData(form);
-
-      setProgress(25, "Memproses aplikasi...", "Menunggu respons server.", "Diproses");
+      setProgress(
+        25,
+        "Mengirim konfigurasi...",
+        "Menghubungi server Build APK.",
+        "Mengirim"
+      );
 
       const response = await fetch("/api/build", {
         method: "POST",
         body: formData
       });
 
-      const contentType = response.headers.get("content-type") || "";
+      const contentType =
+        response.headers.get("content-type") || "";
+
       let data;
 
       if (contentType.includes("application/json")) {
@@ -271,38 +478,64 @@
 
       if (!response.ok) {
         throw new Error(
-          getServerMessage(data, `Build gagal (HTTP ${response.status}).`)
+          getServerMessage(
+            data,
+            `Build gagal (HTTP ${response.status}).`
+          )
         );
       }
 
-      setProgress(85, "Memeriksa hasil...", "Respons server diterima.", "Hampir selesai");
+      // Beberapa API mengembalikan HTTP 200 walaupun build gagal.
+      if (
+        data &&
+        typeof data === "object" &&
+        (data.success === false || data.error)
+      ) {
+        throw new Error(
+          getServerMessage(data, "Server melaporkan build gagal.")
+        );
+      }
+
+      setProgress(
+        80,
+        "Memeriksa hasil build...",
+        "Respons server berhasil diterima.",
+        "Memeriksa"
+      );
 
       const downloadUrl = getDownloadUrl(data);
       const message = getServerMessage(
         data,
         downloadUrl
           ? "APK berhasil dibuat dan siap diunduh."
-          : "Server merespons sukses, tetapi tautan APK tidak ditemukan."
+          : "Server merespons, tetapi URL unduhan APK tidak ditemukan."
       );
 
-      setProgress(100, "Proses selesai", "Permintaan build telah selesai.", "Selesai");
-
-      if (downloadUrl) {
-        showResult("Build berhasil!", message, downloadUrl);
-        toast("APK berhasil dibuat.");
-      } else {
-        showResult(
-          "Respons server diterima",
-          message,
-          null
-        );
+      if (!downloadUrl) {
+        throw new Error(message);
       }
-    } catch (error) {
-      const message = error instanceof Error
-        ? error.message
-        : "Terjadi kesalahan yang tidak diketahui.";
 
-      setProgress(100, "Build gagal", "Periksa pesan error di bawah.", "Gagal");
+      setProgress(
+        100,
+        "Build selesai!",
+        "APK siap diunduh.",
+        "Selesai"
+      );
+
+      showResult("Build berhasil!", message, downloadUrl);
+      toast("APK berhasil dibuat.");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Terjadi kesalahan yang tidak diketahui.";
+
+      setProgress(
+        100,
+        "Build gagal",
+        "Periksa pesan error di bawah.",
+        "Gagal"
+      );
 
       log.textContent = message;
       log.classList.remove("hidden");
@@ -310,11 +543,13 @@
       showResult("Build gagal", message, null);
       toast("Build gagal. Periksa pesan error.");
     } finally {
+      building = false;
       button.disabled = false;
       refreshIcons();
     }
   });
 
+  // Inisialisasi tampilan.
   setSource("url");
   setOrientation("portrait");
   setSplashFields();
