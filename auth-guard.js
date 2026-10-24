@@ -14,13 +14,12 @@
   const CONFIG_ENDPOINT = '/api/config';
   const STORAGE_KEY = 'fortech-auth-session';
   const CONFIG_CACHE_KEY = 'fortech-config-cache:v1';
-  const CONFIG_CACHE_TTL = 60 * 60 * 1000; // 1 jam
-  const EXPIRY_BUFFER_MS = 60 * 1000;       // toleransi 60 detik
+  const CONFIG_CACHE_TTL = 60 * 60 * 1000;
+  const EXPIRY_BUFFER_MS = 60 * 1000;
 
   const textEl = document.getElementById('authGuardText');
   const setStatus = (text) => { if (textEl) textEl.textContent = text; };
 
-  // Skip guard di login.html
   if (location.pathname.indexOf('login.html') !== -1) {
     html.classList.remove('auth-pending');
     return;
@@ -53,13 +52,11 @@
   const storedSession = readStoredSession();
 
   if (!storedSession) {
-    // Tidak ada session → redirect instan
     redirectToLogin();
     return;
   }
 
   if (isExpired(storedSession) && !storedSession.refresh_token) {
-    // Expired dan tidak ada refresh token → redirect
     redirectToLogin();
     return;
   }
@@ -70,7 +67,6 @@
   window.currentUser = storedSession.user;
   html.classList.remove('auth-pending');
 
-  // Dispatch event awal dengan data cache
   window.dispatchEvent(new CustomEvent('authready', {
     detail: {
       user: storedSession.user,
@@ -146,7 +142,6 @@
       const { data: { session }, error } = await sb.auth.getSession();
 
       if (error || !session || !session.user) {
-        // Session invalid → bersihkan & redirect
         try { await sb.auth.signOut(); } catch (_) { /* ignore */ }
         redirectToLogin();
         return;
@@ -154,7 +149,6 @@
 
       window.currentUser = session.user;
 
-      // Pantau perubahan auth
       sb.auth.onAuthStateChange((event, s) => {
         if (event === 'SIGNED_OUT') {
           redirectToLogin();
@@ -163,7 +157,6 @@
         }
       });
 
-      // Ambil profile
       try {
         const { data, error: pErr } = await sb
           .from('profiles')
@@ -178,12 +171,11 @@
           }));
         }
       } catch (_) {
-        // Profile fetch gagal bukan blocker
+        /* profile fetch gagal bukan blocker */
       }
     } catch (err) {
       console.warn('[auth-guard] verify gagal:', err);
-      // Session ada di cache tapi verify error → biarkan halaman tampil
-      // (bisa jadi serverless /api/config down; user tetap bisa pakai halaman)
+      // Session ada di cache → biarkan halaman tampil
     }
   }
 
