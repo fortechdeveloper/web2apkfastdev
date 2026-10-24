@@ -17,7 +17,6 @@
        TOOLS PAGE — extends style.css tanpa mengubah index.html
        ============================================================ */
 
-    /* Hero: solid color, no gradient text */
     .tools-hero { padding-bottom: 22px; }
     .tools-hero h1 span { color: var(--cyan); }
 
@@ -39,9 +38,9 @@
     .clay-icon {
       display: grid; place-items: center;
       width: 42px; height: 42px; border-radius: 14px;
-      background: rgba(102, 217, 239, .1);
-      color: var(--cyan);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(102,217,239,.15);
+      background: rgba(112, 137, 255, .12);
+      color: #9eafff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(92,95,231,.15);
     }
     .clay-icon svg { width: 20px; height: 20px; }
     .clay-row b { font-size: 13px; display: block; }
@@ -53,6 +52,8 @@
 
     /* Tool grid */
     .tool-grid { display: grid; gap: 11px; margin-bottom: 15px; }
+
+    /* ==== Border & icon seragam untuk semua menu ==== */
     .tool-card {
       display: flex;
       align-items: center;
@@ -68,28 +69,24 @@
       transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
     .tool-card:active { transform: scale(.99); }
-    .tool-card:hover { transform: translateY(-1px); }
-
-    /* ==== Border beda per menu ==== */
-    .tool-card--tiktok { border-color: rgba(102, 217, 239, .34); }
-    .tool-card--tiktok:hover { box-shadow: 0 0 0 1px rgba(102,217,239,.18), 0 12px 28px rgba(102,217,239,.08); }
-    .tool-card--pinterest { border-color: rgba(161, 122, 255, .34); }
-    .tool-card--pinterest:hover { box-shadow: 0 0 0 1px rgba(161,122,255,.18), 0 12px 28px rgba(161,122,255,.08); }
-    .tool-card--happymod { border-color: rgba(245, 184, 92, .34); }
-    .tool-card--happymod:hover { box-shadow: 0 0 0 1px rgba(245,184,92,.18), 0 12px 28px rgba(245,184,92,.08); }
-
-    .tool-card.active { background: linear-gradient(145deg, rgba(26, 36, 58, .98), rgba(18, 25, 42, .98)); }
+    .tool-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(129, 151, 255, .55);
+      box-shadow: 0 0 0 1px rgba(117, 144, 255, .12), 0 12px 28px rgba(92, 95, 231, .1);
+    }
+    .tool-card.active {
+      background: linear-gradient(145deg, rgba(26, 36, 58, .98), rgba(18, 25, 42, .98));
+      border-color: rgba(129, 151, 255, .55);
+      box-shadow: 0 0 0 1px rgba(117, 144, 255, .12);
+    }
 
     .tool-card-icon {
       display: grid; place-items: center;
       width: 44px; height: 44px; flex: 0 0 auto;
       border-radius: 14px;
-      background: #1b243a;
-      color: #8595c0;
+      background: rgba(112, 137, 255, .1);
+      color: #9eafff;
     }
-    .tool-card--tiktok .tool-card-icon { background: rgba(102,217,239,.1); color: var(--cyan); }
-    .tool-card--pinterest .tool-card-icon { background: rgba(161,122,255,.1); color: var(--purple); }
-    .tool-card--happymod .tool-card-icon { background: rgba(245,184,92,.1); color: #f5b85c; }
     .tool-card-icon svg { width: 20px; height: 20px; }
 
     .tool-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
@@ -177,7 +174,7 @@
       margin-top: 18px;
       overflow: hidden;
       border-radius: 18px;
-      border: 1px solid rgba(102, 217, 239, .18);
+      border: 1px solid rgba(117, 144, 255, .2);
       background: rgba(7, 11, 21, .35);
     }
     .result-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #0b1120; }
@@ -224,9 +221,9 @@
       color: #c6d2ff;
     }
     .download-btn.audio {
-      background: rgba(161,122,255,.1);
-      border: 1px solid rgba(161,122,255,.22);
-      color: #d4c4ff;
+      background: rgba(117,144,255,.1);
+      border: 1px solid rgba(117,144,255,.22);
+      color: #c6d2ff;
     }
     .download-btn svg { width: 15px; height: 15px; }
     .download-btn.hidden { display: none; }
@@ -248,11 +245,9 @@
     .soon-icon {
       display: grid; place-items: center;
       width: 60px; height: 60px; border-radius: 20px;
-      background: rgba(160,177,219,.06);
-      color: var(--muted);
+      background: rgba(112, 137, 255, .1);
+      color: #9eafff;
     }
-    .soon-icon.pinterest { background: rgba(161,122,255,.1); color: var(--purple); }
-    .soon-icon.happymod { background: rgba(245,184,92,.1); color: #f5b85c; }
     .soon-icon svg { width: 26px; height: 26px; }
     .soon-content h3 { margin: 4px 0 0; font-size: 16px; }
     .soon-content p { max-width: 300px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
@@ -344,7 +339,7 @@
 
     <!-- Tool cards -->
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
-      <button class="tool-card tool-card--tiktok active" data-tool="tiktok" type="button" role="tab" aria-selected="true" aria-controls="panel-tiktok">
+      <button class="tool-card active" data-tool="tiktok" type="button" role="tab" aria-selected="true" aria-controls="panel-tiktok">
         <span class="tool-card-icon"><i data-lucide="music-2"></i></span>
         <span class="tool-card-body">
           <b>TikTok Downloader</b>
@@ -353,7 +348,7 @@
         <span class="tool-card-badge">AKTIF</span>
       </button>
 
-      <button class="tool-card tool-card--pinterest" data-tool="pinterest" type="button" role="tab" aria-selected="false" aria-controls="panel-pinterest">
+      <button class="tool-card" data-tool="pinterest" type="button" role="tab" aria-selected="false" aria-controls="panel-pinterest">
         <span class="tool-card-icon"><i data-lucide="image"></i></span>
         <span class="tool-card-body">
           <b>Pinterest Downloader</b>
@@ -362,7 +357,7 @@
         <span class="tool-card-badge soon">SEGERA</span>
       </button>
 
-      <button class="tool-card tool-card--happymod" data-tool="happymod" type="button" role="tab" aria-selected="false" aria-controls="panel-happymod">
+      <button class="tool-card" data-tool="happymod" type="button" role="tab" aria-selected="false" aria-controls="panel-happymod">
         <span class="tool-card-icon"><i data-lucide="package"></i></span>
         <span class="tool-card-body">
           <b>HappyMod Downloader</b>
@@ -461,7 +456,7 @@
     <!-- Pinterest panel -->
     <section class="panel tool-panel soon-panel hidden" id="panel-pinterest" role="tabpanel">
       <div class="soon-content">
-        <span class="soon-icon pinterest"><i data-lucide="image"></i></span>
+        <span class="soon-icon"><i data-lucide="image"></i></span>
         <h3>Pinterest Downloader</h3>
         <p>Simpan gambar dan video Pinterest dengan kualitas terbaik. Tool ini sedang dalam pengembangan.</p>
         <span class="soon-tag">SEGERA HADIR</span>
@@ -471,7 +466,7 @@
     <!-- HappyMod panel -->
     <section class="panel tool-panel soon-panel hidden" id="panel-happymod" role="tabpanel">
       <div class="soon-content">
-        <span class="soon-icon happymod"><i data-lucide="package"></i></span>
+        <span class="soon-icon"><i data-lucide="package"></i></span>
         <h3>HappyMod Downloader</h3>
         <p>Ambil APK dan MOD langsung dari HappyMod. Tool ini sedang dalam pengembangan.</p>
         <span class="soon-tag">SEGERA HADIR</span>
