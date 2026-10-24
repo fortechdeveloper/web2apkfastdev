@@ -1,696 +1,393 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#080d1b">
-  <title>Tools — FortechDev</title>
+  <meta name="theme-color" content="#080d18">
+  <title>Tools — Web2APK by FastDev</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #080d1b;
-      --panel: rgba(17, 28, 50, .85);
-      --panel2: #101a30;
-      --border: rgba(148, 174, 220, .15);
-      --text: #f3f7ff;
-      --muted: #8d9bb5;
-      --blue: #79c8ff;
-      --purple: #a78bfa;
-      --green: #5ce1b5;
-      --red: #ff8798;
-      font-family: Inter, system-ui, sans-serif;
+      --bg:#080d18;--panel:rgba(17,27,46,.78);
+      --line:rgba(161,190,230,.13);--text:#edf5ff;
+      --muted:#8394b0;--blue:#72caff;
     }
-
-    * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding-bottom: calc(105px + env(safe-area-inset-bottom));
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 10% 0%, rgba(45, 115, 200, .17), transparent 36%),
-        radial-gradient(ellipse at 100% 40%, rgba(120, 70, 220, .1), transparent 30%),
-        var(--bg);
-      overflow-x: hidden;
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{
+      margin:0;min-height:100vh;color:var(--text);
+      font-family:Inter,system-ui,sans-serif;
+      background:radial-gradient(ellipse at 50% -10%,rgba(49,130,220,.18),transparent 48%),#080d18;
     }
-
-    button, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    a { color: inherit; text-decoration: none; }
-
-    .topbar {
-      min-height: 76px;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      background: rgba(8,13,27,.85);
-      backdrop-filter: blur(20px);
+    button,input{font:inherit}button,a{color:inherit}a{text-decoration:none}
+    .app{max-width:520px;min-height:100dvh;margin:auto;padding-bottom:100px}
+    .glass{
+      background:var(--panel);border:1px solid var(--line);
+      box-shadow:0 12px 35px #0003,inset 0 1px 0 #ffffff0b;
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)
     }
-
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
-    .brand-icon {
-      display: grid;
-      place-items: center;
-      width: 45px;
-      height: 45px;
-      border-radius: 15px;
-      color: var(--blue);
-      background: linear-gradient(145deg, #1c3a60, #101a30);
-      border: 1px solid var(--border);
+    .topbar{
+      position:sticky;top:0;z-index:5;padding:12px 19px;min-height:72px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-radius:0 0 22px 22px;border-top:0
     }
-    .brand-icon svg { width: 24px; }
-    .brand small { display: block; margin-top: 4px; font-size: 9px; letter-spacing: 2px; color: var(--blue); }
-    .header-status { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 6px; }
-    .online-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 12px #5ce1b566; }
-
-    main { width: min(100% - 28px, 680px); margin: 0 auto; }
-
-    .hero { padding: 30px 3px 22px; animation: rise .4s ease both; }
-    .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: 2px; }
-    .eyebrow svg { width: 17px; }
-    h1 { margin: 18px 0 10px; font-size: clamp(31px, 8vw, 45px); line-height: 1.12; letter-spacing: -1.8px; }
-    h1 span { background: linear-gradient(100deg, #e8f6ff, #79c8ff, #a78bfa); background-clip: text; color: transparent; }
-    .hero p { margin: 0; max-width: 430px; color: var(--muted); font-size: 12px; line-height: 1.8; }
-
-    .search-panel {
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 16px;
-      background: linear-gradient(145deg, rgba(19,31,55,.9), rgba(10,17,33,.94));
-      box-shadow: 0 20px 55px #0002, inset 0 1px #ffffff08;
-      animation: rise .5s ease both;
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-icon{
+      width:43px;height:43px;display:grid;place-items:center;border-radius:15px;
+      color:var(--blue);background:linear-gradient(145deg,#203d60,#102039)
     }
-
-    .tool-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 7px;
-      margin-bottom: 21px;
+    .brand-text{display:flex;flex-direction:column;gap:3px}
+    .brand-text b{font-size:17px;letter-spacing:-.7px}
+    .brand-text small{font-size:9px;color:#91a7c7;letter-spacing:2px;font-weight:800}
+    .brand-dot{color:var(--blue)}
+    .round-btn{
+      width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);
+      border-radius:14px;background:#ffffff08
     }
-
-    .tool-tab {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 76px;
-      padding: 10px 4px;
-      color: #8798b4;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      background: rgba(255,255,255,.02);
-      cursor: pointer;
-      font-size: 10px;
-      font-weight: 700;
-      transition: .2s ease;
+    main{padding:26px 17px 30px}
+    .eyebrow{color:var(--blue);font-size:10px;font-weight:800;letter-spacing:2px}
+    h1{margin:14px 0 9px;font-size:34px;letter-spacing:-1.5px}
+    h1 span{
+      background:linear-gradient(100deg,#e9f7ff,#77ceff,#6e9cff);
+      background-clip:text;-webkit-background-clip:text;color:transparent
     }
-
-    .tool-tab svg { width: 21px; height: 21px; }
-    .tool-tab.active { color: var(--blue); border-color: #79c8ff50; background: linear-gradient(145deg, #24518144, #17213a77); box-shadow: inset 0 1px #ffffff08; }
-    .tool-tab:active { transform: scale(.97); }
-
-    .tool-section { display: none; }
-    .tool-section.active { display: block; animation: rise .25s ease both; }
-
-    .section-heading { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; }
-    .section-icon { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; flex-shrink: 0; color: var(--blue); background: #1a3857; border: 1px solid #79c8ff20; }
-    .section-icon svg { width: 22px; height: 22px; }
-    .section-heading h2 { font-size: 16px; margin: 0 0 5px; }
-    .section-heading p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
-
-    .field { display: block; margin-bottom: 15px; }
-    .field > span { display: block; margin-bottom: 8px; color: #dce8fb; font-size: 11px; font-weight: 700; }
-
-    .field input {
-      width: 100%;
-      min-height: 47px;
-      padding: 12px 13px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      outline: none;
-      color: var(--text);
-      background: #070c19a8;
-      font-size: 12px;
-      transition: .2s;
+    .intro{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.8}
+    .card{padding:17px;border-radius:22px;margin-bottom:14px}
+    .tool-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .tool-icon{
+      width:44px;height:44px;display:grid;place-items:center;border-radius:14px;
+      color:var(--blue);background:linear-gradient(145deg,#1b3656,#112038)
     }
-
-    .field input:focus { border-color: #79c8ff88; box-shadow: 0 0 0 3px #79c8ff12; }
-    .field input::placeholder { color: #667792; }
-
-    .action-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 9px; }
-    .btn {
-      min-height: 47px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 13px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: #ffffff08;
-      color: #dce8fb;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform .2s, filter .2s, opacity .2s;
+    .tool-head h2{font-size:14px;margin:0 0 5px}
+    .tool-head p{font-size:11px;color:var(--muted);margin:0;line-height:1.6}
+    .search-form{display:flex;gap:8px}
+    .search-input{
+      min-width:0;flex:1;height:47px;padding:0 12px;
+      color:var(--text);background:#040a1466;border:1px solid var(--line);
+      border-radius:12px;outline:none;font-size:12px
     }
-    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-    .btn-primary { color: #07101f; border-color: #a9dcff55; background: linear-gradient(110deg,#a0e2ff,#70b9ff 65%,#a8a0ff); }
-    .btn:hover { filter: brightness(1.07); }
-    .btn:active { transform: scale(.98); }
-    .btn:disabled { opacity: .55; cursor: wait; }
-
-    .tip { margin: 13px 0 0; font-size: 10px; line-height: 1.7; color: #8293af; }
-
-    .status {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-top: 16px;
-      padding: 13px;
-      border-radius: 14px;
-      background: #070c19aa;
-      border: 1px solid var(--border);
+    .search-input:focus{border-color:#72caff99}
+    .search-input::placeholder{color:#64758d}
+    .primary-btn{
+      min-height:46px;padding:0 14px;display:inline-flex;align-items:center;
+      justify-content:center;gap:8px;border:1px solid #b0e2ff59;border-radius:13px;
+      color:#071625;background:linear-gradient(110deg,#a5e4ff,#66c4ff 52%,#85baff);
+      font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer
     }
-    .status-icon { flex-shrink: 0; width: 17px; height: 17px; color: var(--blue); }
-    .status p { margin: 0; color: #c6d4e9; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
-    .status.error .status-icon { color: var(--red); }
-    .status.success .status-icon { color: var(--green); }
-
-    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #79c8ff33; border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
-
-    .results { margin-top: 18px; }
-    .results-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .results-heading h3 { margin: 0; font-size: 13px; }
-    .count { color: var(--blue); font-size: 10px; }
-
-    .result-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: #ffffff04;
-      min-width: 0;
+    .primary-btn:disabled{opacity:.6;cursor:wait}
+    .hint{margin:11px 2px 0;color:#7486a0;font-size:10px;line-height:1.8}
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+    .chip{
+      border:1px solid var(--line);border-radius:20px;padding:7px 10px;
+      background:#ffffff05;color:#a9bfd9;font-size:10px;cursor:pointer
     }
-
-    .result-thumb {
-      width: 68px;
-      height: 78px;
-      object-fit: cover;
-      flex-shrink: 0;
-      border-radius: 11px;
-      background: #19243b;
+    .notice{
+      padding:13px;border:1px solid #72caff25;background:#398dcb0d;border-radius:14px;
+      display:flex;gap:10px;color:#94acc8;font-size:10px;line-height:1.8
     }
-
-    .result-body { min-width: 0; flex: 1; }
-    .result-body h4 { margin: 2px 0 6px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
-    .result-body p { margin: 0 0 10px; color: var(--muted); font-size: 10px; line-height: 1.6; overflow-wrap: anywhere; }
-    .result-actions { display: flex; flex-wrap: wrap; gap: 7px; }
-    .small-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 9px; background: #ffffff08; font-size: 10px; font-weight: 700; }
-    .small-btn svg { width: 13px; height: 13px; }
-    .small-btn.primary { color: var(--blue); border-color: #79c8ff30; }
-    .empty { text-align: center; padding: 23px 12px; border: 1px dashed var(--border); border-radius: 15px; color: var(--muted); font-size: 11px; line-height: 1.8; }
-
-    .disclaimer { margin: 16px 2px 20px; color: #71819c; font-size: 10px; line-height: 1.8; }
-
-    .bottom-nav {
-      position: fixed;
-      z-index: 20;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 5px;
-      padding: 9px 10px calc(10px + env(safe-area-inset-bottom));
-      border: 1px solid rgba(146,180,231,.13);
-      border-bottom: 0;
-      border-radius: 25px 25px 0 0;
-      background: rgba(8,14,29,.92);
-      backdrop-filter: blur(24px);
-      box-shadow: 0 -10px 40px #0003;
+    .notice svg{width:18px;height:18px;flex-shrink:0;color:var(--blue)}
+    .status{
+      margin-top:13px;padding:12px;border-radius:12px;border:1px solid var(--line);
+      background:#ffffff06;color:#a9bfd9;font-size:11px;line-height:1.8;overflow-wrap:anywhere
     }
-
-    .nav-item { min-height: 65px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; border-radius: 16px; color: #7889a7; font-size: 10px; font-weight: 700; }
-    .nav-item svg { width: 21px; height: 21px; }
-    .nav-item.active { color: var(--blue); background: linear-gradient(145deg,#4799ff22,#3266b30c); }
-
-    .hidden { display: none !important; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    @media (min-width: 560px) {
-      .topbar { padding-left: max(24px, calc((100vw - 680px)/2)); padding-right: max(24px, calc((100vw - 680px)/2)); }
-      main { width: min(100% - 40px, 680px); }
-      .search-panel { padding: 23px; }
-      .bottom-nav { left: 50%; right: auto; width: min(100%,680px); transform: translateX(-50%); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .status.error{color:#ffabb8;border-color:#ff7e913d;background:#ff7e910a}
+    .status.success{color:#a3ecd6;border-color:#5bd9b13d;background:#5bd9b10a}
+    .hidden{display:none!important}
+    .results{margin-top:17px}
+    .result-heading{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .result-heading b{font-size:12px}
+    .result-heading span{font-size:10px;color:var(--muted)}
+    .result-item{
+      display:flex;align-items:center;gap:12px;padding:11px;margin-bottom:9px;
+      border:1px solid var(--line);border-radius:14px;background:#ffffff04
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .result-item img{width:65px;height:65px;object-fit:cover;border-radius:10px;background:#142238}
+    .result-info{min-width:0;flex:1}
+    .result-info b{display:block;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+    .result-info small{display:block;margin-top:5px;font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+    .result-info a{display:inline-block;margin-top:7px;font-size:10px;font-weight:700;color:var(--blue)}
+    .footer{text-align:center;padding:24px 0}
+    .footer b{font-size:10px;color:#8db5dc;letter-spacing:2px}
+    .footer p{font-size:10px;color:#71839e}
+    .bottom-nav{
+      position:fixed;z-index:10;bottom:0;left:50%;transform:translateX(-50%);
+      width:min(100%,520px);padding:9px 10px calc(9px + env(safe-area-inset-bottom));
+      display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+      border-radius:23px 23px 0 0;border-bottom:0;background:#080e1be8
     }
+    .nav-item{
+      min-height:58px;border:0;border-radius:14px;display:flex;align-items:center;
+      justify-content:center;flex-direction:column;gap:5px;color:#657895;
+      background:transparent;font-size:10px;font-weight:650
+    }
+    .nav-item svg{width:20px;height:20px}
+    .nav-item.active{color:var(--blue);background:linear-gradient(180deg,#439de61f,#439de606)}
+    @media(max-width:360px){main{padding-left:12px;padding-right:12px}.search-form{flex-wrap:wrap}.search-input{flex-basis:100%}.search-form .primary-btn{width:100%}}
   </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <a class="brand" href="./index.html">
-      <span class="brand-icon"><i data-lucide="layers"></i></span>
-      <span>FortechDev<small>TOOLS CENTER</small></span>
-    </a>
-    <div class="header-status"><span class="online-dot"></span> Tools</div>
-  </header>
+  <div class="app">
+    <header class="topbar glass">
+      <a class="brand" href="index.html">
+        <span class="brand-icon"><i data-lucide="smartphone"></i></span>
+        <span class="brand-text">
+          <b>web2apk<span class="brand-dot">.</span></b>
+          <small>by FASTDEV</small>
+        </span>
+      </a>
+      <a class="round-btn" href="index.html" aria-label="Kembali ke Build">
+        <i data-lucide="arrow-left"></i>
+      </a>
+    </header>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow"><i data-lucide="wrench"></i> FORTECH UTILITIES</div>
+    <main>
+      <div class="eyebrow">FASTDEV TOOLKIT</div>
       <h1>Tools <span>Center.</span></h1>
-      <p>Berbagai alat praktis dalam satu tempat. Pilih tools, masukkan link atau kata kunci, lalu jalankan.</p>
-    </section>
+      <p class="intro">
+        Kumpulan alat bantu untuk workflow kamu. Pilih tools, masukkan kata
+        kunci, lalu jalankan pencarian.
+      </p>
 
-    <section class="search-panel">
-      <div class="tool-tabs" role="tablist" aria-label="Pilih tools">
-        <button class="tool-tab active" data-tab="tiktok" role="tab" aria-selected="true">
-          <i data-lucide="clapperboard"></i><span>TikTok</span>
-        </button>
-        <button class="tool-tab" data-tab="pinterest" role="tab" aria-selected="false">
-          <i data-lucide="images"></i><span>Pinterest</span>
-        </button>
-        <button class="tool-tab" data-tab="happymod" role="tab" aria-selected="false">
-          <i data-lucide="gamepad-2"></i><span>HappyMod</span>
-        </button>
+      <section class="card glass">
+        <div class="tool-head">
+          <span class="tool-icon"><i data-lucide="image"></i></span>
+          <div>
+            <h2>Pinterest Search</h2>
+            <p>Cari referensi gambar berdasarkan kata kunci.</p>
+          </div>
+        </div>
+
+        <form id="pinterestForm" class="search-form">
+          <input id="pinterestQuery" class="search-input" type="search"
+            placeholder="Contoh: dark app UI" maxlength="150" required>
+          <button id="searchButton" class="primary-btn" type="submit">
+            <i data-lucide="search"></i> Cari
+          </button>
+        </form>
+
+        <div class="chips" aria-label="Contoh pencarian">
+          <button class="chip" type="button" data-query="mobile app UI">Mobile UI</button>
+          <button class="chip" type="button" data-query="dark website design">Dark Design</button>
+          <button class="chip" type="button" data-query="dashboard inspiration">Dashboard</button>
+          <button class="chip" type="button" data-query="website landing page">Landing Page</button>
+        </div>
+
+        <p class="hint">
+          Pencarian memerlukan endpoint backend
+          <code>/api/tools/pinterest/search</code>.
+        </p>
+
+        <div id="searchStatus" class="status hidden" role="status"></div>
+        <div id="searchResults" class="results hidden"></div>
+      </section>
+
+      <div class="notice">
+        <i data-lucide="shield-check"></i>
+        <span>
+          API key dan akses pihak ketiga harus dikelola di backend.
+          Jangan menaruh rahasia atau token API di frontend.
+        </span>
       </div>
 
-      <section class="tool-section active" id="section-tiktok">
-        <div class="section-heading">
-          <span class="section-icon"><i data-lucide="clapperboard"></i></span>
-          <div><h2>TikTok Downloader</h2><p>Ambil informasi media dari link TikTok.</p></div>
-        </div>
-        <form data-tool-form="tiktok">
-          <label class="field">
-            <span>Link video TikTok</span>
-            <input name="url" type="url" placeholder="https://www.tiktok.com/@user/video/..." required>
-          </label>
-          <button class="btn btn-primary" type="submit" style="width:100%">
-            <i data-lucide="download"></i> Proses link TikTok
-          </button>
-          <p class="tip">Hasil bergantung pada ketersediaan video dan layanan sumber.</p>
-        </form>
-      </section>
+      <footer class="footer">
+        <b>FASTDEV</b>
+        <p>Build something useful.</p>
+      </footer>
+    </main>
 
-      <section class="tool-section" id="section-pinterest">
-        <div class="section-heading">
-          <span class="section-icon"><i data-lucide="images"></i></span>
-          <div><h2>Pinterest Search & Downloader</h2><p>Cari gambar atau proses link Pinterest.</p></div>
-        </div>
-        <form data-tool-form="pinterest-search">
-          <label class="field">
-            <span>Kata kunci pencarian</span>
-            <input name="query" placeholder="Contoh: anime wallpaper" required>
-          </label>
-          <button class="btn btn-primary" type="submit" style="width:100%">
-            <i data-lucide="search"></i> Cari di Pinterest
-          </button>
-        </form>
-        <div style="height:1px;background:var(--border);margin:19px 0"></div>
-        <form data-tool-form="pinterest-download">
-          <label class="field">
-            <span>Link Pin Pinterest</span>
-            <input name="url" type="url" placeholder="https://www.pinterest.com/pin/..." required>
-          </label>
-          <button class="btn" type="submit" style="width:100%">
-            <i data-lucide="download"></i> Proses link Pinterest
-          </button>
-        </form>
-      </section>
-
-      <section class="tool-section" id="section-happymod">
-        <div class="section-heading">
-          <span class="section-icon"><i data-lucide="gamepad-2"></i></span>
-          <div><h2>HappyMod Search & Downloader</h2><p>Cari aplikasi dan lihat detail yang tersedia.</p></div>
-        </div>
-        <form data-tool-form="happymod-search">
-          <label class="field">
-            <span>Nama aplikasi</span>
-            <input name="query" placeholder="Contoh: nama aplikasi" required>
-          </label>
-          <button class="btn btn-primary" type="submit" style="width:100%">
-            <i data-lucide="search"></i> Cari aplikasi
-          </button>
-        </form>
-        <div style="height:1px;background:var(--border);margin:19px 0"></div>
-        <form data-tool-form="happymod-download">
-          <label class="field">
-            <span>Link aplikasi atau judul</span>
-            <input name="target" placeholder="Masukkan URL atau judul aplikasi" required>
-          </label>
-          <button class="btn" type="submit" style="width:100%">
-            <i data-lucide="package"></i> Ambil detail aplikasi
-          </button>
-        </form>
-        <p class="tip">Unduh hanya aplikasi yang kamu percaya. File APK dari sumber pihak ketiga bisa berisiko.</p>
-      </section>
-
-      <div class="status hidden" id="statusBox" role="status" aria-live="polite">
-        <i class="status-icon" data-lucide="info"></i>
-        <p id="statusText"></p>
-      </div>
-
-      <section class="results hidden" id="resultsSection">
-        <div class="results-heading">
-          <h3>Hasil</h3>
-          <span class="count" id="resultCount"></span>
-        </div>
-        <div id="resultsList"></div>
-      </section>
-    </section>
-
-    <p class="disclaimer">
-      Gunakan tools sesuai ketentuan layanan dan hukum yang berlaku. Hormati hak cipta serta privasi pemilik konten. FortechDev tidak menjamin semua link dapat diproses.
-    </p>
-  </main>
-
-  <nav class="bottom-nav" aria-label="Navigasi utama">
-    <a class="nav-item" href="./index.html"><i data-lucide="rocket"></i><span>Build</span></a>
-    <a class="nav-item active" href="./tools.html" aria-current="page"><i data-lucide="wrench"></i><span>Tools</span></a>
-    <a class="nav-item" href="./pricing.html"><i data-lucide="gem"></i><span>Akses</span></a>
-    <a class="nav-item" href="./akun.html"><i data-lucide="user-round"></i><span>Akun</span></a>
-  </nav>
+    <nav class="bottom-nav glass">
+      <a class="nav-item" href="index.html">
+        <i data-lucide="smartphone"></i><span>Build</span>
+      </a>
+      <a class="nav-item active" href="tools.html">
+        <i data-lucide="wrench"></i><span>Tools</span>
+      </a>
+      <button class="nav-item" type="button" data-coming="Akses">
+        <i data-lucide="key-round"></i><span>Akses</span>
+      </button>
+      <button class="nav-item" type="button" data-coming="Akun">
+        <i data-lucide="user-round"></i><span>Akun</span>
+      </button>
+    </nav>
+  </div>
 
   <script>
-    /*
-      Endpoint backend yang perlu disediakan:
-      POST /api/tools/tiktok
-      POST /api/tools/pinterest/search
-      POST /api/tools/pinterest/download
-      POST /api/tools/happymod/search
-      POST /api/tools/happymod/download
+    (() => {
+      "use strict";
 
-      Jangan memasukkan API key rahasia ke file HTML ini.
-    */
+      const $ = (selector) => document.querySelector(selector);
+      const form = $("#pinterestForm");
+      const queryInput = $("#pinterestQuery");
+      const searchButton = $("#searchButton");
+      const status = $("#searchStatus");
+      const results = $("#searchResults");
 
-    const API_ROUTES = {
-      tiktok: "/api/tools/tiktok",
-      "pinterest-search": "/api/tools/pinterest/search",
-      "pinterest-download": "/api/tools/pinterest/download",
-      "happymod-search": "/api/tools/happymod/search",
-      "happymod-download": "/api/tools/happymod/download"
-    };
-
-    const tabButtons = [...document.querySelectorAll(".tool-tab")];
-    const sections = [...document.querySelectorAll(".tool-section")];
-    const statusBox = document.querySelector("#statusBox");
-    const statusText = document.querySelector("#statusText");
-    const resultsSection = document.querySelector("#resultsSection");
-    const resultsList = document.querySelector("#resultsList");
-    const resultCount = document.querySelector("#resultCount");
-
-    tabButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        const tab = button.dataset.tab;
-
-        tabButtons.forEach(item => {
-          const active = item === button;
-          item.classList.toggle("active", active);
-          item.setAttribute("aria-selected", String(active));
-        });
-
-        sections.forEach(section => {
-          section.classList.toggle("active", section.id === `section-${tab}`);
-        });
-
-        hideStatus();
-        resultsSection.classList.add("hidden");
-      });
-    });
-
-    function showStatus(message, type = "info", loading = false) {
-      statusBox.classList.remove("hidden", "error", "success");
-      if (type === "error") statusBox.classList.add("error");
-      if (type === "success") statusBox.classList.add("success");
-
-      const iconName = loading ? "loader-circle" :
-        type === "error" ? "circle-alert" :
-        type === "success" ? "check-circle-2" : "info";
-
-      statusBox.querySelector(".status-icon").setAttribute("data-lucide", iconName);
-      statusText.textContent = message;
-
-      if (window.lucide) lucide.createIcons();
-      if (loading) statusBox.querySelector(".status-icon").classList.add("spinner");
-    }
-
-    function hideStatus() {
-      statusBox.classList.add("hidden");
-      statusBox.classList.remove("error", "success");
-    }
-
-    function safeHttpUrl(value) {
-      if (typeof value !== "string" || !value.trim()) return null;
-      try {
-        const url = new URL(value, window.location.origin);
-        if (!["http:", "https:"].includes(url.protocol)) return null;
-        return url.href;
-      } catch {
-        return null;
-      }
-    }
-
-    function makeLink(label, url, primary = false) {
-      const safeUrl = safeHttpUrl(url);
-      if (!safeUrl) return null;
-
-      const link = document.createElement("a");
-      link.className = `small-btn${primary ? " primary" : ""}`;
-      link.href = safeUrl;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = label;
-      return link;
-    }
-
-    function makeResultCard({ title, description, image, links = [] }) {
-      const card = document.createElement("article");
-      card.className = "result-card";
-
-      if (image && safeHttpUrl(image)) {
-        const img = document.createElement("img");
-        img.className = "result-thumb";
-        img.src = safeHttpUrl(image);
-        img.alt = "";
-        img.loading = "lazy";
-        img.referrerPolicy = "no-referrer";
-        img.onerror = () => img.remove();
-        card.appendChild(img);
+      function icons() {
+        if (window.lucide) window.lucide.createIcons();
       }
 
-      const body = document.createElement("div");
-      body.className = "result-body";
-
-      const heading = document.createElement("h4");
-      heading.textContent = title || "Hasil";
-      body.appendChild(heading);
-
-      if (description) {
-        const desc = document.createElement("p");
-        desc.textContent = description;
-        body.appendChild(desc);
+      function showStatus(message, type = "") {
+        status.textContent = message;
+        status.className = "status" + (type ? " " + type : "");
+        status.classList.remove("hidden");
       }
 
-      const actions = document.createElement("div");
-      actions.className = "result-actions";
+      function getItems(data) {
+        if (Array.isArray(data)) return data;
+        if (Array.isArray(data.results)) return data.results;
+        if (Array.isArray(data.items)) return data.items;
+        if (Array.isArray(data.data)) return data.data;
+        return [];
+      }
 
-      links.forEach(item => {
-        const link = makeLink(item.label, item.url, item.primary);
-        if (link) actions.appendChild(link);
-      });
+      function renderResults(items) {
+        results.replaceChildren();
+        results.classList.remove("hidden");
 
-      if (actions.childElementCount) body.appendChild(actions);
-      card.appendChild(body);
-      return card;
-    }
+        const heading = document.createElement("div");
+        heading.className = "result-heading";
 
-    function displayResults(data, mode) {
-      resultsList.replaceChildren();
-      const cards = [];
+        const title = document.createElement("b");
+        title.textContent = "Hasil pencarian";
 
-      if (mode === "tiktok") {
-        const medias = Array.isArray(data.medias) ? data.medias : [];
-        medias.forEach(media => {
-          cards.push(makeResultCard({
-            title: media.type === "audio" ? "Audio TikTok" :
-              media.type === "image" ? "Foto TikTok" : (data.title || "Video TikTok"),
-            description: [
-              data.author?.nickname ? `Pembuat: ${data.author.nickname}` : "",
-              media.duration ? `Durasi: ${media.duration}` : "",
-              media.quality || ""
-            ].filter(Boolean).join(" · "),
-            image: media.thumbnail || data.author?.avatar,
-            links: [
-              { label: "Buka media", url: media.url, primary: true },
-              { label: "Preview", url: media.preview }
-            ]
-          }));
-        });
+        const count = document.createElement("span");
+        count.textContent = `${items.length} hasil`;
 
-        if (!cards.length && data.source) {
-          cards.push(makeResultCard({
-            title: data.title || "TikTok",
-            description: "Server tidak mengembalikan URL media. Kamu bisa membuka link sumber.",
-            links: [{ label: "Buka TikTok", url: data.source, primary: true }]
-          }));
+        heading.append(title, count);
+        results.append(heading);
+
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "status";
+          empty.textContent = "Belum ada hasil untuk kata kunci ini.";
+          results.append(empty);
+          return;
         }
-      } else if (mode === "pinterest-search") {
-        const items = Array.isArray(data.results) ? data.results : [];
-        items.forEach(item => {
-          cards.push(makeResultCard({
-            title: item.title || "Pinterest media",
-            description: item.description || item.pinner?.name || "",
-            image: item.image,
-            links: [
-              { label: "Buka gambar", url: item.image, primary: true },
-              { label: "Buka pin", url: item.pin || item.url },
-              { label: "Buka video", url: item.video }
-            ]
-          }));
-        });
-      } else if (mode === "pinterest-download") {
-        const media = data.result || {};
-        cards.push(makeResultCard({
-          title: data.title || "Pinterest media",
-          description: data.description || data.mediaType || "",
-          image: media.image,
-          links: [
-            { label: "Buka gambar", url: media.image, primary: true },
-            { label: "Buka video", url: media.video },
-            { label: "Buka sumber", url: data.url }
-          ]
-        }));
-      } else if (mode === "happymod-search") {
-        const items = Array.isArray(data.results) ? data.results : [];
-        items.forEach(item => {
-          cards.push(makeResultCard({
-            title: item.title || "Aplikasi",
-            description: item.rating ? `Rating: ${item.rating}` : "Hasil pencarian aplikasi",
-            image: item.icon,
-            links: [{ label: "Detail aplikasi", url: item.url, primary: true }]
-          }));
-        });
-      } else if (mode === "happymod-download") {
-        const download = data.download || {};
-        const versions = Array.isArray(download.versions) ? download.versions : [];
-        const allLinks = [
-          { label: "Halaman sumber", url: data.source },
-          { label: "Halaman download", url: download.web_url },
-          { label: "Link APK", url: download.url, primary: true }
-        ];
 
-        cards.push(makeResultCard({
-          title: data.title || "Detail aplikasi",
-          description: [
-            data.version ? `Versi: ${data.version}` : "",
-            data.size ? `Ukuran: ${data.size}` : "",
-            data.developer ? `Developer: ${data.developer}` : "",
-            data.package ? `Package: ${data.package}` : ""
-          ].filter(Boolean).join(" · "),
-          image: data.icon,
-          links: allLinks
-        }));
+        items.forEach((item) => {
+          const imageUrl = item.image || item.imageUrl || item.image_url ||
+            item.thumbnail || item.thumbnailUrl || item.thumbnail_url || "";
+          const targetUrl = item.url || item.link || item.pinUrl ||
+            item.pin_url || item.source || "";
+          const titleText = item.title || item.name || "Pinterest result";
 
-        versions.forEach(version => {
-          cards.push(makeResultCard({
-            title: version.name || "Versi aplikasi",
-            description: [version.version, version.size].filter(Boolean).join(" · "),
-            links: [{ label: "Buka versi", url: version.url, primary: true }]
-          }));
+          const card = document.createElement("article");
+          card.className = "result-item";
+
+          if (imageUrl) {
+            const image = document.createElement("img");
+            image.src = imageUrl;
+            image.alt = titleText;
+            image.loading = "lazy";
+            image.referrerPolicy = "no-referrer";
+            image.onerror = () => image.remove();
+            card.append(image);
+          }
+
+          const info = document.createElement("div");
+          info.className = "result-info";
+
+          const titleEl = document.createElement("b");
+          titleEl.textContent = titleText;
+          info.append(titleEl);
+
+          const description = item.description || item.author || item.sourceName;
+          if (description) {
+            const small = document.createElement("small");
+            small.textContent = description;
+            info.append(small);
+          }
+
+          if (targetUrl) {
+            const link = document.createElement("a");
+            link.href = targetUrl;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = "Buka hasil ↗";
+            info.append(link);
+          }
+
+          card.append(info);
+          results.append(card);
         });
+
+        icons();
       }
 
-      if (!cards.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = data.error || "Tidak ada hasil yang bisa ditampilkan.";
-        resultsList.appendChild(empty);
-      } else {
-        cards.forEach(card => resultsList.appendChild(card));
-      }
-
-      resultCount.textContent = `${cards.length} hasil`;
-      resultsSection.classList.remove("hidden");
-    }
-
-    document.querySelectorAll("[data-tool-form]").forEach(form => {
-      form.addEventListener("submit", async event => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const mode = form.dataset.toolForm;
-        const endpoint = API_ROUTES[mode];
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.textContent;
+        const query = queryInput.value.trim();
+        if (!query) {
+          showStatus("Masukkan kata kunci pencarian.", "error");
+          return;
+        }
 
-        submitButton.disabled = true;
-        submitButton.innerHTML = '<span class="spinner"></span> Memproses...';
-        resultsSection.classList.add("hidden");
-        showStatus("Menghubungi server tools...", "info", true);
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<i data-lucide="loader-circle"></i> Mencari...';
+        results.classList.add("hidden");
+        showStatus("Menghubungi backend pencarian...");
 
         try {
-          const formData = new FormData(form);
-          const payload = Object.fromEntries(formData.entries());
-
-          // Semua request memakai route backend same-origin.
-          // Scraper Node.js harus dijalankan di server, bukan langsung di browser.
+          const endpoint = "/api/tools/pinterest/search?q=" + encodeURIComponent(query);
           const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            method: "GET",
+            headers: { "Accept": "application/json" }
           });
 
-          const raw = await response.text();
+          const text = await response.text();
           let data;
 
           try {
-            data = JSON.parse(raw);
+            data = JSON.parse(text);
           } catch {
+            data = { message: text };
+          }
+
+          if (!response.ok) {
             throw new Error(
-              response.status === 404
-                ? `Endpoint ${endpoint} belum tersedia. Backend tools perlu dipasang.`
-                : `Server mengembalikan respons yang tidak valid (HTTP ${response.status}).`
+              data.message ||
+              data.error ||
+              (response.status === 404
+                ? "Endpoint Pinterest belum tersedia di backend."
+                : `Pencarian gagal (${response.status}).`)
             );
           }
 
-          if (!response.ok || data.status === false || data.success === false) {
-            throw new Error(data.error || `Permintaan gagal (HTTP ${response.status}).`);
-          }
-
-          displayResults(data, mode);
-          showStatus("Permintaan selesai. Periksa hasil di bawah.", "success");
+          const items = getItems(data);
+          showStatus(`Pencarian selesai untuk "${query}".`, "success");
+          renderResults(items);
         } catch (error) {
-          showStatus(error.message || "Gagal menghubungi server tools.", "error");
+          showStatus(
+            (error.message || "Gagal menghubungi backend.") +
+            " Pastikan endpoint /api/tools/pinterest/search sudah dibuat dan bisa diakses.",
+            "error"
+          );
         } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          if (window.lucide) lucide.createIcons();
+          searchButton.disabled = false;
+          searchButton.innerHTML = '<i data-lucide="search"></i> Cari';
+          icons();
         }
       });
-    });
 
-    if (window.lucide) lucide.createIcons();
+      document.querySelectorAll("[data-query]").forEach((button) => {
+        button.addEventListener("click", () => {
+          queryInput.value = button.dataset.query;
+          form.requestSubmit();
+        });
+      });
+
+      document.querySelectorAll("[data-coming]").forEach((button) => {
+        button.addEventListener("click", () => {
+          showStatus(`Fitur ${button.dataset.coming} belum tersedia.`);
+        });
+      });
+
+      icons();
+    })();
   </script>
 </body>
 </html>
