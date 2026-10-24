@@ -2,234 +2,160 @@
 import Busboy from "busboy";
 
 export const config = {
-  api: { bodyParser: false },
+  api: {
+    bodyParser: false,
+  },
 };
 
 const API_URL =
-  "https://rfweb2apk.rfdevy.com/api/apk/build-api";
+  "https://rfweb2apk.rfdevv.com/api/apk/build-api";
 
-const FILE_LIMITS = {
-  html: 10 * 1024 * 1024,
-  zip: 40 * 1024 * 1024,
-  icon: 5 * 1024 * 1024,
-  splash: 10 * 1024 * 1024,
-  splashHtml: 5 * 1024 * 1024,
-  splashVideo: 25 * 1024 * 1024,
-};
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
 
-const ALLOWED_FIELDS = new Set([
-  "appName",
-  "packageName",
-  "url",
-  "versionName",
-  "versionCode",
-  "orientation",
-  "splashType",
-]);
-
-const ALLOWED_FILES = new Set(Object.keys(FILE_LIMITS));
-
-function json(res, status, body) {
-  return res.status(status).json(body);
+function sendJson(res, status, data) {
+  res.status(status).setHeader("Content-Type", "application/json");
+  res.end(JSON.stringify(data));
 }
 
-function readMultipart(req) {
+function parseMultipart(req) {
   return new Promise((resolve, reject) => {
-    let parser;
-    let settled = false;
-    const fields = {};
-    const files = {};
-
-    function fail(message) {
-      if (settled) return;
-      settled = true;
-      reject(new Error(message));
-    }
+    let busboy;
 
     try {
-      parser = Busboy({
+      busboy = Busboy({
         headers: req.headers,
         limits: {
-          fields: 20,
-          files: 6,
-          parts: 26,
-          fieldSize: 16 * 1024,
+          files: 10,
+          fields: 40,
+          fileSize: MAX_FILE_SIZE,
         },
       });
-    } catch {
-      fail("Request multipart/form-data tidak valid.");
+    } catch (error) {
+      reject(new Error(`Request multipart tidak valid: ${error.message}`));
       return;
     }
 
-    parser.on("field", (name, value) => {
-      if (ALLOWED_FIELDS.has(name)) fields[name] = value;
-    });
+    const fields = {};
+    const files = [];
+    let settled = false;
+    let limitReached = false;
 
-    parser.on("file", (name, stream, info) => {
-      if (!ALLOWED_FILES.has(name)) {
-        stream.resume();
-        fail(`Field upload tidak dikenal: ${name}`);
+    const fail = (error) => {
+      if (settled) return;
+      settled = true;
+      reject(error);
+    };
+
+    busboy.on("field", (name, value, info) => {
+      if (info?.nameTruncated || info?.valueTruncated) {
+        fail(new Error(`Field "${name}" terlalu panjang.`));
         return;
       }
 
+      fields[name] = value;
+    });
+
+    busboy.on("file", (fieldName, stream, info) => {
       const chunks = [];
       let size = 0;
-      let tooLarge = false;
+      let fileTooLarge = false;
 
       stream.on("data", (chunk) => {
         size += chunk.length;
 
-        if (size > FILE_LIMITS[name]) {
-          tooLarge = true;
-        } else {
-          chunks.push(chunk);
+        if (size > MAX_FILE_SIZE) {
+          fileTooLarge = true;
+          limitReached = true;
+          return;
         }
+
+        chunks.push(chunk);
       });
 
       stream.on("limit", () => {
-        tooLarge = true;
-        fail(`File ${name} terlalu besar.`);
+        fileTooLarge = true;
+        limitReached = true;
+      });
+
+      stream.on("error", (error) => {
+        fail(error);
       });
 
       stream.on("end", () => {
-        if (settled || tooLarge || size === 0) return;
+        if (fileTooLarge || !info.filename) return;
 
-        files[name] = {
-          buffer: Buffer.concat(chunks),
-          filename: info.filename || `${name}.bin`,
+        files.push({
+          fieldName,
+          filename: info.filename,
           mimeType: info.mimeType || "application/octet-stream",
-        };
+          buffer: Buffer.concat(chunks),
+        });
       });
     });
 
-    parser.on("fieldsLimit", () => fail("Terlalu banyak field."));
-    parser.on("filesLimit", () => fail("Terlalu banyak file."));
-    parser.on("partsLimit", () => fail("Terlalu banyak bagian request."));
-    parser.on("error", () => fail("Gagal membaca upload."));
+    busboy.on("filesLimit", () => {
+      limitReached = true;
+    });
 
-    parser.on("close", () => {
+    busboy.on("fieldsLimit", () => {
+      fail(new Error("Jumlah field form terlalu banyak."));
+    });
+
+    busboy.on("error", (error) => {
+      fail(error);
+    });
+
+    busboy.on("close", () => {
       if (settled) return;
+
+      if (limitReached) {
+        fail(
+          new Error(
+            "Upload melebihi batas. Maksimal 4 MB per file pada konfigurasi ini."
+          )
+        );
+        return;
+      }
+
       settled = true;
       resolve({ fields, files });
     });
 
-    req.on("error", () => fail("Koneksi upload terputus."));
-    req.pipe(parser);
+    req.on("error", (error) => {
+      fail(error);
+    });
+
+    req.pipe(busboy);
   });
 }
 
-function validate(fields, files) {
-  if (!fields.appName?.trim()) {
-    return "Nama aplikasi wajib diisi.";
-  }
-
-  if (fields.appName.trim().length > 50) {
-    return "Nama aplikasi maksimal 50 karakter.";
-  }
-
-  const packagePattern =
-    /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/;
-
-  if (!packagePattern.test(fields.packageName || "")) {
-    return "Package name tidak valid.";
-  }
-
-  if (Boolean(fields.url) === Boolean(files.html)) {
-    return "Pilih tepat satu sumber: URL atau file HTML.";
-  }
-
-  if (fields.url) {
+function normalizeDownloadUrl(payload) {
+  if (
+    payload &&
+    typeof payload.downloadUrl === "string"
+  ) {
     try {
-      const url = new URL(fields.url);
-      if (!["https:", "http:"].includes(url.protocol)) {
-        return "URL harus menggunakan HTTP atau HTTPS.";
+      const download = new URL(payload.downloadUrl);
+
+      // Dokumentasi menampilkan hostname lama "rfdevy".
+      // Gunakan hostname yang benar jika respons API masih memakai yang lama.
+      if (download.hostname === "rfweb2apk.rfdevy.com") {
+        download.hostname = "rfweb2apk.rfdevv.com";
+        payload.downloadUrl = download.toString();
       }
     } catch {
-      return "URL website tidak valid.";
+      // Biarkan URL asli jika formatnya tidak valid.
     }
   }
 
-  if (files.html && !/\.html?$/i.test(files.html.filename)) {
-    return "File website harus HTML.";
-  }
-
-  if (files.zip && !/\.zip$/i.test(files.zip.filename)) {
-    return "File tambahan harus ZIP.";
-  }
-
-  if (files.icon && !/\.png$/i.test(files.icon.filename)) {
-    return "Ikon harus PNG.";
-  }
-
-  if (
-    files.splash &&
-    !/\.(png|jpe?g)$/i.test(files.splash.filename)
-  ) {
-    return "Splash image harus PNG atau JPG.";
-  }
-
-  if (
-    files.splashHtml &&
-    !/\.html?$/i.test(files.splashHtml.filename)
-  ) {
-    return "Splash HTML tidak valid.";
-  }
-
-  if (
-    files.splashVideo &&
-    !/\.mp4$/i.test(files.splashVideo.filename)
-  ) {
-    return "Splash video harus MP4.";
-  }
-
-  if (
-    fields.orientation &&
-    !["portrait", "landscape", "auto"].includes(fields.orientation)
-  ) {
-    return "Orientasi tidak valid.";
-  }
-
-  if (
-    fields.splashType &&
-    !["default", "image", "html", "video"].includes(fields.splashType)
-  ) {
-    return "Tipe splash screen tidak valid.";
-  }
-
-  if (
-    fields.versionCode !== undefined &&
-    (!Number.isInteger(Number(fields.versionCode)) ||
-      Number(fields.versionCode) < 1 ||
-      Number(fields.versionCode) > 2147483647)
-  ) {
-    return "Version code tidak valid.";
-  }
-
-  return null;
-}
-
-function getUpstreamMessage(payload, raw, status) {
-  if (payload && typeof payload.error === "string") {
-    return payload.error.slice(0, 300);
-  }
-
-  if (payload && typeof payload.message === "string") {
-    return payload.message.slice(0, 300);
-  }
-
-  if (raw && !raw.trim().startsWith("<")) {
-    return raw.trim().slice(0, 250);
-  }
-
-  return `API builder membalas HTTP ${status} tanpa pesan error yang terbaca.`;
+  return payload;
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
-
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return json(res, 405, {
+
+    return sendJson(res, 405, {
       success: false,
       error: "Gunakan metode POST.",
     });
@@ -238,176 +164,192 @@ export default async function handler(req, res) {
   const apiKey = process.env.APIKEYYRF;
 
   if (!apiKey) {
-    console.error("[Web2APK] APIKEYYRF belum dikonfigurasi.");
+    console.error("Environment variable APIKEYYRF belum diatur.");
 
-    return json(res, 500, {
+    return sendJson(res, 500, {
       success: false,
-      error: "APIKEYYRF belum diatur di Vercel Environment Variables.",
+      error:
+        "API key server belum dikonfigurasi. Periksa environment variable APIKEYYRF di Vercel.",
     });
   }
 
-  if (
-    !(req.headers["content-type"] || "")
-      .toLowerCase()
-      .startsWith("multipart/form-data")
-  ) {
-    return json(res, 400, {
-      success: false,
-      error: "Request harus multipart/form-data.",
-    });
-  }
-
-  let fields;
-  let files;
+  let parsed;
 
   try {
-    ({ fields, files } = await readMultipart(req));
+    parsed = await parseMultipart(req);
   } catch (error) {
-    return json(res, 400, {
+    console.error("Multipart parsing error:", error);
+
+    return sendJson(res, 400, {
       success: false,
-      error: error.message || "Gagal membaca upload.",
+      error: error.message || "Gagal membaca file upload.",
     });
   }
 
-  const validationError = validate(fields, files);
+  const { fields, files } = parsed;
 
-  if (validationError) {
-    return json(res, 400, {
+  const appName = String(fields.appName || "").trim();
+  const packageName = String(fields.packageName || "").trim();
+  const url = String(fields.url || "").trim();
+
+  const htmlFile = files.find((file) => file.fieldName === "html");
+
+  if (!appName || !packageName) {
+    return sendJson(res, 400, {
       success: false,
-      error: validationError,
+      error: "Nama aplikasi dan package name wajib diisi.",
     });
   }
+
+  if (!/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(packageName)) {
+    return sendJson(res, 400, {
+      success: false,
+      error:
+        "Package name tidak valid. Contoh: com.fortech.aplikasi",
+    });
+  }
+
+  if (Boolean(url) === Boolean(htmlFile)) {
+    return sendJson(res, 400, {
+      success: false,
+      error:
+        "Isi URL website atau unggah file HTML. Pilih salah satu sumber.",
+    });
+  }
+
+  if (url) {
+    try {
+      const parsedUrl = new URL(url);
+
+      if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+        throw new Error("Protokol URL tidak didukung.");
+      }
+    } catch {
+      return sendJson(res, 400, {
+        success: false,
+        error: "URL website tidak valid.",
+      });
+    }
+  }
+
+  const form = new FormData();
+
+  // Field wajib
+  form.append("appName", appName);
+  form.append("packageName", packageName);
+
+  if (url) {
+    form.append("url", url);
+  }
+
+  // Field opsional
+  const allowedFields = [
+    "splashType",
+    "splashHtml",
+    "orientation",
+    "versionName",
+    "versionCode",
+  ];
+
+  for (const name of allowedFields) {
+    if (fields[name] !== undefined && fields[name] !== "") {
+      form.append(name, fields[name]);
+    }
+  }
+
+  // Teruskan semua file dengan nama field dan nama file aslinya.
+  for (const file of files) {
+    const blob = new Blob([file.buffer], {
+      type: file.mimeType,
+    });
+
+    form.append(file.fieldName, blob, file.filename);
+  }
+
+  let upstreamResponse;
 
   try {
-    const upstreamForm = new FormData();
-
-    for (const [key, value] of Object.entries(fields)) {
-      upstreamForm.append(key, value);
-    }
-
-    for (const [key, file] of Object.entries(files)) {
-      upstreamForm.append(
-        key,
-        new Blob([file.buffer], { type: file.mimeType }),
-        file.filename
-      );
-    }
-
-    console.log("[Web2APK] Menghubungi API builder.");
-
-    const response = await fetch(API_URL, {
+    upstreamResponse = await fetch(API_URL, {
       method: "POST",
       headers: {
         "X-API-Key": apiKey,
+        // Jangan mengatur Content-Type secara manual.
+        // fetch akan membuat multipart boundary secara otomatis.
       },
-      body: upstreamForm,
+      body: form,
       signal: AbortSignal.timeout(240000),
     });
-
-    const raw = await response.text();
-
-    let payload = null;
-    try {
-      payload = JSON.parse(raw);
-    } catch {
-      // Respons bukan JSON; tangani di bawah.
-    }
-
-    console.log("[Web2APK] Status API builder:", response.status);
-
-    if (!response.ok) {
-      console.error(
-        "[Web2APK] API builder menolak request:",
-        response.status,
-        getUpstreamMessage(payload, raw, response.status)
-      );
-
-      return json(res, 502, {
-        success: false,
-        error: getUpstreamMessage(payload, raw, response.status),
-        upstreamStatus: response.status,
-        ...(payload?.limitReached === true
-          ? { limitReached: true }
-          : {}),
-      });
-    }
-
-    if (!payload || typeof payload !== "object") {
-      console.error("[Web2APK] Respons API bukan JSON.");
-
-      return json(res, 502, {
-        success: false,
-        error: "API builder mengirim respons yang bukan JSON.",
-      });
-    }
-
-    if (payload.success !== true) {
-      return json(res, 502, {
-        success: false,
-        error: getUpstreamMessage(payload, raw, response.status),
-        ...(payload.limitReached === true
-          ? { limitReached: true }
-          : {}),
-      });
-    }
-
-    if (
-      typeof payload.downloadUrl !== "string" ||
-      !payload.downloadUrl.trim()
-    ) {
-      return json(res, 502, {
-        success: false,
-        error: "Build merespons sukses, tetapi URL download tidak tersedia.",
-      });
-    }
-
-    return json(res, 200, {
-      success: true,
-      fileName: payload.fileName || "app.apk",
-      size: payload.size ?? null,
-      downloadUrl: payload.downloadUrl,
-      buildId: payload.buildId || null,
-    });
   } catch (error) {
-    // Detail lengkap hanya masuk log server, bukan membocorkan rahasia ke browser.
-    console.error("[Web2APK] Koneksi API gagal:", {
-      name: error.name,
+    console.error("API Builder connection error:", {
       message: error.message,
-      cause: error.cause?.message,
       code: error.cause?.code,
+      hostname: error.cause?.hostname,
+      endpoint: API_URL,
     });
 
-    let message =
-      "Koneksi ke API builder gagal. Periksa Vercel Runtime Logs.";
+    const dnsCodes = [
+      "ENOTFOUND",
+      "EAI_AGAIN",
+      "ENODATA",
+    ];
 
-    if (
-      error.name === "TimeoutError" ||
-      error.name === "AbortError"
-    ) {
-      message = "API builder timeout. Coba lagi nanti.";
-    } else if (
-      error.cause?.code === "ENOTFOUND" ||
-      error.cause?.code === "EAI_AGAIN"
-    ) {
-      message = "Domain API builder tidak dapat ditemukan (DNS).";
-    } else if (
-      error.cause?.code === "ECONNREFUSED"
-    ) {
-      message = "Koneksi ditolak oleh server API builder.";
-    } else if (
-      error.cause?.code === "ECONNRESET"
-    ) {
-      message = "Koneksi API builder terputus sebelum selesai.";
-    } else if (
-      error.cause?.code === "CERT_HAS_EXPIRED" ||
-      error.cause?.code === "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
-    ) {
-      message = "Sertifikat HTTPS API builder bermasalah.";
+    if (dnsCodes.includes(error.cause?.code)) {
+      return sendJson(res, 502, {
+        success: false,
+        error:
+          "DNS API Builder gagal ditemukan. Periksa domain rfweb2apk.rfdevv.com.",
+        code: error.cause.code,
+      });
     }
 
-    return json(res, 502, {
+    if (error.name === "TimeoutError" ||
+        error.name === "AbortError") {
+      return sendJson(res, 504, {
+        success: false,
+        error:
+          "API Builder tidak merespons dalam batas waktu. Coba lagi nanti.",
+      });
+    }
+
+    return sendJson(res, 502, {
       success: false,
-      error: message,
+      error:
+        "Tidak dapat terhubung ke API Builder. Periksa endpoint dan log Vercel.",
+      detail: error.cause?.code || error.message,
     });
   }
+
+  const responseText = await upstreamResponse.text();
+
+  let payload;
+
+  try {
+    payload = JSON.parse(responseText);
+  } catch {
+    console.error("API Builder returned non-JSON:", {
+      status: upstreamResponse.status,
+      body: responseText.slice(0, 1000),
+    });
+
+    return sendJson(res, 502, {
+      success: false,
+      error: "API Builder mengembalikan respons yang bukan JSON.",
+      upstreamStatus: upstreamResponse.status,
+    });
+  }
+
+  payload = normalizeDownloadUrl(payload);
+
+  if (!upstreamResponse.ok) {
+    console.error("API Builder HTTP error:", {
+      status: upstreamResponse.status,
+      payload,
+    });
+  }
+
+  return sendJson(
+    res,
+    upstreamResponse.ok ? 200 : upstreamResponse.status,
+    payload
+  );
 }
