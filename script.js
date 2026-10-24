@@ -1,309 +1,215 @@
+(() => {
+  "use strict";
 
-"use strict";
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
 
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => [...document.querySelectorAll(selector)];
+  let sourceType = "url";
+  let orientation = "portrait";
+  let toastTimeout;
 
-const form = $("#buildForm");
-const buildButton = $("#buildButton");
-const progressCard = $("#progressCard");
-const resultCard = $("#resultCard");
-const toast = $("#toast");
-
-let sourceMode = "url";
-let toastTimer;
-
-function refreshIcons() {
-  if (window.lucide) {
-    window.lucide.createIcons();
+  function refreshIcons() {
+    if (window.lucide) window.lucide.createIcons();
   }
-}
 
-function showToast(message, isError = false) {
-  clearTimeout(toastTimer);
-  toast.textContent = message;
-  toast.classList.toggle("error", isError);
-  toast.classList.add("show");
-  toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
-}
-
-function setSourceMode(mode) {
-  sourceMode = mode;
-
-  $$("[data-source]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.source === mode);
-  });
-
-  $("#urlField").classList.toggle("hidden", mode !== "url");
-  $("#htmlField").classList.toggle("hidden", mode !== "html");
-
-  $("#websiteUrl").required = mode === "url";
-  $("#htmlFile").required = mode === "html";
-
-  if (mode === "url") {
-    $("#htmlFile").value = "";
-    $("#htmlFileName").textContent = "Pilih file HTML";
-  } else {
-    $("#websiteUrl").value = "";
+  function toast(message) {
+    const el = $("#toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove("hidden");
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => el.classList.add("hidden"), 3500);
   }
-}
 
-$$("[data-source]").forEach((button) => {
-  button.addEventListener("click", () => {
-    setSourceMode(button.dataset.source);
+  function setSource(type) {
+    sourceType = type;
+    $$(".segment[data-source]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.source === type);
+    });
+
+    $("#urlField").classList.toggle("hidden", type !== "url");
+    $("#htmlField").classList.toggle("hidden", type !== "html");
+    $("#websiteUrl").required = type === "url";
+    $("#htmlFile").required = type === "html";
+  }
+
+  $$(".segment[data-source]").forEach((button) => {
+    button.addEventListener("click", () => setSource(button.dataset.source));
   });
-});
 
-function bindFileLabel(inputId, labelId, defaultText) {
-  const input = $("#" + inputId);
-  const label = $("#" + labelId);
-
-  input.addEventListener("change", () => {
-    const file = input.files?.[0];
-    label.textContent = file ? file.name : defaultText;
-  });
-}
-
-bindFileLabel("htmlFile", "htmlFileName", "Pilih file HTML");
-bindFileLabel("zipFile", "zipFileName", "Tambahkan file ZIP");
-bindFileLabel("iconFile", "iconFileName", "Upload ikon aplikasi");
-
-function updateChoiceCards(groupName, cardSelector) {
-  $$(`input[name="${groupName}"]`).forEach((input) => {
-    input.addEventListener("change", () => {
-      $$(cardSelector).forEach((card) => {
-        const cardInput = card.querySelector("input");
-        card.classList.toggle("selected", Boolean(cardInput?.checked));
+  $$(".segment[data-orientation]").forEach((button) => {
+    button.addEventListener("click", () => {
+      orientation = button.dataset.orientation;
+      $$(".segment[data-orientation]").forEach((item) => {
+        item.classList.toggle("active", item === button);
       });
     });
   });
-}
 
-updateChoiceCards("splashType", ".splash-option");
-updateChoiceCards("orientation", ".orientation-option");
-
-function updateSplashFields() {
-  const selected = $('input[name="splashType"]:checked')?.value || "default";
-
-  $("#splashImageField").classList.toggle("hidden", selected !== "image");
-  $("#splashHtmlField").classList.toggle("hidden", selected !== "html");
-  $("#splashVideoField").classList.toggle("hidden", selected !== "video");
-}
-
-$$('input[name="splashType"]').forEach((input) => {
-  input.addEventListener("change", updateSplashFields);
-});
-
-function validateFile(input, extensions, maxBytes, label) {
-  const file = input.files?.[0];
-  if (!file) return true;
-
-  const extension = file.name.split(".").pop().toLowerCase();
-
-  if (!extensions.includes(extension)) {
-    showToast(`${label}: format file tidak didukung.`, true);
-    input.value = "";
-    input.dispatchEvent(new Event("change"));
-    return false;
+  function setSplashFields() {
+    const selected = $('input[name="splashType"]:checked')?.value || "default";
+    $("#splashImageField").classList.toggle("hidden", selected !== "image");
+    $("#splashHtmlField").classList.toggle("hidden", selected !== "html");
+    $("#splashVideoField").classList.toggle("hidden", selected !== "video");
   }
 
-  if (file.size > maxBytes) {
-    showToast(`${label}: ukuran file terlalu besar.`, true);
-    input.value = "";
-    input.dispatchEvent(new Event("change"));
-    return false;
+  $$('input[name="splashType"]').forEach((input) => {
+    input.addEventListener("change", setSplashFields);
+  });
+
+  function updateFileLabel(inputId, labelId, defaultTitle) {
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    if (!input || !label) return;
+
+    input.addEventListener("change", () => {
+      const file = input.files?.[0];
+      label.innerHTML = "";
+
+      const title = document.createElement("b");
+      title.textContent = file ? file.name : defaultTitle;
+      const sub = document.createElement("small");
+      sub.textContent = file
+        ? `${(file.size / 1024).toFixed(1)} KB`
+        : "Belum ada file dipilih";
+
+      label.append(title, sub);
+    });
   }
 
-  return true;
-}
+  updateFileLabel("htmlFile", "htmlFileLabel", "Pilih file HTML");
+  updateFileLabel("zipFile", "zipFileLabel", "Upload aset website");
+  updateFileLabel("iconFile", "iconFileLabel", "Pilih ikon");
 
-function validateFiles() {
-  // Batas awal di UI. Sesuaikan dengan limit API dan konfigurasi Vercel.
-  const MB = 1024 * 1024;
+  const helpModal = $("#helpModal");
+  $("#helpButton")?.addEventListener("click", () => helpModal.classList.remove("hidden"));
+  $("#closeHelp")?.addEventListener("click", () => helpModal.classList.add("hidden"));
+  $("#okHelp")?.addEventListener("click", () => helpModal.classList.add("hidden"));
+  helpModal?.addEventListener("click", (event) => {
+    if (event.target === helpModal) helpModal.classList.add("hidden");
+  });
 
-  return (
-    validateFile($("#htmlFile"), ["html"], 10 * MB, "HTML") &&
-    validateFile($("#zipFile"), ["zip"], 40 * MB, "ZIP") &&
-    validateFile($("#iconFile"), ["png"], 5 * MB, "Ikon") &&
-    validateFile($("#splashFile"), ["png", "jpg", "jpeg"], 10 * MB, "Splash image") &&
-    validateFile($("#splashHtmlFile"), ["html"], 5 * MB, "Splash HTML") &&
-    validateFile($("#splashVideoFile"), ["mp4"], 25 * MB, "Splash video")
-  );
-}
+  $$(".soon-button").forEach((button) => {
+    button.addEventListener("click", () => toast(`Fitur ${button.dataset.soon} belum tersedia.`));
+  });
 
-function setLoading(loading) {
-  buildButton.disabled = loading;
-  progressCard.classList.toggle("hidden", !loading);
+  function appendFormData(formData, key, inputId) {
+    const input = document.getElementById(inputId);
+    const file = input?.files?.[0];
+    if (file) formData.append(key, file);
+  }
 
-  if (loading) {
+  $("#buildForm")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+
+    const appName = $("#appName").value.trim();
+    const packageName = $("#packageName").value.trim();
+    const websiteUrl = $("#websiteUrl").value.trim();
+    const htmlFile = $("#htmlFile").files?.[0];
+
+    if (sourceType === "url" && !websiteUrl) {
+      toast("Masukkan URL website terlebih dahulu.");
+      return;
+    }
+
+    if (sourceType === "html" && !htmlFile) {
+      toast("Pilih file HTML terlebih dahulu.");
+      return;
+    }
+
+    const buildButton = $("#buildButton");
+    const progressCard = $("#progressCard");
+    const resultCard = $("#resultCard");
+    const progressText = $("#progressText");
+    const progressBar = $("#progressBar");
+    const resultText = $("#resultText");
+    const downloadLink = $("#downloadLink");
+
     resultCard.classList.add("hidden");
-    $("#progressTitle").textContent = "Mengirim konfigurasi...";
-    $("#progressSubtitle").textContent = "Menyiapkan permintaan build APK.";
-    buildButton.querySelector(".button-content span").textContent = "Sedang memproses...";
-  } else {
-    buildButton.querySelector(".button-content span").textContent = "Build APK sekarang";
-  }
-}
+    progressCard.classList.remove("hidden");
+    downloadLink.classList.add("hidden");
+    progressText.textContent = "Mengirim konfigurasi ke backend...";
+    progressBar.style.width = "20%";
+    buildButton.disabled = true;
+    buildButton.querySelector("span").textContent = "Memproses...";
 
-function buildFormData() {
-  const data = new FormData();
+    const formData = new FormData();
+    formData.append("appName", appName);
+    formData.append("packageName", packageName);
+    formData.append("sourceType", sourceType);
+    formData.append("orientation", orientation);
+    formData.append("versionName", $("#versionName").value.trim());
+    formData.append("versionCode", $("#versionCode").value);
+    formData.append("splashType", $('input[name="splashType"]:checked')?.value || "default");
 
-  data.append("appName", $("#appName").value.trim());
-  data.append("packageName", $("#packageName").value.trim());
-  data.append("versionName", $("#versionName").value.trim() || "1.0");
-  data.append("versionCode", $("#versionCode").value || "1");
-  data.append("orientation", $('input[name="orientation"]:checked').value);
-  data.append("splashType", $('input[name="splashType"]:checked').value);
+    if (sourceType === "url") formData.append("websiteUrl", websiteUrl);
+    appendFormData(formData, "htmlFile", "htmlFile");
+    appendFormData(formData, "zipFile", "zipFile");
+    appendFormData(formData, "iconFile", "iconFile");
+    appendFormData(formData, "splashImage", "splashImage");
+    appendFormData(formData, "splashHtml", "splashHtml");
+    appendFormData(formData, "splashVideo", "splashVideo");
 
-  if (sourceMode === "url") {
-    data.append("url", $("#websiteUrl").value.trim());
-  } else {
-    data.append("html", $("#htmlFile").files[0]);
-  }
-
-  const optionalFiles = [
-    ["zip", "zipFile"],
-    ["icon", "iconFile"],
-    ["splash", "splashFile"],
-    ["splashHtml", "splashHtmlFile"],
-    ["splashVideo", "splashVideoFile"]
-  ];
-
-  optionalFiles.forEach(([field, inputId]) => {
-    const file = $("#" + inputId).files?.[0];
-    if (file) data.append(field, file);
-  });
-
-  return data;
-}
-
-function formatBytes(bytes) {
-  const size = Number(bytes);
-  if (!Number.isFinite(size) || size < 0) return "";
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-function showBuildResult(payload) {
-  const downloadUrl = payload.downloadUrl;
-  if (!downloadUrl) {
-    throw new Error("Build merespons sukses, tetapi URL download tidak tersedia.");
-  }
-
-  // Terima URL absolut HTTPS atau path download lokal dari backend.
-  let safeUrl;
-  try {
-    safeUrl = new URL(downloadUrl, window.location.origin);
-  } catch {
-    throw new Error("URL download dari server tidak valid.");
-  }
-
-  if (
-    safeUrl.protocol !== "https:" &&
-    safeUrl.origin !== window.location.origin
-  ) {
-    throw new Error("URL download tidak aman.");
-  }
-
-  $("#downloadButton").href = safeUrl.href;
-  $("#resultMessage").textContent = "Server melaporkan proses build berhasil.";
-
-  const details = [];
-  if (payload.fileName) details.push(`File: ${payload.fileName}`);
-  if (payload.size != null) details.push(`Ukuran: ${formatBytes(payload.size)}`);
-  if (payload.buildId) details.push(`Build ID: ${payload.buildId}`);
-
-  $("#resultMeta").textContent = details.join(" · ");
-  resultCard.classList.remove("hidden");
-  resultCard.scrollIntoView({ behavior: "smooth", block: "center" });
-  showToast("Build selesai. APK siap diunduh.");
-}
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  if (!form.reportValidity()) return;
-  if (!validateFiles()) return;
-
-  if (sourceMode === "url") {
     try {
-      const url = new URL($("#websiteUrl").value.trim());
-      if (url.protocol !== "https:" && url.protocol !== "http:") {
-        throw new Error();
+      progressBar.style.width = "55%";
+
+      const response = await fetch("/api/build", {
+        method: "POST",
+        body: formData
+      });
+
+      const rawText = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = { message: rawText || "Server mengembalikan respons kosong." };
       }
-    } catch {
-      showToast("Masukkan URL website yang valid.", true);
-      return;
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || `Request gagal (${response.status}).`);
+      }
+
+      progressBar.style.width = "100%";
+      progressText.textContent = "Backend merespons.";
+
+      const downloadUrl =
+        data.downloadUrl ||
+        data.download_url ||
+        data.apkUrl ||
+        data.apk_url ||
+        data.url;
+
+      resultCard.classList.remove("hidden");
+      resultText.textContent = data.message || "Permintaan build berhasil dikirim.";
+
+      if (downloadUrl) {
+        downloadLink.href = downloadUrl;
+        downloadLink.classList.remove("hidden");
+      } else if (data.success === false) {
+        resultText.textContent = data.message || "Build gagal.";
+      } else {
+        resultText.textContent += " Jika proses build asinkron, periksa status melalui backend.";
+      }
+
+      toast("Respons backend diterima.");
+    } catch (error) {
+      progressCard.classList.add("hidden");
+      resultCard.classList.remove("hidden");
+      resultText.textContent = error.message || "Gagal menghubungi backend.";
+      toast("Build gagal. Periksa konfigurasi backend API.");
+    } finally {
+      buildButton.disabled = false;
+      buildButton.querySelector("span").textContent = "Build APK";
+      refreshIcons();
     }
-  }
-
-  if (sourceMode === "html" && !$("#htmlFile").files[0]) {
-    showToast("Pilih file HTML terlebih dahulu.", true);
-    return;
-  }
-
-  const versionCode = Number($("#versionCode").value);
-  if (!Number.isInteger(versionCode) || versionCode < 1 || versionCode > 2147483647) {
-    showToast("Version code harus berupa bilangan bulat positif.", true);
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const response = await fetch("/api/build", {
-      method: "POST",
-      body: buildFormData()
-    });
-
-    const payload = await response.json().catch(() => ({}));
-
-    if (!response.ok || payload.success !== true) {
-      const message = payload.error || `Build gagal (HTTP ${response.status}).`;
-      throw new Error(message);
-    }
-
-    progressCard.classList.add("hidden");
-    showBuildResult(payload);
-  } catch (error) {
-    showToast(error.message || "Tidak dapat menghubungi server build.", true);
-  } finally {
-    setLoading(false);
-  }
-});
-
-$$(".nav-item").forEach((button) => {
-  button.addEventListener("click", () => {
-    const tab = button.dataset.tab;
-
-    if (tab !== "build") {
-      showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} akan tersedia pada pembaruan berikutnya.`);
-      return;
-    }
-
-    $$(".nav-item").forEach((item) => {
-      item.classList.toggle("active", item === button);
-    });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
-});
 
-const helpModal = $("#helpModal");
-
-$("#helpButton").addEventListener("click", () => {
-  helpModal.classList.remove("hidden");
-});
-
-$("#closeHelp").addEventListener("click", () => helpModal.classList.add("hidden"));
-$("#gotIt").addEventListener("click", () => helpModal.classList.add("hidden"));
-
-helpModal.addEventListener("click", (event) => {
-  if (event.target === helpModal) helpModal.classList.add("hidden");
-});
-
-$("#year").textContent = new Date().getFullYear();
-
-refreshIcons();
-updateSplashFields();
+  setSource("url");
+  setSplashFields();
+  refreshIcons();
+})();
