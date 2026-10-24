@@ -17,9 +17,7 @@
     .auth-hero { padding: 22px 0 20px; text-align: center; }
     .auth-hero h1 span { color: var(--blue); background: none; -webkit-text-fill-color: var(--blue); }
     .auth-hero > p { margin-left: auto; margin-right: auto; max-width: 340px; }
-
     .auth-panel { padding: 20px; margin-bottom: 15px; }
-
     .auth-tabs {
       display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
       margin-bottom: 20px; padding: 4px;
@@ -41,17 +39,11 @@
       color: #dce3ff;
     }
     .auth-tab:active { transform: scale(.98); }
-
     .auth-form { display: grid; gap: 16px; }
     .auth-form.hidden { display: none; }
     .auth-form .field { margin-top: 0; }
-
-    .input-wrap.invalid {
-      border-color: rgba(255, 110, 110, .55);
-      box-shadow: 0 0 0 3px rgba(255, 110, 110, .08);
-    }
+    .input-wrap.invalid { border-color: rgba(255, 110, 110, .55); box-shadow: 0 0 0 3px rgba(255, 110, 110, .08); }
     .input-wrap.valid { border-color: rgba(105, 228, 177, .45); }
-
     .field-error {
       display: none; margin-top: 6px;
       color: #ff8a8a; font-size: 10px; line-height: 1.5;
@@ -59,60 +51,38 @@
     }
     .field-error svg { width: 11px; height: 11px; flex: 0 0 auto; }
     .field-error.visible { display: flex; }
-
     .password-toggle {
       display: grid; place-items: center;
-      width: 26px; height: 26px;
-      border: 0; border-radius: 7px;
+      width: 26px; height: 26px; border: 0; border-radius: 7px;
       background: rgba(255, 255, 255, .04);
       color: var(--muted); cursor: pointer; flex: 0 0 auto;
       transition: color .15s, background .15s;
     }
     .password-toggle:hover { color: #c5cee4; background: rgba(255, 255, 255, .08); }
     .password-toggle svg { width: 13px; height: 13px; }
-
     .strength-wrap { display: grid; gap: 6px; margin-top: 8px; }
     .strength-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
-    .strength-bars span {
-      height: 3px; border-radius: 3px;
-      background: rgba(160, 177, 219, .12);
-      transition: background .2s;
-    }
+    .strength-bars span { height: 3px; border-radius: 3px; background: rgba(160, 177, 219, .12); transition: background .2s; }
     .strength-bars.s1 span:nth-child(1) { background: #ff6e6e; }
     .strength-bars.s2 span:nth-child(-n+2) { background: #f5b85c; }
     .strength-bars.s3 span:nth-child(-n+3) { background: #66d9ef; }
     .strength-bars.s4 span { background: #69e4b1; }
-    .strength-label {
-      color: var(--muted); font-size: 9.5px;
-      display: flex; justify-content: space-between;
-    }
+    .strength-label { color: var(--muted); font-size: 9.5px; display: flex; justify-content: space-between; }
     .strength-label b { font-weight: 700; }
     .strength-label b[data-level="1"] { color: #ff8a8a; }
     .strength-label b[data-level="2"] { color: #f5c98a; }
     .strength-label b[data-level="3"] { color: #8ecfe0; }
     .strength-label b[data-level="4"] { color: #8ee8c3; }
-
-    .captcha-row {
-      display: grid; grid-template-columns: auto 1fr auto;
-      align-items: stretch; gap: 8px;
-    }
+    .captcha-row { display: grid; grid-template-columns: auto 1fr auto; align-items: stretch; gap: 8px; }
     .captcha-challenge {
       display: flex; align-items: center; justify-content: center; gap: 6px;
       min-width: 110px; padding: 0 14px;
-      border: 1px solid rgba(155, 170, 210, .14);
-      border-radius: 13px;
+      border: 1px solid rgba(155, 170, 210, .14); border-radius: 13px;
       background:
-        repeating-linear-gradient(
-          135deg,
-          rgba(117, 144, 255, .04),
-          rgba(117, 144, 255, .04) 4px,
-          transparent 4px,
-          transparent 10px
-        ),
+        repeating-linear-gradient(135deg, rgba(117, 144, 255, .04), rgba(117, 144, 255, .04) 4px, transparent 4px, transparent 10px),
         rgba(6, 10, 20, .5);
       font-family: 'Courier New', ui-monospace, monospace;
-      font-weight: 800; font-size: 17px; color: #dce3ff;
-      letter-spacing: 2px;
+      font-weight: 800; font-size: 17px; color: #dce3ff; letter-spacing: 2px;
       user-select: none; -webkit-user-select: none;
       position: relative; overflow: hidden;
     }
@@ -122,71 +92,51 @@
       pointer-events: none;
     }
     .captcha-challenge.strike::after {
-      content: ''; position: absolute;
-      left: 8%; right: 8%; top: 50%;
+      content: ''; position: absolute; left: 8%; right: 8%; top: 50%;
       height: 1px; background: rgba(161, 122, 255, .4);
       transform: rotate(-4deg); pointer-events: none;
     }
     .captcha-input-wrap {
-      display: flex; align-items: center; gap: 8px;
-      height: 48px; padding: 0 12px;
-      border: 1px solid rgba(155, 170, 210, .13);
-      border-radius: 13px;
+      display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 12px;
+      border: 1px solid rgba(155, 170, 210, .13); border-radius: 13px;
       background: rgba(6, 10, 20, .4);
       transition: border-color .2s, box-shadow .2s;
     }
-    .captcha-input-wrap:focus-within {
-      border-color: rgba(126, 150, 255, .65);
-      box-shadow: 0 0 0 3px rgba(115, 139, 255, .08);
-    }
-    .captcha-input-wrap.invalid {
-      border-color: rgba(255, 110, 110, .55);
-      box-shadow: 0 0 0 3px rgba(255, 110, 110, .08);
-    }
+    .captcha-input-wrap:focus-within { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
+    .captcha-input-wrap.invalid { border-color: rgba(255, 110, 110, .55); box-shadow: 0 0 0 3px rgba(255, 110, 110, .08); }
     .captcha-input-wrap input {
-      width: 100%; min-width: 0;
-      border: 0; background: transparent;
+      width: 100%; min-width: 0; border: 0; background: transparent;
       color: var(--text); font-size: 13px; font-weight: 700;
       outline: 0; letter-spacing: 1px;
     }
     .captcha-refresh {
-      display: grid; place-items: center;
-      width: 44px; min-width: 44px;
-      border: 1px solid rgba(155, 170, 210, .13);
-      border-radius: 13px;
-      background: rgba(255, 255, 255, .03);
-      color: var(--muted); cursor: pointer;
+      display: grid; place-items: center; width: 44px; min-width: 44px;
+      border: 1px solid rgba(155, 170, 210, .13); border-radius: 13px;
+      background: rgba(255, 255, 255, .03); color: var(--muted); cursor: pointer;
       transition: color .15s, background .15s, transform .2s;
     }
     .captcha-refresh:hover { color: #c5cee4; background: rgba(255, 255, 255, .07); }
     .captcha-refresh:active { transform: scale(.94); }
     .captcha-refresh svg { width: 16px; height: 16px; }
-
     .auth-submit {
       display: flex; align-items: center; justify-content: center; gap: 9px;
       width: 100%; min-height: 49px; margin-top: 6px;
-      border: 1px solid rgba(192, 201, 255, .23);
-      border-radius: 14px;
+      border: 1px solid rgba(192, 201, 255, .23); border-radius: 14px;
       background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8);
       box-shadow: 0 12px 28px rgba(92, 95, 231, .22);
-      color: #fff; font-size: 12px; font-weight: 700;
-      cursor: pointer;
+      color: #fff; font-size: 12px; font-weight: 700; cursor: pointer;
       transition: transform .2s, box-shadow .2s, opacity .2s;
     }
     .auth-submit:hover { box-shadow: 0 15px 35px rgba(92, 95, 231, .3); }
     .auth-submit:active { transform: scale(.99); }
     .auth-submit:disabled { opacity: .55; cursor: wait; }
     .auth-submit svg { width: 16px; height: 16px; }
-
     .auth-submit .btn-spinner {
       width: 14px; height: 14px;
-      border: 2px solid rgba(255, 255, 255, .3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
+      border: 2px solid rgba(255, 255, 255, .3); border-top-color: #fff;
+      border-radius: 50%; animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .auth-alert {
       display: flex; align-items: flex-start; gap: 9px;
       padding: 11px 12px; border-radius: 11px;
@@ -194,14 +144,8 @@
       background: rgba(255, 110, 110, .06);
       animation: slideIn .25s ease;
     }
-    .auth-alert.success {
-      border-color: rgba(105, 228, 177, .22);
-      background: rgba(105, 228, 177, .06);
-    }
-    .auth-alert.info {
-      border-color: rgba(117, 144, 255, .22);
-      background: rgba(117, 144, 255, .06);
-    }
+    .auth-alert.success { border-color: rgba(105, 228, 177, .22); background: rgba(105, 228, 177, .06); }
+    .auth-alert.info { border-color: rgba(117, 144, 255, .22); background: rgba(117, 144, 255, .06); }
     .auth-alert svg { flex: 0 0 auto; width: 15px; margin-top: 1px; }
     .auth-alert:not(.success):not(.info) svg { color: #ff8a8a; }
     .auth-alert.success svg { color: #8ee8c3; }
@@ -213,7 +157,6 @@
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .auth-footer-links {
       display: flex; align-items: center; justify-content: center; gap: 12px;
       margin-top: 16px; padding-top: 16px;
@@ -223,44 +166,33 @@
     .auth-footer-links button {
       border: 0; background: transparent;
       color: #9eafff; font-size: 10px; font-weight: 700;
-      cursor: pointer; padding: 4px 6px;
-      border-radius: 6px; transition: background .15s;
+      cursor: pointer; padding: 4px 6px; border-radius: 6px;
+      transition: background .15s;
     }
     .auth-footer-links button:hover { background: rgba(117, 144, 255, .08); }
     .auth-footer-links span { color: #4a5570; }
-
     .session-check {
       position: fixed; inset: 0; z-index: 100;
       display: grid; place-items: center;
       background: rgba(9, 13, 24, .92);
       backdrop-filter: blur(8px);
-      opacity: 0; pointer-events: none;
-      transition: opacity .25s;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
     }
     .session-check.visible { opacity: 1; pointer-events: auto; }
-    .session-check-inner {
-      display: grid; place-items: center; gap: 14px;
-      text-align: center;
-    }
+    .session-check-inner { display: grid; place-items: center; gap: 14px; text-align: center; }
     .session-check-inner .spinner {
       width: 28px; height: 28px;
-      border: 2px solid rgba(117, 144, 255, .2);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
+      border: 2px solid rgba(117, 144, 255, .2); border-top-color: var(--blue);
+      border-radius: 50%; animation: spin .7s linear infinite;
     }
     .session-check-inner p { margin: 0; color: var(--muted); font-size: 11px; }
-
     @media (max-width: 380px) {
       .auth-panel { padding: 16px; }
       .captcha-challenge { min-width: 95px; font-size: 15px; padding: 0 10px; }
       .captcha-row { gap: 6px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
@@ -520,25 +452,22 @@
     let supabase = null;
     let supabaseConfig = null;
     let configError = null;
-    let redirectGuard = false; // cegah redirect ganda
+    let redirectGuard = false;
 
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
     const show = (el) => el && el.classList.remove('hidden');
     const hide = (el) => el && el.classList.add('hidden');
 
-    /* ---------- Redirect terpusat ---------- */
     function doRedirect(reason) {
       if (redirectGuard) return;
       redirectGuard = true;
       setSessionOverlay(reason || 'Mengalihkan…', true);
-      // Tunggu satu tick supaya storage Supabase selesai di-commit
       setTimeout(() => {
         window.location.replace(REDIRECT_AFTER_LOGIN);
       }, 120);
     }
 
-    /* ---------- Cache config ---------- */
     function cacheConfig() {
       if (!supabaseConfig) return;
       try {
@@ -547,10 +476,9 @@
           supabaseAnonKey: supabaseConfig.supabaseAnonKey,
           cachedAt: Date.now(),
         }));
-      } catch (_) { /* ignore */ }
+      } catch (_) {}
     }
 
-    /* ---------- Field errors ---------- */
     function setFieldError(fieldId, message) {
       const errEl = document.querySelector('.field-error[data-for="' + fieldId + '"]');
       const input = document.getElementById(fieldId);
@@ -637,7 +565,6 @@
       overlay.classList.toggle('visible', visible);
     }
 
-    /* ---------- Load config ---------- */
     async function loadConfig() {
       setSessionOverlay('Memuat konfigurasi…', true);
       try {
@@ -646,30 +573,25 @@
           headers: { Accept: 'application/json' },
           cache: 'no-store',
         });
-
         if (!res.ok) {
           let detail = 'HTTP ' + res.status;
           try {
             const j = await res.json();
             if (j && j.error) detail = j.error;
-          } catch (_) { /* ignore */ }
+          } catch (_) {}
           throw new Error(detail);
         }
-
         const json = await res.json();
         if (!json || !json.supabaseUrl || !json.supabaseAnonKey) {
           throw new Error('Respons /api/config tidak lengkap.');
         }
-
         supabaseConfig = {
           supabaseUrl: json.supabaseUrl,
           supabaseAnonKey: json.supabaseAnonKey,
         };
-
         if (!window.supabase || typeof window.supabase.createClient !== 'function') {
           throw new Error('Library Supabase gagal dimuat. Periksa koneksi internet.');
         }
-
         supabase = window.supabase.createClient(json.supabaseUrl, json.supabaseAnonKey, {
           auth: {
             persistSession: true,
@@ -679,9 +601,6 @@
           },
         });
 
-        /* ---------- Pantau auth state ---------- */
-        // SIGNED_IN fire SETELAH session ter-persist ke storage.
-        // Ini jaminan bahwa localStorage sudah terisi saat redirect.
         supabase.auth.onAuthStateChange((event, session) => {
           if (event === 'SIGNED_IN' && session) {
             cacheConfig();
@@ -696,7 +615,6 @@
       }
     }
 
-    /* ---------- Validasi ---------- */
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,30}$/;
     const WHATSAPP_REGEX = /^(\+62|62|0)8[0-9]{7,12}$/;
@@ -726,7 +644,6 @@
       return null;
     }
 
-    /* ---------- Password strength ---------- */
     function getPasswordStrength(pwd) {
       let score = 0;
       if (pwd.length >= 8) score++;
@@ -753,7 +670,6 @@
       text.setAttribute('data-level', String(score));
     }
 
-    /* ---------- Captcha ---------- */
     function createCaptcha() {
       const a = Math.floor(Math.random() * 9) + 1;
       const b = Math.floor(Math.random() * 9) + 1;
@@ -761,10 +677,7 @@
       if (useMultiply) return { display: a + ' × ' + b + ' = ?', answer: String(a * b) };
       return { display: a + ' + ' + b + ' = ?', answer: String(a + b) };
     }
-    const captchaState = {
-      login: createCaptcha(),
-      signup: createCaptcha(),
-    };
+    const captchaState = { login: createCaptcha(), signup: createCaptcha() };
     function renderCaptcha(key) {
       const challengeEl = document.getElementById(key + 'CaptchaChallenge');
       const input = document.getElementById(key + 'Captcha');
@@ -795,7 +708,6 @@
       return true;
     }
 
-    /* ---------- Toast ---------- */
     let toastTimer = null;
     function toast(message, type) {
       const el = document.getElementById('toast');
@@ -807,14 +719,12 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
     }
 
-    /* ---------- Tab switching ---------- */
     function setTab(tab) {
       const loginForm = document.getElementById('loginForm');
       const signupForm = document.getElementById('signupForm');
       const tabLogin = document.getElementById('tabLogin');
       const tabSignup = document.getElementById('tabSignup');
       if (!loginForm || !signupForm) return;
-
       if (tab === 'login') {
         loginForm.classList.remove('hidden');
         signupForm.classList.add('hidden');
@@ -850,28 +760,23 @@
       });
     }
 
-    /* ---------- Signup ---------- */
     async function handleSignup(evt) {
       evt.preventDefault();
       if (!supabase) {
         showAlert('signupAlert', configError || 'Koneksi ke server gagal. Muat ulang halaman.', 'error');
         return;
       }
-
       const btn = document.getElementById('signupSubmit');
       const usernameEl = document.getElementById('signupUsername');
       const emailEl = document.getElementById('signupEmail');
       const whatsappEl = document.getElementById('signupWhatsapp');
       const passwordEl = document.getElementById('signupPassword');
-
       clearAllErrors('signupForm');
       hideAlert('signupAlert');
-
       const username = (usernameEl.value || '').trim();
       const email = (emailEl.value || '').trim().toLowerCase();
       const whatsapp = (whatsappEl.value || '').trim();
       const password = passwordEl.value || '';
-
       let hasError = false;
       const usernameErr = validateUsername(username);
       if (usernameErr) { setFieldError('signupUsername', usernameErr); hasError = true; }
@@ -883,9 +788,7 @@
       if (pwdErr) { setFieldError('signupPassword', pwdErr); hasError = true; }
       if (!verifyCaptcha('signup')) hasError = true;
       if (hasError) return;
-
       setButtonLoading(btn, true, 'Memeriksa username…');
-
       try {
         const { data: available, error: availErr } = await supabase.rpc('is_username_available', { uname: username });
         if (availErr) {
@@ -895,21 +798,14 @@
           setButtonLoading(btn, false);
           return;
         }
-
         setButtonLoading(btn, true, 'Mendaftarkan…');
-
         const { data, error } = await supabase.auth.signUp({
           email: email,
           password: password,
           options: {
-            data: {
-              username: username,
-              whatsapp: whatsapp || null,
-              full_name: username,
-            },
+            data: { username: username, whatsapp: whatsapp || null, full_name: username },
           },
         });
-
         if (error) {
           const msg = (error.message || '').toLowerCase();
           if (msg.includes('already registered') || msg.includes('user already')) {
@@ -926,14 +822,10 @@
           setButtonLoading(btn, false);
           return;
         }
-
-        // Kalau ada session → auto-login via onAuthStateChange
         if (data && data.session) {
           showAlert('signupAlert', 'Pendaftaran berhasil! Mengalihkan…', 'success');
           toast('Selamat datang, ' + username + '!', 'success');
-          // doRedirect dipicu oleh onAuthStateChange('SIGNED_IN')
         } else if (data && data.user) {
-          // Confirm email ON
           showAlert('signupAlert', 'Cek email untuk verifikasi. Setelah verifikasi, kamu bisa masuk.', 'info');
           setTimeout(() => setTab('login'), 1800);
         }
@@ -944,24 +836,19 @@
       }
     }
 
-    /* ---------- Login ---------- */
     async function handleLogin(evt) {
       evt.preventDefault();
       if (!supabase) {
         showAlert('loginAlert', configError || 'Koneksi ke server gagal. Muat ulang halaman.', 'error');
         return;
       }
-
       const btn = document.getElementById('loginSubmit');
       const emailEl = document.getElementById('loginEmail');
       const passwordEl = document.getElementById('loginPassword');
-
       clearAllErrors('loginForm');
       hideAlert('loginAlert');
-
       const email = (emailEl.value || '').trim().toLowerCase();
       const password = passwordEl.value || '';
-
       let hasError = false;
       const emailErr = validateEmail(email);
       if (emailErr) { setFieldError('loginEmail', emailErr); hasError = true; }
@@ -969,9 +856,7 @@
       if (pwdErr) { setFieldError('loginPassword', pwdErr); hasError = true; }
       if (!verifyCaptcha('login')) hasError = true;
       if (hasError) return;
-
       setButtonLoading(btn, true, 'Masuk…');
-
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
@@ -988,14 +873,9 @@
           setButtonLoading(btn, false);
           return;
         }
-
-        // Jangan redirect manual! Tunggu onAuthStateChange('SIGNED_IN').
-        // Tapi kalau karena sesuatu hal event itu tidak fire, pakai fallback:
         if (data && data.session) {
-          // Pastikan session di-set eksplisit dulu (defensif)
-          try { await supabase.auth.setSession(data.session); } catch (_) { /* ignore */ }
+          try { await supabase.auth.setSession(data.session); } catch (_) {}
           cacheConfig();
-          // Trigger redirect — guard `redirectGuard` mencegah dobel dengan onAuthStateChange
           doRedirect('Berhasil masuk. Mengalihkan…');
         } else {
           showAlert('loginAlert', 'Login tidak menghasilkan sesi. Coba lagi.', 'error');
@@ -1007,7 +887,6 @@
       }
     }
 
-    /* ---------- Forgot password ---------- */
     async function handleForgotPassword() {
       if (!supabase) { toast(configError || 'Server belum siap.', 'error'); return; }
       const emailEl = document.getElementById('forgotEmail');
@@ -1016,10 +895,8 @@
       const email = (emailEl.value || '').trim().toLowerCase();
       const err = validateEmail(email);
       if (err) { toast(err, 'error'); return; }
-
       setButtonLoading(btn, true, 'Mengirim…');
       if (alertEl) alertEl.classList.add('hidden');
-
       try {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.origin + '/reset.html',
@@ -1044,7 +921,6 @@
       }
     }
 
-    /* ---------- Session check (kalau sudah login, skip login page) ---------- */
     async function checkSession() {
       if (!supabase) { setSessionOverlay('', false); return; }
       try {
@@ -1054,27 +930,23 @@
           setTimeout(() => { window.location.replace(REDIRECT_AFTER_LOGIN); }, 300);
           return;
         }
-      } catch (_) { /* ignore */ }
+      } catch (_) {}
       setSessionOverlay('', false);
     }
 
-    /* ---------- Bind events ---------- */
     function bindEvents() {
       const tabLogin = document.getElementById('tabLogin');
       const tabSignup = document.getElementById('tabSignup');
       if (tabLogin) tabLogin.addEventListener('click', () => setTab('login'));
       if (tabSignup) tabSignup.addEventListener('click', () => setTab('signup'));
-
       const switchToSignup = document.getElementById('switchToSignup');
       const switchToLogin = document.getElementById('switchToLogin');
       if (switchToSignup) switchToSignup.addEventListener('click', () => setTab('signup'));
       if (switchToLogin) switchToLogin.addEventListener('click', () => setTab('login'));
-
       const loginRefresh = document.getElementById('loginCaptchaRefresh');
       const signupRefresh = document.getElementById('signupCaptchaRefresh');
       if (loginRefresh) loginRefresh.addEventListener('click', () => refreshCaptcha('login'));
       if (signupRefresh) signupRefresh.addEventListener('click', () => refreshCaptcha('signup'));
-
       const loginForm = document.getElementById('loginForm');
       const signupForm = document.getElementById('signupForm');
       if (loginForm) loginForm.addEventListener('submit', handleLogin);
@@ -1086,28 +958,24 @@
         if (err && loginEmail.value) setFieldError('loginEmail', err);
         else setFieldError('loginEmail', null);
       });
-
       const signupUsername = document.getElementById('signupUsername');
       if (signupUsername) signupUsername.addEventListener('blur', () => {
         const err = validateUsername(signupUsername.value.trim());
         if (err && signupUsername.value) setFieldError('signupUsername', err);
         else setFieldError('signupUsername', null);
       });
-
       const signupEmail = document.getElementById('signupEmail');
       if (signupEmail) signupEmail.addEventListener('blur', () => {
         const err = validateEmail(signupEmail.value.trim().toLowerCase());
         if (err && signupEmail.value) setFieldError('signupEmail', err);
         else setFieldError('signupEmail', null);
       });
-
       const signupWhatsapp = document.getElementById('signupWhatsapp');
       if (signupWhatsapp) signupWhatsapp.addEventListener('blur', () => {
         const err = validateWhatsApp(signupWhatsapp.value.trim());
         if (err) setFieldError('signupWhatsapp', err);
         else setFieldError('signupWhatsapp', null);
       });
-
       const signupPassword = document.getElementById('signupPassword');
       if (signupPassword) {
         signupPassword.addEventListener('input', () => {
@@ -1115,7 +983,6 @@
           if (signupPassword.value) setFieldError('signupPassword', null);
         });
       }
-
       ['loginCaptcha', 'signupCaptcha'].forEach((id) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1138,10 +1005,7 @@
         document.body.style.overflow = '';
       });
       if (forgotModal) forgotModal.addEventListener('click', (e) => {
-        if (e.target === forgotModal) {
-          hide(forgotModal);
-          document.body.style.overflow = '';
-        }
+        if (e.target === forgotModal) { hide(forgotModal); document.body.style.overflow = ''; }
       });
       if (forgotSubmit) forgotSubmit.addEventListener('click', handleForgotPassword);
 
@@ -1150,47 +1014,30 @@
       const closeHelp = document.getElementById('closeHelp');
       const closeHelpBottom = document.getElementById('closeHelpBottom');
       if (helpBtn) helpBtn.addEventListener('click', () => {
-        show(helpModal);
-        document.body.style.overflow = 'hidden';
+        show(helpModal); document.body.style.overflow = 'hidden';
       });
-      if (closeHelp) closeHelp.addEventListener('click', () => {
-        hide(helpModal);
-        document.body.style.overflow = '';
-      });
-      if (closeHelpBottom) closeHelpBottom.addEventListener('click', () => {
-        hide(helpModal);
-        document.body.style.overflow = '';
-      });
+      const closeHelpFn = () => { hide(helpModal); document.body.style.overflow = ''; };
+      if (closeHelp) closeHelp.addEventListener('click', closeHelpFn);
+      if (closeHelpBottom) closeHelpBottom.addEventListener('click', closeHelpFn);
       if (helpModal) helpModal.addEventListener('click', (e) => {
-        if (e.target === helpModal) {
-          hide(helpModal);
-          document.body.style.overflow = '';
-        }
+        if (e.target === helpModal) closeHelpFn();
       });
-
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          if (helpModal && !helpModal.classList.contains('hidden')) {
-            hide(helpModal);
-            document.body.style.overflow = '';
-          }
+          if (helpModal && !helpModal.classList.contains('hidden')) closeHelpFn();
           if (forgotModal && !forgotModal.classList.contains('hidden')) {
-            hide(forgotModal);
-            document.body.style.overflow = '';
+            hide(forgotModal); document.body.style.overflow = '';
           }
         }
       });
     }
 
-    /* ---------- Init ---------- */
     async function init() {
       if (window.lucide) window.lucide.createIcons();
-
       renderCaptcha('login');
       renderCaptcha('signup');
       bindPasswordToggles();
       bindEvents();
-
       const ok = await loadConfig();
       if (!ok) {
         setSessionOverlay('', false);
@@ -1198,7 +1045,6 @@
         showAlert('signupAlert', configError || 'Gagal memuat konfigurasi server.', 'error');
         return;
       }
-
       await checkSession();
     }
 
