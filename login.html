@@ -520,13 +520,25 @@
     let supabase = null;
     let supabaseConfig = null;
     let configError = null;
+    let redirectGuard = false; // cegah redirect ganda
 
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
     const show = (el) => el && el.classList.remove('hidden');
     const hide = (el) => el && el.classList.add('hidden');
 
-    /* ---------- Helper: simpan config ke cache ---------- */
+    /* ---------- Redirect terpusat ---------- */
+    function doRedirect(reason) {
+      if (redirectGuard) return;
+      redirectGuard = true;
+      setSessionOverlay(reason || 'Mengalihkan…', true);
+      // Tunggu satu tick supaya storage Supabase selesai di-commit
+      setTimeout(() => {
+        window.location.replace(REDIRECT_AFTER_LOGIN);
+      }, 120);
+    }
+
+    /* ---------- Cache config ---------- */
     function cacheConfig() {
       if (!supabaseConfig) return;
       try {
@@ -665,6 +677,16 @@
             detectSessionInUrl: true,
             storageKey: 'fortech-auth-session',
           },
+        });
+
+        /* ---------- Pantau auth state ---------- */
+        // SIGNED_IN fire SETELAH session ter-persist ke storage.
+        // Ini jaminan bahwa localStorage sudah terisi saat redirect.
+        supabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+            cacheConfig();
+            doRedirect('Berhasil masuk. Mengalihkan…');
+          }
         });
 
         return true;
@@ -905,12 +927,13 @@
           return;
         }
 
+        // Kalau ada session → auto-login via onAuthStateChange
         if (data && data.session) {
-          cacheConfig();
           showAlert('signupAlert', 'Pendaftaran berhasil! Mengalihkan…', 'success');
           toast('Selamat datang, ' + username + '!', 'success');
-          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 900);
+          // doRedirect dipicu oleh onAuthStateChange('SIGNED_IN')
         } else if (data && data.user) {
+          // Confirm email ON
           showAlert('signupAlert', 'Cek email untuk verifikasi. Setelah verifikasi, kamu bisa masuk.', 'info');
           setTimeout(() => setTab('login'), 1800);
         }
@@ -966,10 +989,14 @@
           return;
         }
 
+        // Jangan redirect manual! Tunggu onAuthStateChange('SIGNED_IN').
+        // Tapi kalau karena sesuatu hal event itu tidak fire, pakai fallback:
         if (data && data.session) {
+          // Pastikan session di-set eksplisit dulu (defensif)
+          try { await supabase.auth.setSession(data.session); } catch (_) { /* ignore */ }
           cacheConfig();
-          toast('Berhasil masuk!', 'success');
-          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 700);
+          // Trigger redirect — guard `redirectGuard` mencegah dobel dengan onAuthStateChange
+          doRedirect('Berhasil masuk. Mengalihkan…');
         } else {
           showAlert('loginAlert', 'Login tidak menghasilkan sesi. Coba lagi.', 'error');
           setButtonLoading(btn, false);
@@ -1017,14 +1044,14 @@
       }
     }
 
-    /* ---------- Session check ---------- */
+    /* ---------- Session check (kalau sudah login, skip login page) ---------- */
     async function checkSession() {
       if (!supabase) { setSessionOverlay('', false); return; }
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session && session.user) {
           setSessionOverlay('Sudah masuk, mengalihkan…', true);
-          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 500);
+          setTimeout(() => { window.location.replace(REDIRECT_AFTER_LOGIN); }, 300);
           return;
         }
       } catch (_) { /* ignore */ }
