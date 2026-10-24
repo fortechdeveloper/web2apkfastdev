@@ -20,7 +20,6 @@
     .tools-hero { padding-bottom: 22px; }
     .tools-hero h1 span { color: var(--cyan); }
 
-    /* Claymorphism hero card */
     .clay-card {
       margin-top: 20px;
       padding: 18px;
@@ -50,10 +49,7 @@
     .clay-stats b { display: block; font-size: 18px; letter-spacing: -.5px; }
     .clay-stats small { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Tool grid */
     .tool-grid { display: grid; gap: 11px; margin-bottom: 15px; }
-
-    /* ==== Border & icon seragam untuk semua menu ==== */
     .tool-card {
       display: flex;
       align-items: center;
@@ -79,7 +75,6 @@
       border-color: rgba(129, 151, 255, .55);
       box-shadow: 0 0 0 1px rgba(117, 144, 255, .12);
     }
-
     .tool-card-icon {
       display: grid; place-items: center;
       width: 44px; height: 44px; flex: 0 0 auto;
@@ -88,11 +83,9 @@
       color: #9eafff;
     }
     .tool-card-icon svg { width: 20px; height: 20px; }
-
     .tool-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
     .tool-card-body b { font-size: 12px; }
     .tool-card-body small { color: var(--muted); font-size: 10px; }
-
     .tool-card-badge {
       flex: 0 0 auto;
       padding: 5px 8px;
@@ -110,12 +103,10 @@
       color: #8d9ab6;
     }
 
-    /* Tool panel */
     .tool-panel { margin-top: 15px; }
     .tool-panel .panel-heading { margin-bottom: 20px; }
     .tool-form .field { margin-top: 0; }
 
-    /* Input clear */
     .input-clear {
       display: grid; place-items: center;
       width: 24px; height: 24px;
@@ -127,7 +118,6 @@
     }
     .input-clear svg { width: 13px; height: 13px; }
 
-    /* Primary action */
     .tool-action {
       display: flex; align-items: center; justify-content: center; gap: 9px;
       width: 100%; min-height: 48px;
@@ -146,7 +136,6 @@
     .tool-action:disabled { opacity: .55; cursor: wait; }
     .tool-action svg { width: 17px; height: 17px; }
 
-    /* Loading */
     .tool-state { display: grid; place-items: center; gap: 12px; padding: 28px 0; text-align: center; }
     .tool-state p { margin: 0; color: var(--muted); font-size: 11px; }
     .spinner {
@@ -158,7 +147,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Alert */
     .tool-alert {
       display: flex; align-items: flex-start; gap: 10px;
       margin-top: 15px; padding: 12px;
@@ -169,7 +157,6 @@
     .tool-alert svg { flex: 0 0 auto; width: 16px; color: #ff8a8a; }
     .tool-alert p { margin: 0; color: #ffb4b4; font-size: 11px; line-height: 1.6; }
 
-    /* Result */
     .tool-result {
       margin-top: 18px;
       overflow: hidden;
@@ -239,7 +226,6 @@
     }
     .ghost-btn svg { width: 13px; height: 13px; }
 
-    /* Soon panel */
     .soon-panel { text-align: center; }
     .soon-content { display: grid; place-items: center; gap: 10px; padding: 30px 10px; }
     .soon-icon {
@@ -259,7 +245,6 @@
       color: #9aa8c8; font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
     }
 
-    /* History */
     .history-list { display: grid; gap: 8px; margin-top: 4px; }
     .history-item {
       display: flex; align-items: center; gap: 10px;
@@ -278,10 +263,174 @@
     .history-item small { color: var(--muted); font-size: 9px; }
     .history-item svg { width: 13px; color: var(--muted); flex: 0 0 auto; }
 
+    /* ============================================================
+       PINTEREST SPECIFIC
+       ============================================================ */
+
+    /* Search results grid */
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 16px;
+    }
+    .pin-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0b1120;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .pin-card:hover {
+      border-color: rgba(129, 151, 255, .55);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+    .pin-card:active { transform: scale(.99); }
+    .pin-card-thumb {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: #131b2e;
+    }
+    .pin-card-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .pin-card-type {
+      position: absolute;
+      top: 7px; left: 7px;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(4, 8, 16, .78);
+      color: #e6ecff;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .6px;
+      backdrop-filter: blur(6px);
+    }
+    .pin-card-type svg { width: 10px; height: 10px; }
+    .pin-card-meta {
+      padding: 8px 9px 10px;
+      display: grid;
+      gap: 3px;
+    }
+    .pin-card-meta b {
+      font-size: 9.5px;
+      line-height: 1.4;
+      color: #cfd8ee;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .pin-card-meta small {
+      color: var(--muted);
+      font-size: 8.5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pin-empty {
+      grid-column: 1 / -1;
+      padding: 30px 14px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+    }
+
+    /* Single preview */
+    .pin-preview {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(7, 11, 21, .35);
+    }
+    .pin-preview-media {
+      position: relative;
+      max-height: 62vh;
+      background: #050810;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .pin-preview-media img,
+    .pin-preview-media video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 62vh;
+      object-fit: contain;
+      background: #050810;
+    }
+    .pin-preview-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(4, 8, 16, .78);
+      color: #e6ecff;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: .6px;
+      backdrop-filter: blur(6px);
+    }
+    .pin-preview-badge svg { width: 10px; height: 10px; }
+    .pin-preview-body {
+      padding: 14px;
+      display: grid;
+      gap: 11px;
+    }
+    .pin-preview-title {
+      margin: 0;
+      color: #dbe3f6;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .pin-preview-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .pin-preview-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pin-preview-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 9.5px;
+    }
+    .pin-preview-meta svg { width: 11px; height: 11px; }
+
     @media (max-width: 380px) {
       .clay-stats b { font-size: 16px; }
       .tool-card { padding: 12px; gap: 10px; }
       .tool-card-icon { width: 38px; height: 38px; border-radius: 12px; }
+      .pin-grid { gap: 7px; }
     }
   </style>
 </head>
@@ -290,7 +439,6 @@
   <div class="ambient ambient-two"></div>
 
   <main class="app">
-    <!-- Topbar -->
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="FastDev Web2APK">
         <span class="brand-icon"><i data-lucide="layers"></i></span>
@@ -304,40 +452,36 @@
       </button>
     </header>
 
-    <!-- Hero -->
     <section class="hero tools-hero">
       <div class="hero-label"><span class="live-dot"></span> UTILITY TOOLS</div>
       <h1>Toolkit <span>praktis.</span></h1>
       <p>Downloader dan utilitas ringan untuk kebutuhan harian. Diproses cepat, langsung dari perangkat kamu.</p>
 
-      <!-- Claymorphism hero card -->
       <div class="clay-card">
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
             <b>3 tools tersedia</b>
-            <small>TikTok aktif · 2 segera hadir</small>
+            <small>TikTok &amp; Pinterest aktif · 1 segera hadir</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>1</b><small>Aktif</small></div>
-          <div><b>2</b><small>Segera</small></div>
+          <div><b>2</b><small>Aktif</small></div>
+          <div><b>1</b><small>Segera</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
       </div>
     </section>
 
-    <!-- Section heading -->
     <div class="section-heading">
       <div>
         <span class="eyebrow">DOWNLOADER</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 1 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 2 AKTIF</span>
     </div>
 
-    <!-- Tool cards -->
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
       <button class="tool-card active" data-tool="tiktok" type="button" role="tab" aria-selected="true" aria-controls="panel-tiktok">
         <span class="tool-card-icon"><i data-lucide="music-2"></i></span>
@@ -351,10 +495,10 @@
       <button class="tool-card" data-tool="pinterest" type="button" role="tab" aria-selected="false" aria-controls="panel-pinterest">
         <span class="tool-card-icon"><i data-lucide="image"></i></span>
         <span class="tool-card-body">
-          <b>Pinterest Downloader</b>
-          <small>Gambar &amp; video</small>
+          <b>Pinterest Search &amp; DL</b>
+          <small>Cari &amp; unduh gambar/video</small>
         </span>
-        <span class="tool-card-badge soon">SEGERA</span>
+        <span class="tool-card-badge">AKTIF</span>
       </button>
 
       <button class="tool-card" data-tool="happymod" type="button" role="tab" aria-selected="false" aria-controls="panel-happymod">
@@ -367,7 +511,7 @@
       </button>
     </div>
 
-    <!-- TikTok panel -->
+    <!-- ================= TIKTOK PANEL ================= -->
     <section class="panel tool-panel" id="panel-tiktok" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="music-2"></i></span>
@@ -446,24 +590,113 @@
         </div>
       </div>
 
-      <!-- History -->
       <div class="field hidden" id="historyField" style="margin-top:20px;">
         <label style="display:block;margin-bottom:9px;color:#c5cee4;font-size:11px;font-weight:700;">Terakhir diambil</label>
         <div class="history-list" id="historyList"></div>
       </div>
     </section>
 
-    <!-- Pinterest panel -->
-    <section class="panel tool-panel soon-panel hidden" id="panel-pinterest" role="tabpanel">
-      <div class="soon-content">
-        <span class="soon-icon"><i data-lucide="image"></i></span>
-        <h3>Pinterest Downloader</h3>
-        <p>Simpan gambar dan video Pinterest dengan kualitas terbaik. Tool ini sedang dalam pengembangan.</p>
-        <span class="soon-tag">SEGERA HADIR</span>
+    <!-- ================= PINTEREST PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-pinterest" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="image"></i></span>
+        <div>
+          <h3>Pinterest Search &amp; DL</h3>
+          <p>Cari inspirasi atau unduh dari URL pin.</p>
+        </div>
+      </div>
+
+      <div class="segmented" style="margin-bottom:16px;">
+        <button type="button" class="seg-btn active" data-pinmode="search">
+          <i data-lucide="search"></i> Cari
+        </button>
+        <button type="button" class="seg-btn" data-pinmode="download">
+          <i data-lucide="download"></i> Unduh
+        </button>
+      </div>
+
+      <!-- Mode Cari -->
+      <form id="pinSearchForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="pinQuery">Kata kunci</label>
+          <div class="input-wrap">
+            <i data-lucide="search"></i>
+            <input id="pinQuery" type="text" placeholder="Contoh: aesthetic wallpaper" autocomplete="off" spellcheck="false">
+            <button class="input-clear hidden" id="pinQueryClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Hasil diambil dari Pinterest public search.</small>
+        </div>
+        <button class="tool-action" id="pinSearchSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Cari</span>
+        </button>
+      </form>
+
+      <!-- Mode Unduh -->
+      <form id="pinDownloadForm" class="tool-form hidden" novalidate>
+        <div class="field">
+          <label for="pinUrl">URL Pinterest</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="pinUrl" type="url" placeholder="https://pin.it/... atau pinterest.com/pin/..." autocomplete="off" spellcheck="false" inputmode="url">
+            <button class="input-clear hidden" id="pinUrlClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Mendukung link pin, board, dan short link <b>pin.it</b>.</small>
+        </div>
+        <button class="tool-action" id="pinDownloadSubmit" type="submit">
+          <i data-lucide="download"></i>
+          <span>Ambil media</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="pinLoading">
+        <span class="spinner"></span>
+        <p id="pinLoadingText">Memproses…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="pinError">
+        <i data-lucide="alert-circle"></i>
+        <p id="pinErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <!-- Hasil pencarian grid -->
+      <div class="pin-grid hidden" id="pinResults"></div>
+
+      <!-- Preview / hasil unduh -->
+      <div class="pin-preview hidden" id="pinPreview">
+        <div class="pin-preview-media" id="pinPreviewMedia"></div>
+        <div class="pin-preview-body">
+          <h3 class="pin-preview-title" id="pinPreviewTitle">-</h3>
+          <p class="pin-preview-desc hidden" id="pinPreviewDesc"></p>
+          <div class="pin-preview-meta" id="pinPreviewMeta"></div>
+          <div class="download-actions">
+            <a class="download-btn" id="pinDownloadPrimary" href="#" download target="_blank" rel="noopener noreferrer">
+              <i data-lucide="download"></i> Unduh media
+            </a>
+            <a class="download-btn secondary hidden" id="pinDownloadAlt" href="#" download target="_blank" rel="noopener noreferrer">
+              <i data-lucide="download"></i> Unduh alternatif
+            </a>
+            <a class="download-btn secondary hidden" id="pinOpenSource" href="#" target="_blank" rel="noopener noreferrer">
+              <i data-lucide="external-link"></i> Buka di Pinterest
+            </a>
+          </div>
+          <button class="ghost-btn" id="pinBack" type="button">
+            <i data-lucide="arrow-left"></i> Kembali
+          </button>
+        </div>
+      </div>
+
+      <div class="field hidden" id="pinHistoryField" style="margin-top:20px;">
+        <label style="display:block;margin-bottom:9px;color:#c5cee4;font-size:11px;font-weight:700;">Terakhir diunduh</label>
+        <div class="history-list" id="pinHistoryList"></div>
       </div>
     </section>
 
-    <!-- HappyMod panel -->
+    <!-- ================= HAPPYMOD PANEL ================= -->
     <section class="panel tool-panel soon-panel hidden" id="panel-happymod" role="tabpanel">
       <div class="soon-content">
         <span class="soon-icon"><i data-lucide="package"></i></span>
@@ -480,7 +713,6 @@
     </footer>
   </main>
 
-  <!-- Bottom nav -->
   <nav class="bottom-nav" aria-label="Navigasi utama">
     <a href="index.html" class="nav-item">
       <i data-lucide="hammer"></i><span>Build</span>
@@ -496,7 +728,6 @@
     </a>
   </nav>
 
-  <!-- Help modal -->
   <div class="modal-backdrop hidden" id="helpModal">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
       <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup">
@@ -504,8 +735,9 @@
       </button>
       <span class="section-icon"><i data-lucide="circle-help"></i></span>
       <h3 id="helpTitle">Bantuan Tools</h3>
-      <p>Pilih tool yang ingin dipakai. TikTok Downloader aktif dan bisa langsung digunakan dengan menempel link video.</p>
-      <p>Tool lain sedang dalam pengembangan dan akan tersedia segera.</p>
+      <p>TikTok Downloader: tempel link video untuk mengambil versi tanpa watermark.</p>
+      <p>Pinterest: gunakan mode <b>Cari</b> untuk menemukan gambar/video, atau mode <b>Unduh</b> dengan menempel URL pin.</p>
+      <p>HappyMod akan tersedia segera.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
     </section>
   </div>
@@ -521,9 +753,10 @@
        ============================================================ */
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
-
     const show = (el) => el && el.classList.remove('hidden');
     const hide = (el) => el && el.classList.add('hidden');
+
+    const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
     function formatNumber(n) {
       const num = Number(n) || 0;
@@ -545,6 +778,20 @@
       if (u.startsWith('//')) return 'https:' + u;
       if (u.startsWith('/')) return 'https://www.tikwm.com' + u;
       return u;
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeFileName(name, fallback) {
+      const base = (name || fallback || 'pinterest').replace(/[\\/:*?"<>|]+/g, '_').trim();
+      return (base || 'pinterest').slice(0, 60);
     }
 
     /* ============================================================
@@ -589,9 +836,8 @@
       card.addEventListener('click', () => {
         const name = card.dataset.tool;
         setActiveTool(name);
-        if (name !== 'tiktok') {
-          const label = card.querySelector('b')?.textContent || 'Tool';
-          toast(label + ' segera hadir.', 'info');
+        if (name === 'happymod') {
+          toast('HappyMod Downloader segera hadir.', 'info');
         }
       });
     });
@@ -599,11 +845,11 @@
     /* ============================================================
        TIKTOK DOWNLOADER
        ============================================================ */
-    const API_BASE = 'https://www.tikwm.com/api/';
+    const TIKTOK_API_BASE = 'https://www.tikwm.com/api/';
     const TIKTOK_REGEX = /https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/[^\s]+/i;
-    const MIN_INTERVAL = 1100;
+    const TIKTOK_MIN_INTERVAL = 1100;
 
-    const dom = {
+    const ttDom = {
       form: $('#tiktokForm'),
       url: $('#tiktokUrl'),
       clear: $('#clearUrl'),
@@ -631,27 +877,21 @@
       historyList: $('#historyList'),
     };
 
-    const state = {
-      loading: false,
-      lastRequestAt: 0,
-    };
-
-    const HISTORY_KEY = 'fastdev:tools:history:v1';
-    const HISTORY_MAX = 6;
+    const ttState = { loading: false, lastRequestAt: 0 };
+    const TT_HISTORY_KEY = 'fastdev:tools:history:v1';
+    const TT_HISTORY_MAX = 6;
 
     function readHistory() {
       try {
-        const raw = localStorage.getItem(HISTORY_KEY);
+        const raw = localStorage.getItem(TT_HISTORY_KEY);
         const arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
-      } catch (_) {
-        return [];
-      }
+      } catch (_) { return []; }
     }
 
     function writeHistory(arr) {
       try {
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(0, HISTORY_MAX)));
+        localStorage.setItem(TT_HISTORY_KEY, JSON.stringify(arr.slice(0, TT_HISTORY_MAX)));
       } catch (_) { /* ignore */ }
     }
 
@@ -664,44 +904,35 @@
 
     function renderHistory() {
       const list = readHistory();
-      if (!dom.historyList || !dom.historyField) return;
-      if (list.length === 0) {
-        hide(dom.historyField);
-        return;
-      }
-      show(dom.historyField);
-      dom.historyList.innerHTML = '';
+      if (!ttDom.historyList || !ttDom.historyField) return;
+      if (list.length === 0) { hide(ttDom.historyField); return; }
+      show(ttDom.historyField);
+      ttDom.historyList.innerHTML = '';
       list.forEach((item) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'history-item';
         btn.innerHTML =
-          '<img src="' + (item.cover || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
-          '<div><b>' + (item.title || 'Tanpa judul') + '</b><small>@' + (item.author || 'user') + '</small></div>' +
+          '<img src="' + escapeHtml(item.cover || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+          '<div><b>' + escapeHtml(item.title || 'Tanpa judul') + '</b><small>@' + escapeHtml(item.author || 'user') + '</small></div>' +
           '<i data-lucide="chevron-right"></i>';
         btn.addEventListener('click', () => {
-          dom.url.value = item.url || '';
-          dom.clear.classList.remove('hidden');
-          dom.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          ttDom.url.value = item.url || '';
+          ttDom.clear.classList.remove('hidden');
+          ttDom.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         });
-        dom.historyList.appendChild(btn);
+        ttDom.historyList.appendChild(btn);
       });
       if (window.lucide) window.lucide.createIcons();
     }
 
-    function showError(msg) {
-      if (dom.errorText) dom.errorText.textContent = msg;
-      show(dom.error);
-      hide(dom.loading);
+    function ttShowError(msg) {
+      if (ttDom.errorText) ttDom.errorText.textContent = msg;
+      show(ttDom.error);
+      hide(ttDom.loading);
     }
-
-    function hideError() {
-      hide(dom.error);
-    }
-
-    function hideResult() {
-      hide(dom.result);
-    }
+    function ttHideError() { hide(ttDom.error); }
+    function ttHideResult() { hide(ttDom.result); }
 
     function setDownloadLink(el, url, filename) {
       if (!el) return;
@@ -716,15 +947,9 @@
     }
 
     async function fetchTikTok(url) {
-      const endpoint = API_BASE + '?url=' + encodeURIComponent(url) + '&hd=1';
-      const res = await fetch(endpoint, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-        mode: 'cors',
-      });
-      if (!res.ok) {
-        throw new Error('Server merespons ' + res.status + '. Coba lagi nanti.');
-      }
+      const endpoint = TIKTOK_API_BASE + '?url=' + encodeURIComponent(url) + '&hd=1';
+      const res = await fetch(endpoint, { method: 'GET', headers: { Accept: 'application/json' }, mode: 'cors' });
+      if (!res.ok) throw new Error('Server merespons ' + res.status + '. Coba lagi nanti.');
       const json = await res.json();
       if (!json || json.code !== 0 || !json.data) {
         throw new Error((json && json.msg) || 'Link tidak valid atau video tidak ditemukan.');
@@ -732,65 +957,62 @@
       return json.data;
     }
 
-    function renderResult(d) {
+    function renderTikTokResult(d) {
       const cover = fixUrl(d.cover || d.origin_cover || '');
       const avatar = fixUrl((d.author && d.author.avatar) || '');
       const hd = fixUrl(d.hdplay || d.play || '');
       const sd = fixUrl(d.play || '');
       const audio = fixUrl(d.music || '');
 
-      if (dom.cover) dom.cover.src = cover;
-      if (dom.avatar) dom.avatar.src = avatar;
-      if (dom.nickname) dom.nickname.textContent = (d.author && d.author.nickname) || 'Unknown';
-      if (dom.username) dom.username.textContent = '@' + ((d.author && d.author.unique_id) || 'user');
-      if (dom.title) dom.title.textContent = d.title || 'Tanpa judul';
-      if (dom.duration) dom.duration.textContent = formatDuration(d.duration || 0);
-      if (dom.plays) dom.plays.textContent = formatNumber(d.play_count || 0);
-      if (dom.likes) dom.likes.textContent = formatNumber(d.digg_count || 0);
-      if (dom.comments) dom.comments.textContent = formatNumber(d.comment_count || 0);
-      if (dom.shares) dom.shares.textContent = formatNumber(d.share_count || 0);
+      if (ttDom.cover) ttDom.cover.src = cover;
+      if (ttDom.avatar) ttDom.avatar.src = avatar;
+      if (ttDom.nickname) ttDom.nickname.textContent = (d.author && d.author.nickname) || 'Unknown';
+      if (ttDom.username) ttDom.username.textContent = '@' + ((d.author && d.author.unique_id) || 'user');
+      if (ttDom.title) ttDom.title.textContent = d.title || 'Tanpa judul';
+      if (ttDom.duration) ttDom.duration.textContent = formatDuration(d.duration || 0);
+      if (ttDom.plays) ttDom.plays.textContent = formatNumber(d.play_count || 0);
+      if (ttDom.likes) ttDom.likes.textContent = formatNumber(d.digg_count || 0);
+      if (ttDom.comments) ttDom.comments.textContent = formatNumber(d.comment_count || 0);
+      if (ttDom.shares) ttDom.shares.textContent = formatNumber(d.share_count || 0);
 
       const id = d.id || 'video';
-      setDownloadLink(dom.dlHd, hd, 'tiktok-hd-' + id + '.mp4');
-      setDownloadLink(dom.dlSd, sd, 'tiktok-sd-' + id + '.mp4');
-      setDownloadLink(dom.dlAudio, audio, 'tiktok-audio-' + id + '.mp3');
+      setDownloadLink(ttDom.dlHd, hd, 'tiktok-hd-' + id + '.mp4');
+      setDownloadLink(ttDom.dlSd, sd, 'tiktok-sd-' + id + '.mp4');
+      setDownloadLink(ttDom.dlAudio, audio, 'tiktok-audio-' + id + '.mp3');
 
       if (window.lucide) window.lucide.createIcons();
     }
 
-    async function handleSubmit(evt) {
+    async function handleTikTokSubmit(evt) {
       evt.preventDefault();
-      if (state.loading) return;
+      if (ttState.loading) return;
 
-      const raw = dom.url.value.trim();
-      if (!raw) {
-        showError('Tempel link TikTok terlebih dahulu.');
-        return;
-      }
+      const raw = ttDom.url.value.trim();
+      if (!raw) { ttShowError('Tempel link TikTok terlebih dahulu.'); return; }
       if (!TIKTOK_REGEX.test(raw)) {
-        showError('Link tidak dikenali. Pastikan link berasal dari tiktok.com atau vm.tiktok.com.');
+        ttShowError('Link tidak dikenali. Pastikan link berasal dari tiktok.com atau vm.tiktok.com.');
         return;
       }
 
       const now = Date.now();
-      if (now - state.lastRequestAt < MIN_INTERVAL) {
-        const wait = Math.ceil((MIN_INTERVAL - (now - state.lastRequestAt)) / 1000);
+      if (now - ttState.lastRequestAt < TIKTOK_MIN_INTERVAL) {
+        const wait = Math.ceil((TIKTOK_MIN_INTERVAL - (now - ttState.lastRequestAt)) / 1000);
         toast('Tunggu ' + wait + ' detik sebelum mencoba lagi.', 'warn');
         return;
       }
-      state.lastRequestAt = now;
+      ttState.lastRequestAt = now;
 
-      state.loading = true;
-      hideError();
-      hideResult();
-      show(dom.loading);
-      dom.submit.disabled = true;
-      dom.submit.querySelector('span').textContent = 'Memproses…';
+      ttState.loading = true;
+      ttHideError();
+      ttHideResult();
+      show(ttDom.loading);
+      ttDom.submit.disabled = true;
+      ttDom.submit.querySelector('span').textContent = 'Memproses…';
 
       try {
         const data = await fetchTikTok(raw);
-        renderResult(data);
-        show(dom.result);
+        renderTikTokResult(data);
+        show(ttDom.result);
         toast('Video berhasil diambil.', 'success');
 
         addToHistory({
@@ -801,58 +1023,558 @@
           cover: fixUrl(data.cover || ''),
         });
       } catch (err) {
-        showError(err.message || 'Gagal mengambil video. Coba lagi.');
+        ttShowError(err.message || 'Gagal mengambil video. Coba lagi.');
       } finally {
-        state.loading = false;
-        hide(dom.loading);
-        dom.submit.disabled = false;
-        dom.submit.querySelector('span').textContent = 'Ambil video';
+        ttState.loading = false;
+        hide(ttDom.loading);
+        ttDom.submit.disabled = false;
+        ttDom.submit.querySelector('span').textContent = 'Ambil video';
       }
     }
 
-    /* Input events */
-    if (dom.url) {
-      dom.url.addEventListener('input', () => {
-        dom.clear.classList.toggle('hidden', dom.url.value.length === 0);
-        hideError();
+    if (ttDom.url) {
+      ttDom.url.addEventListener('input', () => {
+        ttDom.clear.classList.toggle('hidden', ttDom.url.value.length === 0);
+        ttHideError();
       });
     }
-
-    if (dom.clear) {
-      dom.clear.addEventListener('click', () => {
-        dom.url.value = '';
-        dom.clear.classList.add('hidden');
-        hideError();
-        hideResult();
-        dom.url.focus();
+    if (ttDom.clear) {
+      ttDom.clear.addEventListener('click', () => {
+        ttDom.url.value = '';
+        ttDom.clear.classList.add('hidden');
+        ttHideError();
+        ttHideResult();
+        ttDom.url.focus();
       });
     }
-
-    if (dom.paste) {
-      dom.paste.addEventListener('click', async () => {
+    if (ttDom.paste) {
+      ttDom.paste.addEventListener('click', async () => {
         try {
           const text = await navigator.clipboard.readText();
           if (!text) return toast('Clipboard kosong.', 'warn');
-          dom.url.value = text.trim();
-          dom.clear.classList.remove('hidden');
+          ttDom.url.value = text.trim();
+          ttDom.clear.classList.remove('hidden');
           toast('Link ditempel.', 'success');
         } catch (_) {
           toast('Tidak bisa membaca clipboard. Tempel manual.', 'warn');
         }
       });
     }
+    if (ttDom.reset) {
+      ttDom.reset.addEventListener('click', () => {
+        ttHideResult();
+        ttHideError();
+        ttDom.url.value = '';
+        ttDom.clear.classList.add('hidden');
+        ttDom.url.focus();
+      });
+    }
+    if (ttDom.form) ttDom.form.addEventListener('submit', handleTikTokSubmit);
 
-    if (dom.reset) {
-      dom.reset.addEventListener('click', () => {
-        hideResult();
-        hideError();
-        dom.url.value = '';
-        dom.clear.classList.add('hidden');
-        dom.url.focus();
+    /* ============================================================
+       PINTEREST — SEARCH & DOWNLOAD
+       ============================================================ */
+    const PIN_API = 'https://api.siputzx.my.id/api/s/pinterest';
+    const PIN_URL_REGEX = /^(https?:\/\/)?([a-z0-9-]+\.)?pinterest\.[a-z.]+\/[^\s]+$|^(https?:\/\/)?pin\.it\/[a-z0-9]+/i;
+    const PIN_BLOCKED_HASH = 'd53b014d86a6b6761bf649a0ed813c2b';
+
+    const pinDom = {
+      modeBtns: $$('.seg-btn[data-pinmode]'),
+      searchForm: $('#pinSearchForm'),
+      dlForm: $('#pinDownloadForm'),
+      query: $('#pinQuery'),
+      queryClear: $('#pinQueryClear'),
+      searchSubmit: $('#pinSearchSubmit'),
+      url: $('#pinUrl'),
+      urlClear: $('#pinUrlClear'),
+      dlSubmit: $('#pinDownloadSubmit'),
+      loading: $('#pinLoading'),
+      loadingText: $('#pinLoadingText'),
+      error: $('#pinError'),
+      errorText: $('#pinErrorText'),
+      results: $('#pinResults'),
+      preview: $('#pinPreview'),
+      previewMedia: $('#pinPreviewMedia'),
+      previewTitle: $('#pinPreviewTitle'),
+      previewDesc: $('#pinPreviewDesc'),
+      previewMeta: $('#pinPreviewMeta'),
+      dlPrimary: $('#pinDownloadPrimary'),
+      dlAlt: $('#pinDownloadAlt'),
+      openSource: $('#pinOpenSource'),
+      back: $('#pinBack'),
+      historyField: $('#pinHistoryField'),
+      historyList: $('#pinHistoryList'),
+    };
+
+    const pinState = {
+      mode: 'search',
+      loading: false,
+      searchResults: [],
+      lastSearchQuery: '',
+    };
+
+    const PIN_HISTORY_KEY = 'fastdev:tools:pinterest-history:v1';
+    const PIN_HISTORY_MAX = 6;
+
+    function pinReadHistory() {
+      try {
+        const raw = localStorage.getItem(PIN_HISTORY_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch (_) { return []; }
+    }
+    function pinWriteHistory(arr) {
+      try {
+        localStorage.setItem(PIN_HISTORY_KEY, JSON.stringify(arr.slice(0, PIN_HISTORY_MAX)));
+      } catch (_) { /* ignore */ }
+    }
+    function pinAddToHistory(entry) {
+      const list = pinReadHistory().filter((x) => x.id !== entry.id);
+      list.unshift(entry);
+      pinWriteHistory(list);
+      pinRenderHistory();
+    }
+    function pinRenderHistory() {
+      if (!pinDom.historyList || !pinDom.historyField) return;
+      const list = pinReadHistory();
+      if (list.length === 0) { hide(pinDom.historyField); return; }
+      show(pinDom.historyField);
+      pinDom.historyList.innerHTML = '';
+      list.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'history-item';
+        const thumb = item.thumb || item.image || item.video || '';
+        btn.innerHTML =
+          '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+          '<div><b>' + escapeHtml(item.title || 'Pinterest Media') + '</b><small>' + escapeHtml(item.source || 'pin') + '</small></div>' +
+          '<i data-lucide="chevron-right"></i>';
+        btn.addEventListener('click', () => {
+          if (item.pinUrl) {
+            pinDom.url.value = item.pinUrl;
+            pinDom.urlClear.classList.remove('hidden');
+            pinSetMode('download');
+            pinShowPreviewFromData({
+              title: item.title,
+              image: item.image,
+              video: item.video,
+              pinUrl: item.pinUrl,
+              username: item.username,
+              type: item.video ? 'video' : 'image',
+            });
+          }
+        });
+        pinDom.historyList.appendChild(btn);
+      });
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function pinSetMode(mode) {
+      if (mode !== 'search' && mode !== 'download') return;
+      pinState.mode = mode;
+      pinDom.modeBtns.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.pinmode === mode);
+      });
+      if (mode === 'search') {
+        show(pinDom.searchForm);
+        hide(pinDom.dlForm);
+      } else {
+        hide(pinDom.searchForm);
+        show(pinDom.dlForm);
+      }
+      pinHideError();
+    }
+
+    function pinShowError(msg) {
+      if (pinDom.errorText) pinDom.errorText.textContent = msg;
+      show(pinDom.error);
+      hide(pinDom.loading);
+    }
+    function pinHideError() { hide(pinDom.error); }
+    function pinShowLoading(text) {
+      if (pinDom.loadingText) pinDom.loadingText.textContent = text || 'Memproses…';
+      show(pinDom.loading);
+      hide(pinDom.error);
+    }
+    function pinHideLoading() { hide(pinDom.loading); }
+    function pinHideResults() { hide(pinDom.results); }
+    function pinHidePreview() { hide(pinDom.preview); }
+
+    function pinClearPreviewMedia() {
+      pinDom.previewMedia.innerHTML = '';
+    }
+
+    /* --- Search --- */
+    async function pinterestSearch(query, limit) {
+      const lim = limit || 12;
+      const endpoint = PIN_API + '?query=' + encodeURIComponent(query);
+      const res = await fetch(endpoint, {
+        method: 'GET',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+        mode: 'cors',
+      });
+      if (!res.ok) throw new Error('Server pencarian merespons ' + res.status + '.');
+
+      const json = await res.json();
+      const rawList = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
+
+      return rawList.slice(0, lim).map((item) => {
+        const rawImg = item.image_url || item.image || item.images?.orig?.url || '';
+        const cleanImg = rawImg.replace(/\/\d+x\d*([_\/])/, '/originals$1').replace(/\/\d+x\//, '/originals/');
+        return {
+          id: item.id || null,
+          title: item.grid_title || item.title || '',
+          description: (item.description || '').trim(),
+          pin: item.pin || (item.id ? 'https://www.pinterest.com/pin/' + item.id + '/' : null),
+          type: item.type || 'image',
+          image: cleanImg || null,
+          video: item.video_url || null,
+          pinner: {
+            username: item.pinner?.username || '',
+            name: item.pinner?.full_name || '',
+          },
+        };
       });
     }
 
-    if (dom.form) dom.form.addEventListener('submit', handleSubmit);
+    function renderPinResults(list) {
+      if (!pinDom.results) return;
+      pinDom.results.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'pin-empty';
+        empty.textContent = 'Tidak ada hasil. Coba kata kunci lain.';
+        pinDom.results.appendChild(empty);
+        show(pinDom.results);
+        return;
+      }
+
+      list.forEach((item) => {
+        const isVideo = Boolean(item.video);
+        const thumb = isVideo ? (item.image || item.video) : (item.image || '');
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'pin-card';
+        card.setAttribute('aria-label', item.title || 'Pinterest pin');
+        card.innerHTML =
+          '<div class="pin-card-thumb">' +
+            '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+            '<span class="pin-card-type">' +
+              '<i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR') +
+            '</span>' +
+          '</div>' +
+          '<div class="pin-card-meta">' +
+            '<b>' + escapeHtml(item.title || 'Tanpa judul') + '</b>' +
+            '<small>' + escapeHtml(item.pinner?.username ? '@' + item.pinner.username : 'Pinterest') + '</small>' +
+          '</div>';
+        card.addEventListener('click', () => pinShowPreviewFromData(item));
+        pinDom.results.appendChild(card);
+      });
+
+      show(pinDom.results);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    /* --- Preview --- */
+    function pinShowPreviewFromData(item) {
+      if (!pinDom.preview) return;
+      pinHideResults();
+      pinHideError();
+      show(pinDom.preview);
+      pinClearPreviewMedia();
+
+      const isVideo = Boolean(item.video);
+      const primaryUrl = isVideo ? item.video : item.image;
+      const mediaEl = isVideo ? document.createElement('video') : document.createElement('img');
+
+      if (isVideo) {
+        mediaEl.controls = true;
+        mediaEl.playsInline = true;
+        mediaEl.preload = 'metadata';
+        mediaEl.src = item.video;
+      } else {
+        mediaEl.loading = 'lazy';
+        mediaEl.referrerPolicy = 'no-referrer';
+        mediaEl.src = item.image;
+      }
+
+      pinDom.previewMedia.appendChild(mediaEl);
+
+      const badge = document.createElement('span');
+      badge.className = 'pin-preview-badge';
+      badge.innerHTML = '<i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR');
+      pinDom.previewMedia.appendChild(badge);
+
+      const title = item.title || 'Pinterest Media';
+      pinDom.previewTitle.textContent = title;
+
+      if (item.description) {
+        pinDom.previewDesc.textContent = item.description;
+        show(pinDom.previewDesc);
+      } else {
+        hide(pinDom.previewDesc);
+      }
+
+      pinDom.previewMeta.innerHTML = '';
+      if (item.pinner && item.pinner.username) {
+        pinDom.previewMeta.innerHTML +=
+          '<span><i data-lucide="user"></i> @' + escapeHtml(item.pinner.username) + '</span>';
+      }
+      pinDom.previewMeta.innerHTML +=
+        '<span><i data-lucide="file-type"></i> ' + (isVideo ? 'Video' : 'Gambar') + '</span>';
+
+      if (primaryUrl) {
+        pinDom.dlPrimary.href = primaryUrl;
+        pinDom.dlPrimary.setAttribute('download', safeFileName(title, 'pinterest') + (isVideo ? '.mp4' : '.jpg'));
+        pinDom.dlPrimary.classList.remove('hidden');
+        pinDom.dlPrimary.innerHTML = '<i data-lucide="download"></i> Unduh ' + (isVideo ? 'video' : 'gambar');
+      } else {
+        pinDom.dlPrimary.classList.add('hidden');
+        pinDom.dlPrimary.removeAttribute('href');
+      }
+
+      if (isVideo && item.image) {
+        pinDom.dlAlt.href = item.image;
+        pinDom.dlAlt.setAttribute('download', safeFileName(title, 'pinterest') + '.jpg');
+        pinDom.dlAlt.classList.remove('hidden');
+        pinDom.dlAlt.innerHTML = '<i data-lucide="image"></i> Unduh thumbnail';
+      } else {
+        pinDom.dlAlt.classList.add('hidden');
+        pinDom.dlAlt.removeAttribute('href');
+      }
+
+      const pinUrl = item.pin || item.pinUrl || '';
+      if (pinUrl) {
+        pinDom.openSource.href = pinUrl;
+        pinDom.openSource.classList.remove('hidden');
+      } else {
+        pinDom.openSource.classList.add('hidden');
+        pinDom.openSource.removeAttribute('href');
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    /* --- Download via scrape (proxy fallback) --- */
+    const PIN_PROXIES = [
+      (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+      (u) => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+      (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+    ];
+
+    async function fetchPinHtml(url) {
+      // Coba direct dulu (bisa sukses kalau CORS Pinterest dilonggarkan / di extension)
+      try {
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': UA,
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          },
+          redirect: 'follow',
+          mode: 'cors',
+        });
+        if (res.ok) {
+          const html = await res.text();
+          if (html && html.length > 500 && /pinterest/i.test(html)) {
+            return { html, finalUrl: res.url || url };
+          }
+        }
+      } catch (_) { /* fallback ke proxy */ }
+
+      for (const proxy of PIN_PROXIES) {
+        try {
+          const res = await fetch(proxy(url), { mode: 'cors' });
+          if (!res.ok) continue;
+          const html = await res.text();
+          if (html && html.length > 500) {
+            return { html, finalUrl: url };
+          }
+        } catch (_) { /* coba proxy berikutnya */ }
+      }
+
+      throw new Error('Gagal mengambil halaman Pinterest. Coba lagi atau gunakan link pin langsung.');
+    }
+
+    function parsePinHtml(html, finalUrl) {
+      const rawTitle = html.match(/<title[^>]*>(.*?)<\/title>/i)?.[1] || '';
+      const title = rawTitle.replace(/\s*\|\s*Pinterest.*$/i, '').trim();
+      const description = (html.match(/<meta[^>]+name="description"[^>]+content="([^"]*)"/i)?.[1] || '').trim();
+
+      const rawVids = [...new Set(html.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/gi) || [])];
+      const cleanVids = rawVids
+        .map((v) => v.replace(/&amp;/g, '&'))
+        .filter((v) => v.includes('pinimg.com'));
+
+      const bestVid =
+        cleanVids.find((v) => v.includes('720w')) ||
+        cleanVids.find((v) => v.includes('540w')) ||
+        cleanVids.find((v) => v.includes('360w')) ||
+        cleanVids[0] ||
+        null;
+
+      const hashMatches = [...html.matchAll(/\/([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{32}\.(?:jpg|jpeg|png|webp))/gi)]
+        .map((m) => m[1])
+        .filter((h) => !h.includes(PIN_BLOCKED_HASH));
+
+      const uniqueHashes = [...new Set(hashMatches)];
+      const image = uniqueHashes[0] ? 'https://i.pinimg.com/originals/' + uniqueHashes[0] : null;
+
+      return {
+        title: title || 'Pinterest Media',
+        description,
+        video: bestVid,
+        image,
+        allVideos: cleanVids,
+        url: finalUrl,
+      };
+    }
+
+    async function pinterestDownload(url) {
+      const { html, finalUrl } = await fetchPinHtml(url);
+      return parsePinHtml(html, finalUrl);
+    }
+
+    /* --- Events --- */
+    pinDom.modeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        pinSetMode(btn.dataset.pinmode);
+        pinHideResults();
+        pinHidePreview();
+      });
+    });
+
+    if (pinDom.query) {
+      pinDom.query.addEventListener('input', () => {
+        pinDom.queryClear.classList.toggle('hidden', pinDom.query.value.length === 0);
+        pinHideError();
+      });
+    }
+    if (pinDom.queryClear) {
+      pinDom.queryClear.addEventListener('click', () => {
+        pinDom.query.value = '';
+        pinDom.queryClear.classList.add('hidden');
+        pinDom.query.focus();
+      });
+    }
+
+    if (pinDom.url) {
+      pinDom.url.addEventListener('input', () => {
+        pinDom.urlClear.classList.toggle('hidden', pinDom.url.value.length === 0);
+        pinHideError();
+      });
+    }
+    if (pinDom.urlClear) {
+      pinDom.urlClear.addEventListener('click', () => {
+        pinDom.url.value = '';
+        pinDom.urlClear.classList.add('hidden');
+        pinDom.url.focus();
+      });
+    }
+
+    if (pinDom.back) {
+      pinDom.back.addEventListener('click', () => {
+        pinHidePreview();
+        if (pinState.mode === 'search' && pinState.searchResults.length > 0) {
+          show(pinDom.results);
+        }
+        pinClearPreviewMedia();
+      });
+    }
+
+    if (pinDom.searchForm) {
+      pinDom.searchForm.addEventListener('submit', async (evt) => {
+        evt.preventDefault();
+        if (pinState.loading) return;
+
+        const query = (pinDom.query.value || '').trim();
+        if (!query) { pinShowError('Kata kunci tidak boleh kosong.'); return; }
+
+        pinState.loading = true;
+        pinState.lastSearchQuery = query;
+        pinHideError();
+        pinHideResults();
+        pinHidePreview();
+        pinShowLoading('Mencari di Pinterest…');
+        pinDom.searchSubmit.disabled = true;
+        pinDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
+
+        try {
+          const results = await pinterestSearch(query, 12);
+          pinState.searchResults = results;
+          pinHideLoading();
+          renderPinResults(results);
+          if (results.length === 0) toast('Tidak ada hasil untuk "' + query + '".', 'warn');
+          else toast(results.length + ' hasil ditemukan.', 'success');
+        } catch (err) {
+          pinState.searchResults = [];
+          pinShowError(err.message || 'Gagal mencari. Coba lagi.');
+        } finally {
+          pinState.loading = false;
+          pinHideLoading();
+          pinDom.searchSubmit.disabled = false;
+          pinDom.searchSubmit.querySelector('span').textContent = 'Cari';
+        }
+      });
+    }
+
+    if (pinDom.dlForm) {
+      pinDom.dlForm.addEventListener('submit', async (evt) => {
+        evt.preventDefault();
+        if (pinState.loading) return;
+
+        const url = (pinDom.url.value || '').trim();
+        if (!url) { pinShowError('URL Pinterest tidak boleh kosong.'); return; }
+        if (!PIN_URL_REGEX.test(url)) {
+          pinShowError('URL tidak dikenali. Gunakan link pinterest.com atau pin.it.');
+          return;
+        }
+
+        pinState.loading = true;
+        pinHideError();
+        pinHideResults();
+        pinHidePreview();
+        pinShowLoading('Mengambil halaman Pinterest…');
+        pinDom.dlSubmit.disabled = true;
+        pinDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
+
+        try {
+          const data = await pinterestDownload(url);
+          pinHideLoading();
+
+          if (!data.video && !data.image) {
+            throw new Error('Media tidak ditemukan di halaman tersebut.');
+          }
+
+          pinShowPreviewFromData({
+            title: data.title,
+            description: data.description,
+            image: data.image,
+            video: data.video,
+            pinUrl: data.url || url,
+          });
+
+          pinAddToHistory({
+            id: String(data.url || url),
+            title: data.title || 'Pinterest Media',
+            source: data.video ? 'video pin' : 'image pin',
+            pinUrl: data.url || url,
+            image: data.image || '',
+            video: data.video || '',
+            thumb: data.image || '',
+          });
+
+          toast(data.video ? 'Video berhasil diambil.' : 'Gambar berhasil diambil.', 'success');
+        } catch (err) {
+          pinShowError(err.message || 'Gagal mengambil media. Coba lagi.');
+        } finally {
+          pinState.loading = false;
+          pinHideLoading();
+          pinDom.dlSubmit.disabled = false;
+          pinDom.dlSubmit.querySelector('span').textContent = 'Ambil media';
+        }
+      });
+    }
 
     /* ============================================================
        HELP MODAL
@@ -862,28 +1584,17 @@
     const closeHelp = $('#closeHelp');
     const closeHelpBottom = $('#closeHelpBottom');
 
-    function openModal() {
-      show(helpModal);
-      document.body.style.overflow = 'hidden';
-    }
-    function closeModal() {
-      hide(helpModal);
-      document.body.style.overflow = '';
-    }
+    function openModal() { show(helpModal); document.body.style.overflow = 'hidden'; }
+    function closeModal() { hide(helpModal); document.body.style.overflow = ''; }
 
     if (helpBtn) helpBtn.addEventListener('click', openModal);
     if (closeHelp) closeHelp.addEventListener('click', closeModal);
     if (closeHelpBottom) closeHelpBottom.addEventListener('click', closeModal);
     if (helpModal) {
-      helpModal.addEventListener('click', (e) => {
-        if (e.target === helpModal) closeModal();
-      });
+      helpModal.addEventListener('click', (e) => { if (e.target === helpModal) closeModal(); });
     }
-
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) {
-        closeModal();
-      }
+      if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) closeModal();
     });
 
     /* ============================================================
@@ -892,7 +1603,9 @@
     function init() {
       if (window.lucide) window.lucide.createIcons();
       renderHistory();
+      pinRenderHistory();
       setActiveTool('tiktok');
+      pinSetMode('search');
     }
 
     if (document.readyState === 'loading') {
