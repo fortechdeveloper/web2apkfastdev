@@ -4,15 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090d18">
+
+  <!-- Inline auth guard — jalankan sebelum resource apapun -->
+  <script>
+  (function () {
+    'use strict';
+    if (location.pathname.indexOf('login.html') !== -1) return;
+
+    function bail() { location.replace('login.html'); }
+
+    try {
+      var raw = localStorage.getItem('fortech-auth-session');
+      if (!raw) { bail(); return; }
+      var s = JSON.parse(raw);
+      if (!s || !s.access_token || !s.user) { bail(); return; }
+      if (s.expires_at && !s.refresh_token && (s.expires_at * 1000) < Date.now()) {
+        bail();
+        return;
+      }
+      document.documentElement.classList.add('auth-pending');
+    } catch (e) {
+      bail();
+    }
+  })();
+  </script>
+
   <title>Web2APK by FastDev</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth-guard.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth-guard.js" defer></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <div class="auth-guard" id="authGuard">
+    <div class="auth-guard-inner">
+      <div class="auth-guard-spinner"></div>
+      <p id="authGuardText">Memeriksa sesi…</p>
+    </div>
+  </div>
+
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
