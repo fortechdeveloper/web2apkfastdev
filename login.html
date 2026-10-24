@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d18">
+  <title>Masuk — FastDev Web2APK</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ============================================================
+       AUTH PAGE — extends style.css
+       ============================================================ */
+
+    .auth-hero {
+      padding: 22px 0 20px;
+      text-align: center;
+    }
+    .auth-hero h1 span {
+      color: var(--blue);
+      background: none;
+      -webkit-text-fill-color: var(--blue);
+    }
+    .auth-hero > p {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 340px;
+    }
+
+    .auth-panel {
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      margin-bottom: 20px;
+      padding: 4px;
+      border: 1px solid rgba(155, 170, 210, .1);
+      border-radius: 13px;
+      background: rgba(5, 9, 18, .45);
+    }
+    .auth-tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 39px;
+      padding: 8px 5px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: #8491ae;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .auth-tab svg { width: 14px; height: 14px; }
+    .auth-tab.active {
+      border-color: rgba(143, 159, 255, .16);
+      background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13));
+      color: #dce3ff;
+    }
+    .auth-tab:active { transform: scale(.98); }
+
+    .auth-form { display: grid; gap: 16px; }
+    .auth-form.hidden { display: none; }
+    .auth-form .field { margin-top: 0; }
+
+    .input-wrap.invalid {
+      border-color: rgba(255, 110, 110, .55);
+      box-shadow: 0 0 0 3px rgba(255, 110, 110, .08);
+    }
+    .input-wrap.valid { border-color: rgba(105, 228, 177, .45); }
+
+    .field-error {
+      display: none;
+      margin-top: 6px;
+      color: #ff8a8a;
+      font-size: 10px;
+      line-height: 1.5;
+      align-items: center;
+      gap: 5px;
+    }
+    .field-error svg { width: 11px; height: 11px; flex: 0 0 auto; }
+    .field-error.visible { display: flex; }
+
+    .password-toggle {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .04);
+      color: var(--muted);
+      cursor: pointer;
+      flex: 0 0 auto;
+      transition: color .15s, background .15s;
+    }
+    .password-toggle:hover { color: #c5cee4; background: rgba(255, 255, 255, .08); }
+    .password-toggle svg { width: 13px; height: 13px; }
+
+    .strength-wrap { display: grid; gap: 6px; margin-top: 8px; }
+    .strength-bars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+    .strength-bars span {
+      height: 3px;
+      border-radius: 3px;
+      background: rgba(160, 177, 219, .12);
+      transition: background .2s;
+    }
+    .strength-bars.s1 span:nth-child(1) { background: #ff6e6e; }
+    .strength-bars.s2 span:nth-child(-n+2) { background: #f5b85c; }
+    .strength-bars.s3 span:nth-child(-n+3) { background: #66d9ef; }
+    .strength-bars.s4 span { background: #69e4b1; }
+    .strength-label {
+      color: var(--muted);
+      font-size: 9.5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .strength-label b { font-weight: 700; }
+    .strength-label b[data-level="1"] { color: #ff8a8a; }
+    .strength-label b[data-level="2"] { color: #f5c98a; }
+    .strength-label b[data-level="3"] { color: #8ecfe0; }
+    .strength-label b[data-level="4"] { color: #8ee8c3; }
+
+    .captcha-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .captcha-challenge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 110px;
+      padding: 0 14px;
+      border: 1px solid rgba(155, 170, 210, .14);
+      border-radius: 13px;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(117, 144, 255, .04),
+          rgba(117, 144, 255, .04) 4px,
+          transparent 4px,
+          transparent 10px
+        ),
+        rgba(6, 10, 20, .5);
+      font-family: 'Courier New', ui-monospace, monospace;
+      font-weight: 800;
+      font-size: 17px;
+      color: #dce3ff;
+      letter-spacing: 2px;
+      user-select: none;
+      -webkit-user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .captcha-challenge::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 45%, rgba(117, 144, 255, .1) 45%, rgba(117, 144, 255, .1) 55%, transparent 55%);
+      pointer-events: none;
+    }
+    .captcha-challenge.strike::after {
+      content: '';
+      position: absolute;
+      left: 8%; right: 8%;
+      top: 50%;
+      height: 1px;
+      background: rgba(161, 122, 255, .4);
+      transform: rotate(-4deg);
+      pointer-events: none;
+    }
+    .captcha-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 12px;
+      border: 1px solid rgba(155, 170, 210, .13);
+      border-radius: 13px;
+      background: rgba(6, 10, 20, .4);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .captcha-input-wrap:focus-within {
+      border-color: rgba(126, 150, 255, .65);
+      box-shadow: 0 0 0 3px rgba(115, 139, 255, .08);
+    }
+    .captcha-input-wrap.invalid {
+      border-color: rgba(255, 110, 110, .55);
+      box-shadow: 0 0 0 3px rgba(255, 110, 110, .08);
+    }
+    .captcha-input-wrap input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      outline: 0;
+      letter-spacing: 1px;
+    }
+    .captcha-refresh {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      min-width: 44px;
+      border: 1px solid rgba(155, 170, 210, .13);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, .03);
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .15s, background .15s, transform .2s;
+    }
+    .captcha-refresh:hover { color: #c5cee4; background: rgba(255, 255, 255, .07); }
+    .captcha-refresh:active { transform: scale(.94); }
+    .captcha-refresh svg { width: 16px; height: 16px; }
+
+    .auth-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      min-height: 49px;
+      margin-top: 6px;
+      border: 1px solid rgba(192, 201, 255, .23);
+      border-radius: 14px;
+      background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8);
+      box-shadow: 0 12px 28px rgba(92, 95, 231, .22);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+    .auth-submit:hover { box-shadow: 0 15px 35px rgba(92, 95, 231, .3); }
+    .auth-submit:active { transform: scale(.99); }
+    .auth-submit:disabled { opacity: .55; cursor: wait; }
+    .auth-submit svg { width: 16px; height: 16px; }
+
+    .auth-submit .btn-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .auth-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 12px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 110, 110, .18);
+      background: rgba(255, 110, 110, .06);
+      animation: slideIn .25s ease;
+    }
+    .auth-alert.success {
+      border-color: rgba(105, 228, 177, .22);
+      background: rgba(105, 228, 177, .06);
+    }
+    .auth-alert.info {
+      border-color: rgba(117, 144, 255, .22);
+      background: rgba(117, 144, 255, .06);
+    }
+    .auth-alert svg { flex: 0 0 auto; width: 15px; margin-top: 1px; }
+    .auth-alert:not(.success):not(.info) svg { color: #ff8a8a; }
+    .auth-alert.success svg { color: #8ee8c3; }
+    .auth-alert.info svg { color: #9eafff; }
+    .auth-alert p {
+      margin: 0;
+      font-size: 10.5px;
+      line-height: 1.6;
+      color: #ffb4b4;
+    }
+    .auth-alert.success p { color: #8ee8c3; }
+    .auth-alert.info p { color: #b8c4e0; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(160, 177, 219, .1);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .auth-footer-links button {
+      border: 0;
+      background: transparent;
+      color: #9eafff;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .auth-footer-links button:hover { background: rgba(117, 144, 255, .08); }
+    .auth-footer-links span { color: #4a5570; }
+
+    .session-check {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: rgba(9, 13, 24, .92);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .session-check.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .session-check-inner {
+      display: grid;
+      place-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+    .session-check-inner .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(117, 144, 255, .2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    .session-check-inner p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 380px) {
+      .auth-panel { padding: 16px; }
+      .captcha-challenge { min-width: 95px; font-size: 15px; padding: 0 10px; }
+      .captcha-row { gap: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="FastDev Web2APK">
+        <span class="brand-icon"><i data-lucide="layers"></i></span>
+        <span class="brand-copy">
+          <strong>Web2APK</strong>
+          <small>BY FASTDEV</small>
+        </span>
+      </a>
+      <button class="icon-button" id="helpBtn" type="button" aria-label="Bantuan">
+        <i data-lucide="circle-help"></i>
+      </button>
+    </header>
+
+    <section class="hero auth-hero">
+      <div class="hero-label"><span class="live-dot"></span> AKUN FASTDEV</div>
+      <h1>Masuk atau<br><span>daftar.</span></h1>
+      <p>Satu akun untuk build, tools, dan akses semua fitur.</p>
+    </section>
+
+    <div class="panel auth-panel">
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">
+          <i data-lucide="log-in"></i> Masuk
+        </button>
+        <button type="button" class="auth-tab" id="tabSignup" role="tab" aria-selected="false" aria-controls="signupForm">
+          <i data-lucide="user-plus"></i> Daftar
+        </button>
+      </div>
+
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="auth-alert hidden" id="loginAlert">
+          <i data-lucide="alert-circle"></i>
+          <p></p>
+        </div>
+
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <div class="input-wrap">
+            <i data-lucide="mail"></i>
+            <input id="loginEmail" type="email" placeholder="nama@gmail.com" autocomplete="email" spellcheck="false" required>
+          </div>
+          <div class="field-error" data-for="loginEmail">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="input-wrap">
+            <i data-lucide="lock"></i>
+            <input id="loginPassword" type="password" placeholder="Password kamu" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" data-toggle="loginPassword" aria-label="Tampilkan password">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+          <div class="field-error" data-for="loginPassword">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="loginCaptcha">Verifikasi</label>
+          <div class="captcha-row">
+            <div class="captcha-challenge strike" id="loginCaptchaChallenge" aria-hidden="true">0 + 0</div>
+            <div class="captcha-input-wrap" id="loginCaptchaWrap">
+              <input id="loginCaptcha" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Jawaban" autocomplete="off" maxlength="3" required>
+            </div>
+            <button type="button" class="captcha-refresh" id="loginCaptchaRefresh" aria-label="Ganti soal">
+              <i data-lucide="refresh-cw"></i>
+            </button>
+          </div>
+          <div class="field-error" data-for="loginCaptcha">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit" id="loginSubmit">
+          <i data-lucide="log-in"></i>
+          <span>Masuk</span>
+        </button>
+
+        <div class="auth-footer-links">
+          <button type="button" id="forgotPasswordBtn">Lupa password?</button>
+          <span>·</span>
+          <button type="button" id="switchToSignup">Belum punya akun?</button>
+        </div>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden" novalidate>
+        <div class="auth-alert hidden" id="signupAlert">
+          <i data-lucide="alert-circle"></i>
+          <p></p>
+        </div>
+
+        <div class="field">
+          <label for="signupUsername">Username</label>
+          <div class="input-wrap">
+            <i data-lucide="user"></i>
+            <input id="signupUsername" type="text" placeholder="Minimal 3 karakter" autocomplete="username" spellcheck="false" maxlength="30" required>
+          </div>
+          <div class="field-error" data-for="signupUsername">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupEmail">Email (Gmail)</label>
+          <div class="input-wrap">
+            <i data-lucide="mail"></i>
+            <input id="signupEmail" type="email" placeholder="nama@gmail.com" autocomplete="email" spellcheck="false" required>
+          </div>
+          <div class="field-error" data-for="signupEmail">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupWhatsapp">No WhatsApp <span class="optional">OPSIONAL</span></label>
+          <div class="input-wrap">
+            <i data-lucide="phone"></i>
+            <input id="signupWhatsapp" type="tel" placeholder="0812xxxxxxx" autocomplete="tel" spellcheck="false" maxlength="16">
+          </div>
+          <small class="field-hint">Format: 08xxx, 62xxx, atau +62xxx.</small>
+          <div class="field-error" data-for="signupWhatsapp">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupPassword">Password</label>
+          <div class="input-wrap">
+            <i data-lucide="lock"></i>
+            <input id="signupPassword" type="password" placeholder="Minimal 6 karakter" autocomplete="new-password" required>
+            <button type="button" class="password-toggle" data-toggle="signupPassword" aria-label="Tampilkan password">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bars" id="strengthBars">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="strength-label">
+              <span>Kekuatan password</span>
+              <b id="strengthText" data-level="0">—</b>
+            </div>
+          </div>
+          <div class="field-error" data-for="signupPassword">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupCaptcha">Verifikasi</label>
+          <div class="captcha-row">
+            <div class="captcha-challenge strike" id="signupCaptchaChallenge" aria-hidden="true">0 + 0</div>
+            <div class="captcha-input-wrap" id="signupCaptchaWrap">
+              <input id="signupCaptcha" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Jawaban" autocomplete="off" maxlength="3" required>
+            </div>
+            <button type="button" class="captcha-refresh" id="signupCaptchaRefresh" aria-label="Ganti soal">
+              <i data-lucide="refresh-cw"></i>
+            </button>
+          </div>
+          <div class="field-error" data-for="signupCaptcha">
+            <i data-lucide="alert-circle"></i>
+            <span></span>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit" id="signupSubmit">
+          <i data-lucide="user-plus"></i>
+          <span>Daftar</span>
+        </button>
+
+        <div class="auth-footer-links">
+          <button type="button" id="switchToLogin">Sudah punya akun?</button>
+        </div>
+      </form>
+    </div>
+
+    <footer class="footer">
+      <span class="footer-mark"><i data-lucide="layers"></i></span>
+      <p><b>FASTDEV</b> · Web2APK Auth</p>
+      <small>Made for your next idea.</small>
+    </footer>
+  </main>
+
+  <div class="modal-backdrop hidden" id="helpModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup">
+        <i data-lucide="x"></i>
+      </button>
+      <span class="section-icon"><i data-lucide="circle-help"></i></span>
+      <h3 id="helpTitle">Bantuan Akun</h3>
+      <p>Daftar dengan email dan password. Username minimal 3 karakter dan harus unik. Nomor WhatsApp opsional untuk kontak.</p>
+      <p>Jika lupa password, klik "Lupa password?" pada form masuk untuk reset via email.</p>
+      <button class="auth-submit" id="closeHelpBottom" type="button">Mengerti</button>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="forgotModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+      <button class="modal-close" id="closeForgot" type="button" aria-label="Tutup">
+        <i data-lucide="x"></i>
+      </button>
+      <span class="section-icon"><i data-lucide="key-round"></i></span>
+      <h3 id="forgotTitle">Reset Password</h3>
+      <p>Masukkan email kamu. Kami akan kirim link untuk reset password.</p>
+      <div class="field" style="margin-top:14px;">
+        <div class="input-wrap">
+          <i data-lucide="mail"></i>
+          <input id="forgotEmail" type="email" placeholder="nama@gmail.com" autocomplete="email" spellcheck="false">
+        </div>
+      </div>
+      <button class="auth-submit" id="forgotSubmit" type="button" style="margin-top:12px;">
+        <i data-lucide="send"></i>
+        <span>Kirim link reset</span>
+      </button>
+      <div class="auth-alert hidden" id="forgotAlert" style="margin-top:12px;">
+        <i data-lucide="info"></i>
+        <p></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="session-check visible" id="sessionCheck">
+    <div class="session-check-inner">
+      <div class="spinner"></div>
+      <p id="sessionCheckText">Memuat konfigurasi…</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ============================================================
+       KONFIGURASI
+       Kredensial Supabase TIDAK di-hardcode.
+       Diambil dari /api/config (Vercel serverless function)
+       yang membaca env var SUPABASE_URL & SUPABASE_ANON_KEY.
+       ============================================================ */
+
+    const CONFIG_ENDPOINT = '/api/config';
+    const REDIRECT_AFTER_LOGIN = 'index.html';
+
+    let supabase = null;
+    let configError = null;
+
+    /* ============================================================
+       UTIL
+       ============================================================ */
+    const $ = (s, r) => (r || document).querySelector(s);
+    const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+    const show = (el) => el && el.classList.remove('hidden');
+    const hide = (el) => el && el.classList.add('hidden');
+
+    function setFieldError(fieldId, message) {
+      const errEl = document.querySelector('.field-error[data-for="' + fieldId + '"]');
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+      const wrap = input.closest('.input-wrap, .captcha-input-wrap');
+      if (message) {
+        if (errEl) {
+          errEl.querySelector('span').textContent = message;
+          errEl.classList.add('visible');
+        }
+        if (wrap) wrap.classList.add('invalid');
+      } else {
+        if (errEl) {
+          errEl.classList.remove('visible');
+          errEl.querySelector('span').textContent = '';
+        }
+        if (wrap) wrap.classList.remove('invalid');
+      }
+    }
+
+    function clearAllErrors(formId) {
+      const form = document.getElementById(formId);
+      if (!form) return;
+      form.querySelectorAll('.field-error').forEach((el) => {
+        el.classList.remove('visible');
+        const span = el.querySelector('span');
+        if (span) span.textContent = '';
+      });
+      form.querySelectorAll('.input-wrap, .captcha-input-wrap').forEach((el) => {
+        el.classList.remove('invalid', 'valid');
+      });
+    }
+
+    function showAlert(alertId, message, type) {
+      const el = document.getElementById(alertId);
+      if (!el) return;
+      const p = el.querySelector('p');
+      const icon = el.querySelector('i');
+      if (p) p.textContent = message;
+      el.classList.remove('hidden', 'success', 'info');
+      if (type === 'success') el.classList.add('success');
+      else if (type === 'info') el.classList.add('info');
+      if (icon) {
+        icon.setAttribute('data-lucide', type === 'success' ? 'check-circle-2' : type === 'info' ? 'info' : 'alert-circle');
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function hideAlert(alertId) {
+      const el = document.getElementById(alertId);
+      if (el) el.classList.add('hidden');
+    }
+
+    function setButtonLoading(btn, loading, loadingText) {
+      if (!btn) return;
+      const span = btn.querySelector('span');
+      const icon = btn.querySelector('i, svg');
+      if (loading) {
+        btn.disabled = true;
+        if (span) {
+          btn.dataset.originalText = span.textContent;
+          span.textContent = loadingText || 'Memproses…';
+        }
+        if (icon) {
+          icon.style.display = 'none';
+          const spin = document.createElement('span');
+          spin.className = 'btn-spinner';
+          btn.insertBefore(spin, span || btn.firstChild);
+        }
+      } else {
+        btn.disabled = false;
+        if (span && btn.dataset.originalText) span.textContent = btn.dataset.originalText;
+        if (icon) icon.style.display = '';
+        const spin = btn.querySelector('.btn-spinner');
+        if (spin) spin.remove();
+      }
+    }
+
+    function setSessionOverlay(text, visible) {
+      const overlay = document.getElementById('sessionCheck');
+      const label = document.getElementById('sessionCheckText');
+      if (!overlay) return;
+      if (label && text) label.textContent = text;
+      overlay.classList.toggle('visible', visible);
+    }
+
+    /* ============================================================
+       LOAD CONFIG DARI /api/config
+       ============================================================ */
+    async function loadConfig() {
+      setSessionOverlay('Memuat konfigurasi…', true);
+      try {
+        const res = await fetch(CONFIG_ENDPOINT, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          cache: 'no-store',
+        });
+
+        if (!res.ok) {
+          let detail = 'HTTP ' + res.status;
+          try {
+            const j = await res.json();
+            if (j && j.error) detail = j.error;
+          } catch (_) { /* ignore */ }
+          throw new Error(detail);
+        }
+
+        const json = await res.json();
+        if (!json || !json.supabaseUrl || !json.supabaseAnonKey) {
+          throw new Error('Respons /api/config tidak lengkap.');
+        }
+
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+          throw new Error('Library Supabase gagal dimuat. Periksa koneksi internet.');
+        }
+
+        supabase = window.supabase.createClient(json.supabaseUrl, json.supabaseAnonKey, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storageKey: 'fortech-auth-session',
+          },
+        });
+
+        return true;
+      } catch (err) {
+        configError = err && err.message ? err.message : 'Gagal memuat konfigurasi.';
+        return false;
+      }
+    }
+
+    /* ============================================================
+       VALIDASI
+       ============================================================ */
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,30}$/;
+    const WHATSAPP_REGEX = /^(\+62|62|0)8[0-9]{7,12}$/;
+
+    function validateEmail(email) {
+      if (!email) return 'Email wajib diisi.';
+      if (!EMAIL_REGEX.test(email)) return 'Format email tidak valid.';
+      return null;
+    }
+
+    function validateUsername(username) {
+      if (!username) return 'Username wajib diisi.';
+      if (username.length < 3) return 'Username minimal 3 karakter.';
+      if (username.length > 30) return 'Username maksimal 30 karakter.';
+      if (!USERNAME_REGEX.test(username)) return 'Hanya huruf, angka, dan underscore.';
+      return null;
+    }
+
+    function validateWhatsApp(value) {
+      if (!value) return null;
+      const clean = value.replace(/[\s\-\.]/g, '');
+      if (!WHATSAPP_REGEX.test(clean)) return 'Format nomor tidak valid. Contoh: 08123456789.';
+      return null;
+    }
+
+    function validatePassword(password, isSignup) {
+      if (!password) return 'Password wajib diisi.';
+      const minLen = isSignup ? 6 : 1;
+      if (password.length < minLen) return 'Password minimal ' + minLen + ' karakter.';
+      return null;
+    }
+
+    /* ============================================================
+       PASSWORD STRENGTH
+       ============================================================ */
+    function getPasswordStrength(pwd) {
+      let score = 0;
+      if (pwd.length >= 8) score++;
+      if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score++;
+      if (/[0-9]/.test(pwd)) score++;
+      if (/[^a-zA-Z0-9]/.test(pwd)) score++;
+      if (pwd.length >= 12 && score >= 3) score = 4;
+      return Math.min(score, 4);
+    }
+
+    function updateStrengthMeter(pwd) {
+      const bars = document.getElementById('strengthBars');
+      const text = document.getElementById('strengthText');
+      if (!bars || !text) return;
+      bars.classList.remove('s1', 's2', 's3', 's4');
+      const score = pwd ? getPasswordStrength(pwd) : 0;
+      if (score === 0) {
+        text.textContent = '—';
+        text.setAttribute('data-level', '0');
+        return;
+      }
+      bars.classList.add('s' + score);
+      const labels = { 1: 'Lemah', 2: 'Cukup', 3: 'Kuat', 4: 'Sangat kuat' };
+      text.textContent = labels[score] || '—';
+      text.setAttribute('data-level', String(score));
+    }
+
+    /* ============================================================
+       CAPTCHA
+       ============================================================ */
+    function createCaptcha() {
+      const a = Math.floor(Math.random() * 9) + 1;
+      const b = Math.floor(Math.random() * 9) + 1;
+      const useMultiply = Math.random() < 0.35;
+      if (useMultiply) return { display: a + ' × ' + b + ' = ?', answer: String(a * b) };
+      return { display: a + ' + ' + b + ' = ?', answer: String(a + b) };
+    }
+
+    const captchaState = {
+      login: createCaptcha(),
+      signup: createCaptcha(),
+    };
+
+    function renderCaptcha(key) {
+      const challengeEl = document.getElementById(key + 'CaptchaChallenge');
+      const input = document.getElementById(key + 'Captcha');
+      if (challengeEl) challengeEl.textContent = captchaState[key].display;
+      if (input) input.value = '';
+      const wrap = document.getElementById(key + 'CaptchaWrap');
+      if (wrap) wrap.classList.remove('invalid');
+      setFieldError(key + 'Captcha', null);
+    }
+
+    function refreshCaptcha(key) {
+      captchaState[key] = createCaptcha();
+      renderCaptcha(key);
+    }
+
+    function verifyCaptcha(key) {
+      const input = document.getElementById(key + 'Captcha');
+      if (!input) return false;
+      const val = input.value.trim();
+      if (!val) {
+        setFieldError(key + 'Captcha', 'Jawab verifikasi terlebih dahulu.');
+        return false;
+      }
+      if (val !== captchaState[key].answer) {
+        setFieldError(key + 'Captcha', 'Jawaban salah. Silakan coba soal baru.');
+        refreshCaptcha(key);
+        return false;
+      }
+      setFieldError(key + 'Captcha', null);
+      return true;
+    }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    let toastTimer = null;
+    function toast(message, type) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = message;
+      el.dataset.type = type || 'info';
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    /* ============================================================
+       TAB SWITCHING
+       ============================================================ */
+    function setTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const tabLogin = document.getElementById('tabLogin');
+      const tabSignup = document.getElementById('tabSignup');
+      if (!loginForm || !signupForm) return;
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+        tabLogin.setAttribute('aria-selected', 'true');
+        tabSignup.setAttribute('aria-selected', 'false');
+      } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        tabLogin.classList.remove('active');
+        tabSignup.classList.add('active');
+        tabLogin.setAttribute('aria-selected', 'false');
+        tabSignup.setAttribute('aria-selected', 'true');
+      }
+      hideAlert('loginAlert');
+      hideAlert('signupAlert');
+    }
+
+    function bindPasswordToggles() {
+      $$('.password-toggle').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = document.getElementById(btn.dataset.toggle);
+          if (!target) return;
+          const isPwd = target.type === 'password';
+          target.type = isPwd ? 'text' : 'password';
+          const icon = btn.querySelector('i');
+          if (icon) {
+            icon.setAttribute('data-lucide', isPwd ? 'eye-off' : 'eye');
+            if (window.lucide) window.lucide.createIcons();
+          }
+        });
+      });
+    }
+
+    /* ============================================================
+       SIGNUP
+       ============================================================ */
+    async function handleSignup(evt) {
+      evt.preventDefault();
+      if (!supabase) {
+        showAlert('signupAlert', configError || 'Koneksi ke server gagal. Muat ulang halaman.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('signupSubmit');
+      const usernameEl = document.getElementById('signupUsername');
+      const emailEl = document.getElementById('signupEmail');
+      const whatsappEl = document.getElementById('signupWhatsapp');
+      const passwordEl = document.getElementById('signupPassword');
+
+      clearAllErrors('signupForm');
+      hideAlert('signupAlert');
+
+      const username = (usernameEl.value || '').trim();
+      const email = (emailEl.value || '').trim().toLowerCase();
+      const whatsapp = (whatsappEl.value || '').trim();
+      const password = passwordEl.value || '';
+
+      let hasError = false;
+      const usernameErr = validateUsername(username);
+      if (usernameErr) { setFieldError('signupUsername', usernameErr); hasError = true; }
+      const emailErr = validateEmail(email);
+      if (emailErr) { setFieldError('signupEmail', emailErr); hasError = true; }
+      const waErr = validateWhatsApp(whatsapp);
+      if (waErr) { setFieldError('signupWhatsapp', waErr); hasError = true; }
+      const pwdErr = validatePassword(password, true);
+      if (pwdErr) { setFieldError('signupPassword', pwdErr); hasError = true; }
+      if (!verifyCaptcha('signup')) hasError = true;
+      if (hasError) return;
+
+      setButtonLoading(btn, true, 'Memeriksa username…');
+
+      try {
+        const { data: available, error: availErr } = await supabase.rpc('is_username_available', { uname: username });
+        if (availErr) {
+          console.warn('RPC is_username_available gagal:', availErr.message);
+        } else if (available === false) {
+          setFieldError('signupUsername', 'Username sudah dipakai. Coba yang lain.');
+          setButtonLoading(btn, false);
+          return;
+        }
+
+        setButtonLoading(btn, true, 'Mendaftarkan…');
+
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              username: username,
+              whatsapp: whatsapp || null,
+              full_name: username,
+            },
+          },
+        });
+
+        if (error) {
+          const msg = (error.message || '').toLowerCase();
+          if (msg.includes('already registered') || msg.includes('user already')) {
+            setFieldError('signupEmail', 'Email sudah terdaftar. Coba masuk.');
+          } else if (msg.includes('password')) {
+            setFieldError('signupPassword', 'Password ditolak. Coba password lain.');
+          } else if (msg.includes('duplicate') || msg.includes('username')) {
+            setFieldError('signupUsername', 'Username sudah dipakai.');
+          } else if (msg.includes('rate limit')) {
+            showAlert('signupAlert', 'Terlalu banyak percobaan. Coba lagi nanti.', 'error');
+          } else {
+            showAlert('signupAlert', error.message || 'Gagal mendaftar.', 'error');
+          }
+          setButtonLoading(btn, false);
+          return;
+        }
+
+        if (data && data.session) {
+          showAlert('signupAlert', 'Pendaftaran berhasil! Mengalihkan…', 'success');
+          toast('Selamat datang, ' + username + '!', 'success');
+          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 900);
+        } else if (data && data.user) {
+          showAlert('signupAlert', 'Cek email untuk verifikasi. Setelah verifikasi, kamu bisa masuk.', 'info');
+          setTimeout(() => setTab('login'), 1800);
+        }
+      } catch (err) {
+        showAlert('signupAlert', 'Terjadi kesalahan jaringan. Coba lagi.', 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    /* ============================================================
+       LOGIN
+       ============================================================ */
+    async function handleLogin(evt) {
+      evt.preventDefault();
+      if (!supabase) {
+        showAlert('loginAlert', configError || 'Koneksi ke server gagal. Muat ulang halaman.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('loginSubmit');
+      const emailEl = document.getElementById('loginEmail');
+      const passwordEl = document.getElementById('loginPassword');
+
+      clearAllErrors('loginForm');
+      hideAlert('loginAlert');
+
+      const email = (emailEl.value || '').trim().toLowerCase();
+      const password = passwordEl.value || '';
+
+      let hasError = false;
+      const emailErr = validateEmail(email);
+      if (emailErr) { setFieldError('loginEmail', emailErr); hasError = true; }
+      const pwdErr = validatePassword(password, false);
+      if (pwdErr) { setFieldError('loginPassword', pwdErr); hasError = true; }
+      if (!verifyCaptcha('login')) hasError = true;
+      if (hasError) return;
+
+      setButtonLoading(btn, true, 'Masuk…');
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          const msg = (error.message || '').toLowerCase();
+          if (msg.includes('invalid login') || msg.includes('invalid credentials')) {
+            showAlert('loginAlert', 'Email atau password salah.', 'error');
+          } else if (msg.includes('email not confirmed')) {
+            showAlert('loginAlert', 'Email belum diverifikasi. Cek inbox kamu.', 'error');
+          } else if (msg.includes('rate limit')) {
+            showAlert('loginAlert', 'Terlalu banyak percobaan. Coba lagi nanti.', 'error');
+          } else {
+            showAlert('loginAlert', error.message || 'Gagal masuk.', 'error');
+          }
+          setButtonLoading(btn, false);
+          return;
+        }
+
+        if (data && data.session) {
+          toast('Berhasil masuk!', 'success');
+          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 700);
+        } else {
+          showAlert('loginAlert', 'Login tidak menghasilkan sesi. Coba lagi.', 'error');
+          setButtonLoading(btn, false);
+        }
+      } catch (err) {
+        showAlert('loginAlert', 'Terjadi kesalahan jaringan. Coba lagi.', 'error');
+        setButtonLoading(btn, false);
+      }
+    }
+
+    /* ============================================================
+       FORGOT PASSWORD
+       ============================================================ */
+    async function handleForgotPassword() {
+      if (!supabase) { toast(configError || 'Server belum siap.', 'error'); return; }
+      const emailEl = document.getElementById('forgotEmail');
+      const btn = document.getElementById('forgotSubmit');
+      const alertEl = document.getElementById('forgotAlert');
+      const email = (emailEl.value || '').trim().toLowerCase();
+      const err = validateEmail(email);
+      if (err) { toast(err, 'error'); return; }
+
+      setButtonLoading(btn, true, 'Mengirim…');
+      if (alertEl) alertEl.classList.add('hidden');
+
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/reset.html',
+        });
+        if (error) {
+          if (alertEl) {
+            alertEl.classList.remove('hidden', 'success');
+            alertEl.classList.add('info');
+            alertEl.querySelector('p').textContent = 'Jika email terdaftar, link reset sudah dikirim. Cek inbox (dan spam).';
+          }
+        } else {
+          if (alertEl) {
+            alertEl.classList.remove('hidden', 'info');
+            alertEl.classList.add('success');
+            alertEl.querySelector('p').textContent = 'Link reset dikirim ke ' + email + '. Cek inbox.';
+          }
+        }
+      } catch (err) {
+        toast('Gagal mengirim. Coba lagi.', 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    /* ============================================================
+       SESSION CHECK
+       ============================================================ */
+    async function checkSession() {
+      if (!supabase) { setSessionOverlay('', false); return; }
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user) {
+          setSessionOverlay('Sudah masuk, mengalihkan…', true);
+          setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 500);
+          return;
+        }
+      } catch (_) { /* ignore */ }
+      setSessionOverlay('', false);
+    }
+
+    /* ============================================================
+       BIND EVENTS
+       ============================================================ */
+    function bindEvents() {
+      const tabLogin = document.getElementById('tabLogin');
+      const tabSignup = document.getElementById('tabSignup');
+      if (tabLogin) tabLogin.addEventListener('click', () => setTab('login'));
+      if (tabSignup) tabSignup.addEventListener('click', () => setTab('signup'));
+
+      const switchToSignup = document.getElementById('switchToSignup');
+      const switchToLogin = document.getElementById('switchToLogin');
+      if (switchToSignup) switchToSignup.addEventListener('click', () => setTab('signup'));
+      if (switchToLogin) switchToLogin.addEventListener('click', () => setTab('login'));
+
+      const loginRefresh = document.getElementById('loginCaptchaRefresh');
+      const signupRefresh = document.getElementById('signupCaptchaRefresh');
+      if (loginRefresh) loginRefresh.addEventListener('click', () => refreshCaptcha('login'));
+      if (signupRefresh) signupRefresh.addEventListener('click', () => refreshCaptcha('signup'));
+
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      if (loginForm) loginForm.addEventListener('submit', handleLogin);
+      if (signupForm) signupForm.addEventListener('submit', handleSignup);
+
+      const loginEmail = document.getElementById('loginEmail');
+      if (loginEmail) loginEmail.addEventListener('blur', () => {
+        const err = validateEmail(loginEmail.value.trim().toLowerCase());
+        if (err && loginEmail.value) setFieldError('loginEmail', err);
+        else setFieldError('loginEmail', null);
+      });
+
+      const signupUsername = document.getElementById('signupUsername');
+      if (signupUsername) signupUsername.addEventListener('blur', () => {
+        const err = validateUsername(signupUsername.value.trim());
+        if (err && signupUsername.value) setFieldError('signupUsername', err);
+        else setFieldError('signupUsername', null);
+      });
+
+      const signupEmail = document.getElementById('signupEmail');
+      if (signupEmail) signupEmail.addEventListener('blur', () => {
+        const err = validateEmail(signupEmail.value.trim().toLowerCase());
+        if (err && signupEmail.value) setFieldError('signupEmail', err);
+        else setFieldError('signupEmail', null);
+      });
+
+      const signupWhatsapp = document.getElementById('signupWhatsapp');
+      if (signupWhatsapp) signupWhatsapp.addEventListener('blur', () => {
+        const err = validateWhatsApp(signupWhatsapp.value.trim());
+        if (err) setFieldError('signupWhatsapp', err);
+        else setFieldError('signupWhatsapp', null);
+      });
+
+      const signupPassword = document.getElementById('signupPassword');
+      if (signupPassword) {
+        signupPassword.addEventListener('input', () => {
+          updateStrengthMeter(signupPassword.value);
+          if (signupPassword.value) setFieldError('signupPassword', null);
+        });
+      }
+
+      ['loginCaptcha', 'signupCaptcha'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+          el.value = el.value.replace(/[^0-9]/g, '');
+          setFieldError(id, null);
+        });
+      });
+
+      const forgotBtn = document.getElementById('forgotPasswordBtn');
+      const forgotModal = document.getElementById('forgotModal');
+      const closeForgot = document.getElementById('closeForgot');
+      const forgotSubmit = document.getElementById('forgotSubmit');
+      if (forgotBtn) forgotBtn.addEventListener('click', () => {
+        show(forgotModal);
+        document.body.style.overflow = 'hidden';
+      });
+      if (closeForgot) closeForgot.addEventListener('click', () => {
+        hide(forgotModal);
+        document.body.style.overflow = '';
+      });
+      if (forgotModal) forgotModal.addEventListener('click', (e) => {
+        if (e.target === forgotModal) {
+          hide(forgotModal);
+          document.body.style.overflow = '';
+        }
+      });
+      if (forgotSubmit) forgotSubmit.addEventListener('click', handleForgotPassword);
+
+      const helpBtn = document.getElementById('helpBtn');
+      const helpModal = document.getElementById('helpModal');
+      const closeHelp = document.getElementById('closeHelp');
+      const closeHelpBottom = document.getElementById('closeHelpBottom');
+      if (helpBtn) helpBtn.addEventListener('click', () => {
+        show(helpModal);
+        document.body.style.overflow = 'hidden';
+      });
+      if (closeHelp) closeHelp.addEventListener('click', () => {
+        hide(helpModal);
+        document.body.style.overflow = '';
+      });
+      if (closeHelpBottom) closeHelpBottom.addEventListener('click', () => {
+        hide(helpModal);
+        document.body.style.overflow = '';
+      });
+      if (helpModal) helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+          hide(helpModal);
+          document.body.style.overflow = '';
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (helpModal && !helpModal.classList.contains('hidden')) {
+            hide(helpModal);
+            document.body.style.overflow = '';
+          }
+          if (forgotModal && !forgotModal.classList.contains('hidden')) {
+            hide(forgotModal);
+            document.body.style.overflow = '';
+          }
+        }
+      });
+    }
+
+    /* ============================================================
+       INIT
+       ============================================================ */
+    async function init() {
+      if (window.lucide) window.lucide.createIcons();
+
+      renderCaptcha('login');
+      renderCaptcha('signup');
+      bindPasswordToggles();
+      bindEvents();
+
+      const ok = await loadConfig();
+      if (!ok) {
+        setSessionOverlay('', false);
+        showAlert('loginAlert', configError || 'Gagal memuat konfigurasi server.', 'error');
+        showAlert('signupAlert', configError || 'Gagal memuat konfigurasi server.', 'error');
+        return;
+      }
+
+      await checkSession();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</body>
+</html>
