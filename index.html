@@ -4,32 +4,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f9ff">
+  <meta name="theme-color" content="#080d1b">
+  <meta name="description" content="FortechDev Web2APK Studio - buat aplikasi Android dari website.">
   <title>Build APK — FortechDev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-icon"><i data-lucide="layers"></i></span>
-        <span>Fortech<span class="blue">Dev</span></span>
-      </a>
-      <button class="icon-btn" type="button" id="helpBtn" aria-label="Bantuan">
-        <i data-lucide="circle-help"></i>
-      </button>
-    </header>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
 
+  <header class="topbar">
+    <a class="brand" href="./index.html">
+      <span class="brand-icon"><i data-lucide="layers"></i></span>
+      <span>FortechDev<small>WEB2APK STUDIO</small></span>
+    </a>
+    <button class="icon-button" id="helpButton" aria-label="Bantuan">
+      <i data-lucide="circle-help"></i>
+    </button>
+  </header>
+
+  <main class="page">
     <section class="hero">
-      <span class="eyebrow"><i data-lucide="sparkles"></i> WEB2APK STUDIO</span>
-      <h1>Website jadi <span class="blue">aplikasi.</span></h1>
+      <div class="eyebrow"><i data-lucide="sparkles"></i> WEB2APK STUDIO</div>
+      <h1>Website jadi <span>aplikasi.</span></h1>
       <p>Bangun aplikasi Android dari website kamu dengan mudah.</p>
+      <div class="hero-tags">
+        <span><i data-lucide="smartphone"></i> Mobile first</span>
+        <span><i data-lucide="shield-check"></i> API terlindungi</span>
+      </div>
     </section>
 
-    <section class="panel">
-      <div class="section-heading">
-        <span class="section-icon"><i data-lucide="smartphone"></i></span>
+    <section class="panel" id="build">
+      <div class="panel-heading">
+        <span class="panel-icon"><i data-lucide="rocket"></i></span>
         <div>
           <h2>Build aplikasi</h2>
           <p>Atur informasi dan sumber aplikasi.</p>
@@ -37,206 +47,266 @@
       </div>
 
       <form id="buildForm" enctype="multipart/form-data">
-        <label for="appName">Nama aplikasi *</label>
-        <input id="appName" name="appName" required maxlength="60"
-               placeholder="Contoh: Aplikasi Saya">
+        <div class="field-grid">
+          <label class="field">
+            <span>Nama aplikasi <b>*</b></span>
+            <input name="appName" required maxlength="60" placeholder="Contoh: Aplikasi Saya">
+          </label>
 
-        <label for="packageName">Package name *</label>
-        <input id="packageName" name="packageName" required
-               placeholder="com.fortech.aplikasi"
-               pattern="[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+">
-
-        <label for="sourceType">Sumber aplikasi</label>
-        <select id="sourceType">
-          <option value="url">Website online (URL)</option>
-          <option value="html">File HTML (offline)</option>
-        </select>
-
-        <div id="urlGroup">
-          <label for="url">URL website *</label>
-          <input id="url" name="url" type="url"
-                 placeholder="https://example.com">
+          <label class="field">
+            <span>Package name <b>*</b></span>
+            <input name="packageName" required
+              pattern="[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+"
+              placeholder="com.fortech.aplikasi">
+            <small>Contoh: com.fortech.aplikasi</small>
+          </label>
         </div>
 
-        <div id="htmlGroup" hidden>
-          <label for="html">File HTML *</label>
-          <input id="html" name="html" type="file" accept=".html,text/html">
+        <label class="field">
+          <span>Sumber aplikasi</span>
+          <select id="sourceMode">
+            <option value="url">Website online (URL)</option>
+            <option value="html">File HTML (offline)</option>
+          </select>
+        </label>
+
+        <label class="field" id="urlField">
+          <span>URL website <b>*</b></span>
+          <input name="url" id="websiteUrl" type="url" placeholder="https://example.com">
+        </label>
+
+        <label class="field hidden" id="htmlField">
+          <span>File HTML <b>*</b></span>
+          <input name="html" id="htmlFile" type="file" accept=".html,text/html">
+          <small>Pilih satu file HTML. Untuk website multi-file, gunakan ZIP.</small>
+        </label>
+
+        <label class="field">
+          <span>File ZIP (opsional)</span>
+          <input name="zip" type="file" accept=".zip,application/zip">
+        </label>
+
+        <label class="field">
+          <span>Ikon aplikasi PNG (opsional)</span>
+          <input name="icon" type="file" accept=".png,image/png">
+        </label>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>Splash screen</span>
+            <select name="splashType" id="splashType">
+              <option value="default">Default</option>
+              <option value="image">Gambar</option>
+              <option value="html">HTML</option>
+              <option value="video">Video</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Orientasi layar</span>
+            <select name="orientation">
+              <option value="auto">Otomatis</option>
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </label>
         </div>
 
-        <label for="zip">File ZIP (opsional)</label>
-        <input id="zip" name="zip" type="file" accept=".zip">
+        <label class="field hidden" id="splashImageField">
+          <span>Gambar splash PNG/JPG</span>
+          <input name="splash" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+        </label>
 
-        <label for="icon">Ikon aplikasi PNG (opsional)</label>
-        <input id="icon" name="icon" type="file" accept=".png,image/png">
+        <label class="field hidden" id="splashHtmlField">
+          <span>File splash HTML</span>
+          <input name="splashHtml" type="file" accept=".html,text/html">
+        </label>
 
-        <label for="splashType">Splash screen</label>
-        <select id="splashType" name="splashType">
-          <option value="default">Default</option>
-          <option value="image">Gambar</option>
-          <option value="html">HTML</option>
-          <option value="video">Video</option>
-        </select>
+        <label class="field hidden" id="splashVideoField">
+          <span>Video splash MP4</span>
+          <input name="splashVideo" type="file" accept=".mp4,video/mp4">
+        </label>
 
-        <div id="splashImageGroup" hidden>
-          <label for="splash">Gambar splash PNG/JPG</label>
-          <input id="splash" name="splash" type="file"
-                 accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+        <div class="field-grid">
+          <label class="field">
+            <span>Versi</span>
+            <input name="versionName" value="1.0" maxlength="30">
+          </label>
+          <label class="field">
+            <span>Kode versi</span>
+            <input name="versionCode" type="number" min="1" step="1" value="1">
+          </label>
         </div>
 
-        <div id="splashHtmlGroup" hidden>
-          <label for="splashHtml">File splash HTML</label>
-          <input id="splashHtml" name="splashHtml" type="file" accept=".html,text/html">
+        <div class="notice">
+          <i data-lucide="info"></i>
+          <p>Pastikan kamu memiliki izin untuk menggunakan website dan aset yang dimasukkan.</p>
         </div>
 
-        <div id="splashVideoGroup" hidden>
-          <label for="splashVideo">Video splash MP4</label>
-          <input id="splashVideo" name="splashVideo" type="file" accept=".mp4,video/mp4">
-        </div>
-
-        <label for="orientation">Orientasi layar</label>
-        <select id="orientation" name="orientation">
-          <option value="auto">Otomatis</option>
-          <option value="portrait">Portrait</option>
-          <option value="landscape">Landscape</option>
-        </select>
-
-        <div class="two-cols">
-          <div>
-            <label for="versionName">Versi</label>
-            <input id="versionName" name="versionName" value="1.0">
-          </div>
-          <div>
-            <label for="versionCode">Kode versi</label>
-            <input id="versionCode" name="versionCode" type="number" min="1" value="1">
-          </div>
-        </div>
-
-        <button class="primary-btn" type="submit" id="buildBtn">
+        <button class="primary-button" id="buildButton" type="submit">
           <i data-lucide="rocket"></i>
           <span>Build APK</span>
         </button>
       </form>
 
-      <div id="buildStatus" class="status" hidden aria-live="polite"></div>
-      <div id="buildResult" class="result" hidden></div>
+      <div class="build-status hidden" id="buildStatus" role="status" aria-live="polite">
+        <span class="status-spinner" id="statusSpinner"></span>
+        <div>
+          <strong id="statusTitle">Menyiapkan build...</strong>
+          <p id="statusMessage">Mohon tunggu.</p>
+        </div>
+      </div>
+
+      <section class="result-card hidden" id="buildResult">
+        <span class="result-icon"><i data-lucide="check-circle-2"></i></span>
+        <h3>Respons build diterima</h3>
+        <p id="resultDetails"></p>
+        <a id="downloadButton" class="primary-button download-button" href="#" target="_blank" rel="noopener">
+          <i data-lucide="download"></i> Download APK
+        </a>
+      </section>
     </section>
 
-    <nav class="bottom-nav" aria-label="Navigasi utama">
-      <a class="nav-item active" href="index.html">
-        <i data-lucide="rocket"></i><span>Build</span>
-      </a>
-      <a class="nav-item" href="tools.html">
-        <i data-lucide="wrench"></i><span>Tools</span>
-      </a>
-      <a class="nav-item" href="pricing.html">
-        <i data-lucide="gem"></i><span>Akses</span>
-      </a>
-      <a class="nav-item" href="akun.html">
-        <i data-lucide="user-round"></i><span>Akun</span>
-      </a>
-    </nav>
+    <section class="mini-card">
+      <span class="mini-icon"><i data-lucide="shield-check"></i></span>
+      <div>
+        <strong>Build dengan aman</strong>
+        <p>API key disimpan di server, bukan di browser pengguna.</p>
+      </div>
+    </section>
   </main>
 
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a class="nav-item active" href="./index.html" aria-current="page">
+      <i data-lucide="rocket"></i><span>Build</span>
+    </a>
+    <a class="nav-item" href="./tools.html">
+      <i data-lucide="wrench"></i><span>Tools</span>
+    </a>
+    <a class="nav-item" href="./pricing.html">
+      <i data-lucide="gem"></i><span>Akses</span>
+    </a>
+    <a class="nav-item" href="./akun.html">
+      <i data-lucide="user-round"></i><span>Akun</span>
+    </a>
+  </nav>
+
+  <dialog class="help-dialog" id="helpDialog">
+    <div class="dialog-head">
+      <h3>Bantuan Build APK</h3>
+      <button class="icon-button" id="closeHelp" aria-label="Tutup"><i data-lucide="x"></i></button>
+    </div>
+    <p>Isi nama aplikasi, package name, dan pilih sumber website atau file HTML. Tekan Build APK untuk memulai.</p>
+    <p>Jika build gagal, periksa log fungsi <code>/api/build</code> di hosting dan pastikan environment variable <code>APIKEYYRF</code> sudah diatur.</p>
+  </dialog>
+
   <script>
-    lucide.createIcons();
+    const $ = (selector) => document.querySelector(selector);
 
-    const sourceType = document.getElementById("sourceType");
-    const urlGroup = document.getElementById("urlGroup");
-    const htmlGroup = document.getElementById("htmlGroup");
-    const urlInput = document.getElementById("url");
-    const htmlInput = document.getElementById("html");
+    const sourceMode = $("#sourceMode");
+    const websiteUrl = $("#websiteUrl");
+    const htmlFile = $("#htmlFile");
 
-    function updateSource() {
-      const offline = sourceType.value === "html";
-      urlGroup.hidden = offline;
-      htmlGroup.hidden = !offline;
-      urlInput.required = !offline;
-      htmlInput.required = offline;
+    function updateSourceMode() {
+      const isHtml = sourceMode.value === "html";
+      $("#urlField").classList.toggle("hidden", isHtml);
+      $("#htmlField").classList.toggle("hidden", !isHtml);
+      websiteUrl.required = !isHtml;
+      htmlFile.required = isHtml;
+      websiteUrl.disabled = isHtml;
+      htmlFile.disabled = !isHtml;
     }
 
-    sourceType.addEventListener("change", updateSource);
-    updateSource();
-
-    const splashType = document.getElementById("splashType");
-    const splashGroups = {
-      image: document.getElementById("splashImageGroup"),
-      html: document.getElementById("splashHtmlGroup"),
-      video: document.getElementById("splashVideoGroup")
-    };
-
-    function updateSplash() {
-      Object.entries(splashGroups).forEach(([type, element]) => {
-        element.hidden = splashType.value !== type;
-      });
+    function updateSplashMode() {
+      const type = $("#splashType").value;
+      $("#splashImageField").classList.toggle("hidden", type !== "image");
+      $("#splashHtmlField").classList.toggle("hidden", type !== "html");
+      $("#splashVideoField").classList.toggle("hidden", type !== "video");
     }
 
-    splashType.addEventListener("change", updateSplash);
-    updateSplash();
+    sourceMode.addEventListener("change", updateSourceMode);
+    $("#splashType").addEventListener("change", updateSplashMode);
+    updateSourceMode();
+    updateSplashMode();
 
-    document.getElementById("helpBtn").addEventListener("click", () => {
-      alert("Isi nama aplikasi, package name, lalu pilih URL website atau file HTML. Pastikan APIKEYYRF sudah diatur di Vercel.");
-    });
+    function setStatus(title, message, loading = false) {
+      $("#buildStatus").classList.remove("hidden");
+      $("#statusTitle").textContent = title;
+      $("#statusMessage").textContent = message;
+      $("#statusSpinner").classList.toggle("hidden", !loading);
+    }
 
-    document.getElementById("buildForm").addEventListener("submit", async (event) => {
+    $("#buildForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const form = event.currentTarget;
-      const button = document.getElementById("buildBtn");
-      const status = document.getElementById("buildStatus");
-      const result = document.getElementById("buildResult");
+      const button = $("#buildButton");
+      const result = $("#buildResult");
 
-      status.hidden = false;
-      result.hidden = true;
-      status.textContent = "Sedang mengirim permintaan build...";
+      result.classList.add("hidden");
       button.disabled = true;
+      button.innerHTML = '<span class="status-spinner"></span><span>Mengirim permintaan...</span>';
+      setStatus("Mengirim permintaan build", "Menghubungi server builder. Jangan tutup halaman.", true);
 
       try {
-        const data = new FormData(form);
-        if (sourceType.value === "url") data.delete("html");
-        else data.delete("url");
+        const formData = new FormData(form);
 
-        const response = await fetch("/api/build", {
+        // Jangan kirim URL kosong ketika memakai file HTML.
+        if (sourceMode.value === "html") {
+          formData.delete("url");
+        } else {
+          formData.delete("html");
+        }
+
+        // Browser menetapkan Content-Type multipart beserta boundary secara otomatis.
+        const response = await fetch("./api/build", {
           method: "POST",
-          body: data
+          body: formData
         });
 
-        const payload = await response.json();
+        const raw = await response.text();
+        let data;
 
-        if (!response.ok || payload.success === false) {
-          throw new Error(payload.error || "Build gagal.");
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          throw new Error(
+            "Server tidak mengembalikan JSON yang valid. Periksa konfigurasi route /api/build."
+          );
         }
 
-        status.textContent = "Build berhasil!";
-        result.hidden = false;
-        result.replaceChildren();
-
-        const heading = document.createElement("h3");
-        heading.textContent = payload.fileName || "APK siap diunduh";
-        result.appendChild(heading);
-
-        if (payload.size) {
-          const size = document.createElement("p");
-          size.textContent = "Ukuran: " + (payload.size / 1024 / 1024).toFixed(2) + " MB";
-          result.appendChild(size);
+        if (!response.ok || data.success === false) {
+          throw new Error(data.error || `Build gagal (HTTP ${response.status})`);
         }
 
-        if (payload.downloadUrl) {
-          const link = document.createElement("a");
-          link.href = payload.downloadUrl;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.className = "primary-btn";
-          link.textContent = "Unduh APK";
-          result.appendChild(link);
-        } else {
-          result.appendChild(document.createTextNode("Respons tidak menyertakan URL unduhan."));
+        if (!data.downloadUrl) {
+          throw new Error("Build merespons tanpa downloadUrl.");
         }
+
+        const downloadUrl = new URL(data.downloadUrl, window.location.origin);
+        if (!["https:", "http:"].includes(downloadUrl.protocol)) {
+          throw new Error("Protokol URL download tidak valid.");
+        }
+
+        $("#resultDetails").textContent =
+          `${data.fileName || "app.apk"}${data.size ? " · " + (data.size / 1024 / 1024).toFixed(2) + " MB" : ""}`;
+
+        $("#downloadButton").href = downloadUrl.href;
+        result.classList.remove("hidden");
+        setStatus("Build berhasil", "APK siap diunduh.", false);
+        result.scrollIntoView({ behavior: "smooth", block: "nearest" });
       } catch (error) {
-        status.textContent = error.message || "Gagal menghubungi API Builder.";
+        setStatus("Build gagal", error.message || "Terjadi kesalahan yang tidak diketahui.", false);
       } finally {
         button.disabled = false;
+        button.innerHTML = '<i data-lucide="rocket"></i><span>Build APK</span>';
+        if (window.lucide) lucide.createIcons();
       }
     });
+
+    $("#helpButton").addEventListener("click", () => $("#helpDialog").showModal());
+    $("#closeHelp").addEventListener("click", () => $("#helpDialog").close());
+    if (window.lucide) lucide.createIcons();
   </script>
 </body>
 </html>
