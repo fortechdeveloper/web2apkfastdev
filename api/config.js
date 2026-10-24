@@ -1,8 +1,7 @@
-// api/config.js
-// Vercel serverless function: baca env var, kirim ke frontend sebagai JSON.
-// Anon key memang public — ini cuma biar gak hardcode di HTML.
+// api/config.js — Vercel serverless function
+// Baca env var SUPABASE_URL & SUPABASE_ANON_KEY, kirim ke frontend sebagai JSON.
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   const url = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY;
 
@@ -13,11 +12,10 @@ export default function handler(req, res) {
     return;
   }
 
-  // Cache 1 jam di CDN — config jarang berubah
   res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
 
   res.status(200).json({
     supabaseUrl: url,
     supabaseAnonKey: anonKey,
   });
-}
+};
