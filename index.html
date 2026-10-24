@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#09090b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>FASTDEV WEB2APK</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & DESIGN TOKENS (DARK MODE)
+       ========================================================================== */
+    :root {
+      color-scheme: dark;
+      --bg: #09090b;
+      --surface: #121215;
+      --surface-elevated: #18181b;
+      
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --line: #27272a;
+      
+      --blue: #6366f1;
+      --blue-dark: #4f46e5;
+      --blue-soft: rgba(99, 102, 241, 0.15);
+      
+      --mint: rgba(16, 185, 129, 0.1);
+      --mint-text: #10b981;
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.1);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.1);
+      
+      --shadow: 0 16px 42px rgba(0, 0, 0, 0.4);
+      --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.6);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --radius-md: 16px;
+      --nav-height: 75px;
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE STYLES
+       ========================================================================== */
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    html { 
+      min-height: 100%; 
+      background: var(--bg); 
+    }
+    
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    button, input { 
+      font: inherit; 
+      outline: none;
+      border: none;
+      background: none;
+    }
+    
+    button { 
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       3. AMBIENT BACKGROUND ANIMATIONS (DARK)
+       ========================================================================== */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+      background: linear-gradient(145deg, #09090b 0%, #0f111a 42%, #0a0f18 75%, #09090b 100%);
+      background-size: 180% 180%;
+      animation: pageTint 14s ease-in-out infinite alternate;
+    }
+
+    .ambient-bg::before, .ambient-bg::after {
+      content: ""; 
+      position: absolute; 
+      border-radius: 50%; 
+      filter: blur(60px);
+      opacity: .35; 
+      will-change: transform;
+    }
+
+    .ambient-bg::before {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle at 35% 35%, #4f46e5 0%, #312e81 42%, rgba(49,46,129,0) 72%);
+      top: -100px; right: -100px;
+      animation: blobFloatOne 12s ease-in-out infinite alternate;
+    }
+
+    .ambient-bg::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle at 45% 45%, #0ea5e9 0%, #082f49 45%, rgba(8,47,73,0) 73%);
+      bottom: -50px; left: -150px;
+      animation: blobFloatTwo 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes pageTint { 
+      from { background-position: 0% 20%; } 
+      to { background-position: 100% 80%; } 
+    }
+    
+    @keyframes blobFloatOne { 
+      0% { transform: translate3d(0,0,0) scale(.88) rotate(0deg); } 
+      50% { transform: translate3d(-40px,70px,0) scale(1.15) rotate(20deg); } 
+      100% { transform: translate3d(-15px,120px,0) scale(1) rotate(35deg); } 
+    }
+    
+    @keyframes blobFloatTwo { 
+      0% { transform: translate3d(0,0,0) scale(1) rotate(0deg); } 
+      50% { transform: translate3d(50px,-40px,0) scale(.9) rotate(-15deg); } 
+      100% { transform: translate3d(30px,-100px,0) scale(1.1) rotate(-30deg); } 
+    }
+
+    /* ==========================================================================
+       4. LAYOUT WRAPPER
+       ========================================================================== */
+    .app {
+      width: min(100%, 480px);
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 18px calc(100px + env(safe-area-inset-bottom));
+      position: relative;
+      isolation: isolate;
+      animation: appFadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes appFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ==========================================================================
+       5. HEADER & BRAND
+       ========================================================================== */
+    .topbar {
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      margin-bottom: 23px;
+      animation: slideInTop 0.5s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .brand { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+    }
+
+    .brand-mark {
+      width: 44px; height: 44px; 
+      border-radius: 14px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #fff;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .brand-name { 
+      font: 800 20px/1.2 "Manrope", sans-serif; 
+      letter-spacing: -0.8px; 
+      color: var(--ink);
+    }
+
+    .brand-name span { 
+      color: var(--blue); 
+    }
+
+    .icon-button {
+      width: 44px; height: 44px; 
+      border: 1px solid var(--line);
+      border-radius: 14px; 
+      background: var(--surface);
+      color: var(--muted);
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      transition: all 0.22s ease;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .icon-button:active {
+      transform: scale(0.92);
+      background: var(--surface-elevated);
+    }
+
+    /* ==========================================================================
+       6. HERO SECTION
+       ========================================================================== */
+    .hero {
+      margin: 4px 0 24px;
+      animation: slideInTop 0.6s 0.05s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .eyebrow {
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      margin-bottom: 12px;
+      color: var(--blue); 
+      font-size: 12px; 
+      font-weight: 800;
+      letter-spacing: 1.5px; 
+      text-transform: uppercase;
+    }
+
+    .live-dot { 
+      width: 8px; height: 8px; 
+      border-radius: 50%; 
+      background: var(--blue); 
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); 
+      animation: dotPulse 2s ease-in-out infinite; 
+    }
+
+    h1 {
+      margin: 0; 
+      font: 800 clamp(30px, 8vw, 38px)/1.15 "Manrope", sans-serif;
+      letter-spacing: -1.5px;
+      color: var(--ink);
+    }
+
+    h1 span { 
+      color: var(--blue); 
+    }
+
+    /* ==========================================================================
+       7. PANELS & CARDS (DARK SURFACES)
+       ========================================================================== */
+    .panel {
+      background: var(--surface); 
+      border: 1px solid var(--line);
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow);
+      padding: 20px; 
+      margin-bottom: 16px;
+      position: relative; 
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      animation: riseIn 0.6s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .panel:nth-of-type(1) { animation-delay: 0.1s; }
+    .panel:nth-of-type(2) { animation-delay: 0.15s; }
+    .panel:nth-of-type(3) { animation-delay: 0.2s; }
+
+    .panel::before {
+      content: ""; 
+      position: absolute; 
+      left: 20px; right: 20px; top: 0; 
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), rgba(14, 165, 233, 0.5), transparent);
+      opacity: 0.6;
+    }
+
+    .panel-heading { 
+      display: flex; 
+      align-items: center; 
+      gap: 14px; 
+      margin-bottom: 20px; 
+    }
+
+    .section-icon {
+      width: 40px; height: 40px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      border-radius: 12px; 
+      background: var(--blue-soft);
+      color: var(--blue);
+      flex-shrink: 0;
+      transition: transform .3s ease, background .3s ease;
+    }
+
+    .section-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .panel:focus-within .section-icon { 
+      transform: rotate(-8deg) scale(1.05); 
+      background: rgba(99, 102, 241, 0.25);
+    }
+
+    .panel-heading h2 { 
+      font: 800 16px/1.2 "Manrope", sans-serif; 
+      margin: 0; 
+      letter-spacing: -0.3px; 
+      color: var(--ink);
+    }
+
+    .panel-heading p { 
+      color: var(--muted); 
+      font-size: 12px; 
+      margin: 4px 0 0; 
+    }
+
+    /* ==========================================================================
+       8. FORMS & INPUTS (ALIGNMENT FIX)
+       ========================================================================== */
+    .field { 
+      margin-bottom: 18px; 
+    }
+    
+    .field:last-child { 
+      margin-bottom: 0; 
+    }
+
+    .label-row { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 8px; 
+    }
+
+    label, .field-label { 
+      font-size: 13px; 
+      font-weight: 600; 
+      color: #cbd5e1; 
+    }
+
+    .optional { 
+      color: var(--muted); 
+      font-size: 11px; 
+      font-weight: 600; 
+    }
+
+    .input-wrap { 
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap svg { 
+      position: absolute; 
+      left: 14px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      color: var(--muted); 
+      width: 18px; 
+      height: 18px; 
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    input[type="text"], input[type="url"] {
+      display: block; 
+      width: 100%; 
+      height: 50px; 
+      padding: 0 16px 0 42px;
+      border: 1px solid var(--line); 
+      border-radius: var(--radius-sm); 
+      background: rgba(255, 255, 255, 0.03); 
+      color: var(--ink); 
+      font-size: 14px; 
+      font-weight: 500;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+
+    input:focus { 
+      border-color: var(--blue); 
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); 
+      background: rgba(255, 255, 255, 0.05); 
+    }
+
+    input:focus + svg {
+      color: var(--blue);
+    }
+
+    input::placeholder { 
+      color: #52525b; 
+      font-weight: 400;
+    }
+
+    .split-fields { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 12px; 
+    }
+
+    /* ==========================================================================
+       9. CHOICE BUTTONS & SEGMENTED CONTROLS
+       ========================================================================== */
+    .choice-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 12px; 
+    }
+
+    .choice {
+      border: 1px solid var(--line); 
+      border-radius: var(--radius-sm); 
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px; 
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+      color: var(--muted); 
+      text-align: left; 
+      transition: all .2s ease;
+    }
+
+    .choice:active { 
+      transform: scale(.97); 
+    }
+
+    .choice.selected { 
+      border-color: var(--blue); 
+      background: var(--blue-soft);
+      color: var(--blue); 
+      box-shadow: 0 0 0 1px var(--blue);
+    }
+
+    .choice-icon { 
+      width: 38px; height: 38px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 10px; 
+      background: rgba(255, 255, 255, 0.05); 
+      flex-shrink: 0; 
+      transition: all 0.2s ease;
+    }
+
+    .choice-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .choice.selected .choice-icon { 
+      background: rgba(99, 102, 241, 0.2); 
+      color: var(--blue);
+    }
+
+    .choice strong { 
+      display: block; 
+      font-size: 14px; 
+      font-weight: 700; 
+      color: var(--ink); 
+      transition: color 0.2s ease;
+    }
+
+    .choice.selected strong {
+      color: var(--blue);
+    }
+
+    .segmented { 
+      display: flex; 
+      padding: 4px; 
+      gap: 6px; 
+      background: rgba(255, 255, 255, 0.03); 
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .segmented button {
+      border-radius: 10px;
+      padding: 12px 8px; 
+      flex: 1; 
+      font-size: 13px; 
+      font-weight: 700; 
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+
+    .segmented button.selected { 
+      color: var(--ink); 
+      background: var(--surface-elevated); 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); 
+    }
+
+    /* ==========================================================================
+       10. FILE UPLOAD
+       ========================================================================== */
+    .upload {
+      border: 1.5px dashed #3f3f46; 
+      border-radius: var(--radius-md); 
+      padding: 16px; 
+      display: flex; 
+      align-items: center; 
+      gap: 16px; 
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .upload:hover {
+      border-color: var(--blue);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .upload-icon { 
+      width: 46px; height: 46px; 
+      border-radius: 12px; 
+      background: var(--blue-soft); 
+      color: var(--blue); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-shrink: 0; 
+    }
+
+    .upload-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .upload-copy { 
+      min-width: 0; 
+      flex: 1; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .upload-copy strong { 
+      font-size: 14px; 
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .upload-copy span { 
+      font-size: 11px; 
+      color: var(--muted); 
+      margin-top: 4px; 
+    }
+
+    .upload-btn { 
+      border: 1px solid var(--line); 
+      border-radius: 10px; 
+      background: var(--surface-elevated); 
+      padding: 10px 14px; 
+      font-size: 12px; 
+      font-weight: 700; 
+      color: var(--ink); 
+      transition: all 0.2s ease;
+    }
+
+    .upload-btn:active {
+      transform: scale(0.94);
+      background: var(--line);
+    }
+
+    /* ==========================================================================
+       11. BUILD BUTTON & STATUS
+       ========================================================================== */
+    .build-button {
+      width: 100%; 
+      height: 58px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 12px;
+      border-radius: var(--radius-md); 
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+      font: 800 16px "Manrope", sans-serif; 
+      transition: all 0.2s;
+      position: relative; 
+      overflow: hidden; 
+      margin-top: 12px;
+    }
+
+    .build-button::before { 
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,.15) 45%, transparent 65%); 
+      transform: translateX(-120%); 
+      animation: buttonShine 5s ease-in-out infinite; 
+      pointer-events: none;
+    }
+
+    .build-button > svg, .build-button > span { 
+      position: relative; 
+      z-index: 1;
+    }
+
+    .build-button > svg { width: 20px; height: 20px; }
+
+    .build-button:active { 
+      transform: translateY(2px) scale(.98); 
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .build-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ==========================================================================
+       12. BOTTOM NAVIGATION (DARK GLASS)
+       ========================================================================== */
+    .bottom-nav {
+      position: fixed; 
+      z-index: 50; 
+      bottom: 0; 
+      left: 50%; 
+      transform: translateX(-50%);
+      width: min(100%, 480px); 
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 6px;
+      background: rgba(18, 18, 21, 0.85); 
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--line);
+    }
+
+    .nav-item {
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 2px; 
+      color: var(--muted);
+      font-size: 11px; 
+      font-weight: 700; 
+      transition: all .2s ease;
+      border-radius: 12px;
+    }
+
+    .nav-item svg { 
+      width: 22px; 
+      height: 22px; 
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .nav-item.active { 
+      color: var(--blue); 
+    }
+
+    .nav-item.active svg {
+      animation: iconPop .35s ease-out;
+      stroke-width: 2.5px;
+    }
+
+    /* ==========================================================================
+       13. MAINTENANCE VIEW & TERMINAL LOG
+       ========================================================================== */
+    .view-section {
+      display: none;
+      animation: fadeInView 0.3s ease-out forwards;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeInView {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .maintenance-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+      min-height: 60vh;
+    }
+
+    .maintenance-icon-box {
+      width: 110px;
+      height: 110px;
+      background: var(--blue-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      position: relative;
+      color: var(--blue);
+    }
+
+    .maintenance-icon-box::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 2px dashed rgba(99, 102, 241, 0.3);
+      animation: rotateDashed 12s linear infinite;
+    }
+
+    .maintenance-icon-box svg {
+      width: 48px;
+      height: 48px;
+      animation: floatIcon 2s ease-in-out infinite alternate;
+    }
+
+    .maintenance-container h2 {
+      font: 800 26px "Manrope", sans-serif;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .maintenance-container p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    @keyframes rotateDashed {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes floatIcon {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+
+    /* Terminal Log Box */
+    .terminal-box {
+      background: #000000;
+      border: 1px solid #27272a;
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-top: 16px;
+      display: none;
+      box-shadow: inset 0 2px 15px rgba(0,0,0,0.8);
+      overflow: hidden;
+      animation: expandHeight 0.3s ease-out forwards;
+    }
+
+    .terminal-box.show {
+      display: block;
+    }
+
+    .terminal-box pre {
+      margin: 0;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 12px;
+      color: #10b981;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    @keyframes expandHeight {
+      from { max-height: 0; opacity: 0; }
+      to { max-height: 250px; opacity: 1; }
+    }
+
+    /* ==========================================================================
+       14. TOAST NOTIFICATION
+       ========================================================================== */
+    .toast {
+      position: fixed; 
+      z-index: 100; 
+      bottom: 100px; 
+      left: 50%; 
+      transform: translate(-50%, 20px);
+      background: var(--surface-elevated); 
+      border: 1px solid var(--line);
+      color: var(--ink); 
+      border-radius: var(--radius-sm); 
+      padding: 12px 20px;
+      font-size: 13px; 
+      font-weight: 600;
+      opacity: 0; 
+      pointer-events: none; 
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      white-space: nowrap;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .toast.show { 
+      opacity: 1; 
+      transform: translate(-50%, 0); 
+    }
+
+    /* ==========================================================================
+       15. KEYFRAMES & ANIMATIONS
+       ========================================================================== */
+    @keyframes slideInTop { 
+      from { opacity: 0; transform: translateY(-10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+
+    @keyframes riseIn { 
+      from { opacity: 0; transform: translateY(17px) scale(.99); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+
+    @keyframes dotPulse { 
+      50% { box-shadow: 0 0 0 7px rgba(99, 102, 241, 0); } 
+    }
+
+    @keyframes buttonShine { 
+      0%, 60% { transform: translateX(-120%); } 
+      82%, 100% { transform: translateX(120%); } 
+    }
+
+    @keyframes iconPop { 
+      0% { transform: scale(.75); } 
+      70% { transform: scale(1.15); } 
+      100% { transform: scale(1); } 
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================================
+       16. MEDIA QUERIES (DESKTOP VIEW)
+       ========================================================================== */
+    @media (min-width: 600px) {
+      body { 
+        padding: 24px 0; 
+        align-items: center;
+      }
+      .app { 
+        min-height: calc(100dvh - 48px); 
+        border-radius: 32px; 
+        border: 1px solid var(--line); 
+        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        background: var(--bg);
+      }
+      .bottom-nav { 
+        bottom: 24px; 
+        border: 1px solid var(--line); 
+        border-radius: 0 0 32px 32px; 
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-bg"></div>
+
+  <main class="app">
+    
+    <!-- ==========================================
+         VIEW 1: WEB2APK MAIN UI
+         ========================================== -->
+    <div id="view-main" class="view-section active">
+      
+      <!-- HEADER -->
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark"><i data-lucide="layers"></i></div>
+          <div class="brand-name">FASTDEV<span>WEB2APK</span></div>
+        </div>
+        <button class="icon-button" type="button" aria-label="Bantuan" id="helpBtn">
+          <i data-lucide="circle-help"></i>
+        </button>
+      </header>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="eyebrow"><span class="live-dot"></span> WEB TO APP</div>
+        <h1>Bikin website jadi<br><span>aplikasi Android.</span></h1>
+      </div>
+
+      <!-- FORM PANEL 1: INFO -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="section-icon"><i data-lucide="globe-2"></i></div>
+          <div><h2>Informasi aplikasi</h2></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="website">Website URL</label><span class="optional">WAJIB</span></div>
+          <div class="input-wrap">
+            <input id="website" type="url" placeholder="https://websitekamu.com" autocomplete="url">
+            <i data-lucide="link-2"></i>
+          </div>
+        </div>
+        <div class="split-fields">
+          <div class="field">
+            <div class="label-row"><label for="appName">Nama APK</label></div>
+            <div class="input-wrap">
+              <input id="appName" type="text" placeholder="Nama app" autocomplete="off">
+              <i data-lucide="smartphone"></i>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="packageName">Package</label></div>
+            <div class="input-wrap">
+              <input id="packageName" type="text" placeholder="com.nama.app" autocomplete="off">
+              <i data-lucide="package"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORM PANEL 2: TAMPILAN -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="section-icon"><i data-lucide="sliders-horizontal"></i></div>
+          <div><h2>Tampilan aplikasi</h2></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><span class="field-label">Splash screen</span></div>
+          <div class="choice-grid">
+            <button class="choice selected" type="button" data-choice="splash" data-value="html" onclick="handleSplashChange('html')">
+              <span class="choice-icon"><i data-lucide="code-2"></i></span>
+              <span><strong>HTML</strong></span>
+            </button>
+            <button class="choice" type="button" data-choice="splash" data-value="image" onclick="handleSplashChange('image')">
+              <span class="choice-icon"><i data-lucide="image"></i></span>
+              <span><strong>Gambar</strong></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Splash HTML (Tampil jika HTML dipilih) -->
+        <div class="field" id="field-splash-html">
+          <div class="upload">
+            <div class="upload-icon"><i data-lucide="file-code"></i></div>
+            <div class="upload-copy">
+              <strong id="splashHtmlName">Pilih file HTML</strong>
+              <span>Format .html</span>
+            </div>
+            <input type="file" id="splashHtmlFile" accept=".html" hidden>
+            <button class="upload-btn" type="button" onclick="document.getElementById('splashHtmlFile').click()">Pilih</button>
+          </div>
+        </div>
+
+        <!-- Upload Splash Image (Tampil jika Gambar dipilih) -->
+        <div class="field d-none" id="field-splash-image">
+          <div class="upload">
+            <div class="upload-icon"><i data-lucide="image"></i></div>
+            <div class="upload-copy">
+              <strong id="splashImageName">Pilih file Gambar</strong>
+              <span>Format .png / .jpg</span>
+            </div>
+            <input type="file" id="splashImageFile" accept="image/png, image/jpeg" hidden>
+            <button class="upload-btn" type="button" onclick="document.getElementById('splashImageFile').click()">Pilih</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label-row"><span class="field-label">Orientasi layar</span></div>
+          <div class="segmented" data-segment="orientation">
+            <button class="selected" type="button" data-value="portrait">Portrait</button>
+            <button type="button" data-value="landscape">Landscape</button>
+            <button type="button" data-value="auto">Otomatis</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORM PANEL 3: IKON -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="section-icon"><i data-lucide="image-plus"></i></div>
+          <div><h2>Ikon aplikasi</h2></div>
+        </div>
+        <div class="upload">
+          <div class="upload-icon"><i data-lucide="upload-cloud"></i></div>
+          <div class="upload-copy">
+            <strong id="iconName">Unggah ikon APK</strong>
+            <span>PNG, JPG, atau WEBP</span>
+          </div>
+          <input type="file" id="iconFile" accept="image/png,image/jpeg,image/webp" hidden>
+          <button class="upload-btn" type="button" onclick="document.getElementById('iconFile').click()">Pilih file</button>
+        </div>
+      </section>
+
+      <!-- TERMINAL LOG -->
+      <div class="terminal-box" id="terminalBox">
+        <pre id="terminalOutput"></pre>
+      </div>
+
+      <!-- BUILD BUTTON -->
+      <button class="build-button" id="buildBtn" type="button">
+        <i data-lucide="zap"></i>
+        <span>Buat aplikasi</span>
+        <i data-lucide="arrow-up-right"></i>
+      </button>
+    </div>
+
+    <!-- ==========================================
+         VIEW 2: MAINTENANCE (TOOLS, ROLE, ACCOUNT)
+         ========================================== -->
+    <div id="view-maintenance" class="view-section">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark"><i data-lucide="layers"></i></div>
+          <div class="brand-name">FASTDEV<span>WEB2APK</span></div>
+        </div>
+      </header>
+
+      <div class="maintenance-container">
+        <div class="maintenance-icon-box">
+          <i data-lucide="hard-hat" id="maintenanceIcon"></i>
+        </div>
+        <h2 id="maintenanceTitle">Under Maintenance</h2>
+        <p id="maintenanceDesc">Fitur ini sedang dalam tahap pengembangan oleh tim developer. Silakan kembali lagi nanti.</p>
+        <button class="upload-btn" style="margin-top: 28px; padding: 14px 28px; font-size: 14px;" onclick="switchTab('Web2APK')">Kembali ke Beranda</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <button class="nav-item active" type="button" data-nav="Web2APK"><i data-lucide="layers"></i><span>Web2APK</span></button>
+    <button class="nav-item" type="button" data-nav="Tools"><i data-lucide="wrench"></i><span>Tools</span></button>
+    <button class="nav-item" type="button" data-nav="Role"><i data-lucide="shopping-bag"></i><span>Role</span></button>
+    <button class="nav-item" type="button" data-nav="Account"><i data-lucide="user-round"></i><span>Account</span></button>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC (FULL FUNCTIONAL)
+       ========================================================================== -->
+  <script>
+    // ==========================================
+    // 1. INISIALISASI ICON LUCIDE
+    // ==========================================
+    if (window.lucide) lucide.createIcons();
+
+    // ==========================================
+    // 2. TOAST NOTIFICATION HANDLER
+    // ==========================================
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    
+    function showToast(message, isError = false) {
+      toast.textContent = message;
+      toast.style.color = isError ? 'var(--danger)' : 'var(--ink)';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ==========================================
+    // 3. CHOICE & SEGMENTED CONTROL LOGIC
+    // ==========================================
+    document.querySelectorAll('[data-choice]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll(`[data-choice="${button.dataset.choice}"]`).forEach(item => item.classList.remove('selected'));
+        button.classList.add('selected');
+      });
+    });
+
+    document.querySelectorAll('[data-segment]').forEach(group => {
+      group.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          group.querySelectorAll('button').forEach(item => item.classList.remove('selected'));
+          button.classList.add('selected');
+        });
+      });
+    });
+
+    function handleSplashChange(type) {
+      const htmlField = document.getElementById('field-splash-html');
+      const imgField = document.getElementById('field-splash-image');
+      
+      if (type === 'html') {
+        htmlField.classList.remove('d-none');
+        imgField.classList.add('d-none');
+      } else {
+        htmlField.classList.add('d-none');
+        imgField.classList.remove('d-none');
+      }
+    }
+
+    // ==========================================
+    // 4. FILE UPLOAD HANDLERS
+    // ==========================================
+    const iconFile = document.getElementById('iconFile');
+    const iconName = document.getElementById('iconName');
+    
+    iconFile.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        iconName.textContent = e.target.files[0].name;
+        iconName.style.color = 'var(--blue)';
+      }
+    });
+
+    const splashHtmlFile = document.getElementById('splashHtmlFile');
+    const splashHtmlName = document.getElementById('splashHtmlName');
+    
+    splashHtmlFile.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        splashHtmlName.textContent = e.target.files[0].name;
+        splashHtmlName.style.color = 'var(--blue)';
+      }
+    });
+
+    const splashImageFile = document.getElementById('splashImageFile');
+    const splashImageName = document.getElementById('splashImageName');
+    
+    splashImageFile.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        splashImageName.textContent = e.target.files[0].name;
+        splashImageName.style.color = 'var(--blue)';
+      }
+    });
+
+    // ==========================================
+    // 5. BOTTOM NAVIGATION LOGIC
+    // ==========================================
+    function switchTab(tabName) {
+      const navItems = document.querySelectorAll('.nav-item');
+      const viewMain = document.getElementById('view-main');
+      const viewMaintenance = document.getElementById('view-maintenance');
+      
+      navItems.forEach(item => {
+        if (item.dataset.nav === tabName) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      if (tabName === 'Web2APK') {
+        viewMain.classList.add('active');
+        viewMaintenance.classList.remove('active');
+      } else {
+        const title = document.getElementById('maintenanceTitle');
+        const desc = document.getElementById('maintenanceDesc');
+        const icon = document.getElementById('maintenanceIcon');
+        
+        if (tabName === 'Tools') {
+          title.textContent = 'Tools Maintenance';
+          desc.textContent = 'Fitur alat bantu tambahan sedang dalam perbaikan sistem.';
+          icon.setAttribute('data-lucide', 'wrench');
+        } else if (tabName === 'Role') {
+          title.textContent = 'Role & Akses';
+          desc.textContent = 'Sistem pembagian hak akses user sedang dalam tahap pengembangan.';
+          icon.setAttribute('data-lucide', 'shield-alert');
+        } else if (tabName === 'Account') {
+          title.textContent = 'Account Center';
+          desc.textContent = 'Manajemen profil dan langganan belum tersedia saat ini.';
+          icon.setAttribute('data-lucide', 'user-cog');
+        }
+
+        if (window.lucide) lucide.createIcons();
+        viewMain.classList.remove('active');
+        viewMaintenance.classList.add('active');
+      }
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('[data-nav]').forEach(button => {
+      button.addEventListener('click', () => switchTab(button.dataset.nav));
+    });
+
+    document.getElementById('helpBtn').addEventListener('click', () => {
+      showToast('Isi form dengan lengkap untuk memulai.');
+    });
+
+    // ==========================================
+    // 6. CORE API BUILD FUNCTION
+    // ==========================================
+    const buildBtn = document.getElementById('buildBtn');
+    const terminalBox = document.getElementById('terminalBox');
+    const terminalOutput = document.getElementById('terminalOutput');
+
+    function logToTerminal(text, type = 'info') {
+      const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
+      const color = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : type === 'warn' ? '#f59e0b' : '#3b82f6';
+      terminalOutput.innerHTML += `<span style="color:#52525b">[${time}]</span> <span style="color:${color}">${text}</span>\n`;
+      terminalBox.scrollTop = terminalBox.scrollHeight;
+    }
+
+    buildBtn.addEventListener('click', async () => {
+      // 1. Validasi Form
+      const website = document.getElementById('website').value.trim();
+      const appName = document.getElementById('appName').value.trim();
+      const packageName = document.getElementById('packageName').value.trim();
+      
+      if (!website) {
+        document.getElementById('website').focus();
+        return showToast('Masukkan Website URL terlebih dahulu.', true);
+      }
+      if (!appName) {
+        document.getElementById('appName').focus();
+        return showToast('Masukkan Nama APK.', true);
+      }
+      if (!packageName) {
+        document.getElementById('packageName').focus();
+        return showToast('Masukkan Package Name.', true);
+      }
+
+      // 2. Persiapan Data
+      const orientation = document.querySelector('[data-segment="orientation"] .selected').dataset.value;
+      const splashType = document.querySelector('[data-choice="splash"] .selected').dataset.value;
+      
+      const iconFileObj = iconFile.files[0];
+      const splashHtmlObj = splashHtmlFile.files[0];
+      const splashImageObj = splashImageFile.files[0];
+
+      const formData = new FormData();
+      formData.append('appName', appName);
+      formData.append('packageName', packageName);
+      formData.append('url', website);
+      formData.append('orientation', orientation);
+      formData.append('splashType', splashType);
+
+      if (iconFileObj) formData.append('icon', iconFileObj);
+      if (splashType === 'html' && splashHtmlObj) formData.append('splashHtml', splashHtmlObj);
+      if (splashType === 'image' && splashImageObj) formData.append('splash', splashImageObj);
+
+      // 3. UI Setup
+      buildBtn.disabled = true;
+      buildBtn.innerHTML = '<i data-lucide="loader-2" style="animation: spin 1s linear infinite;"></i><span>Memproses...</span>';
+      if (window.lucide) lucide.createIcons();
+      
+      terminalBox.classList.add('show');
+      terminalOutput.innerHTML = '';
+      
+      logToTerminal('Memulai build request...', 'info');
+      logToTerminal('Menghubungi server Vercel...', 'warn');
+
+      // 4. Fetch API
+      try {
+        const response = await fetch('/api/build', {
+          method: 'POST',
+          body: formData
+        });
+
+        logToTerminal('Menerima respon dari server...', 'info');
+        
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          logToTerminal('BUILD SUKSES!', 'success');
+          logToTerminal(`Build ID: ${data.buildId || '-'}`, 'success');
+          logToTerminal(`Ukuran: ${(data.size / 1024 / 1024).toFixed(2)} MB`, 'success');
+          
+          showToast('Aplikasi berhasil dibuat!');
+          
+          if (data.downloadUrl) {
+            logToTerminal('Membuka tautan unduhan...', 'info');
+            setTimeout(() => window.open(data.downloadUrl, '_blank'), 1000);
+          }
+        } else {
+          logToTerminal(`BUILD GAGAL: ${data.error || 'Terjadi kesalahan pada server'}`, 'error');
+          
+          if (data.limitReached) {
+            logToTerminal('Batas limit API harian Anda telah tercapai.', 'warn');
+            showToast('Limit harian API tercapai.', true);
+          } else {
+            showToast(data.error || 'Gagal melakukan build.', true);
+          }
+        }
+
+      } catch (error) {
+        logToTerminal(`Network Error: ${error.message}`, 'error');
+        logToTerminal('Pastikan project sudah di-deploy di Vercel.', 'warn');
+        showToast('Koneksi ke server gagal.', true);
+      } finally {
+        // Reset Tombol
+        buildBtn.disabled = false;
+        buildBtn.innerHTML = '<i data-lucide="zap"></i><span>Buat aplikasi</span><i data-lucide="arrow-up-right"></i>';
+        if (window.lucide) lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
