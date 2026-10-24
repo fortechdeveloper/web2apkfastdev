@@ -20,7 +20,6 @@ html.auth-pending .auth-guard {
   display: grid;
 }
 
-/* Sembunyikan seluruh isi body saat guard aktif */
 html.auth-pending body > *:not(.auth-guard) {
   visibility: hidden;
 }
@@ -57,7 +56,5 @@ html.auth-pending {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .auth-guard-spinner {
-    animation-duration: 2s;
-  }
+  .auth-guard-spinner { animation-duration: 2s; }
 }
