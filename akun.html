@@ -17,138 +17,51 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    .auth-guard { position: fixed; inset: 0; z-index: 9999; display: none; place-items: center; padding: 20px; background: #090d18; text-align: center; }
+    html.auth-pending .auth-guard { display: grid; }
+    html.auth-pending body > *:not(.auth-guard) { visibility: hidden; }
+    html.auth-pending { overflow: hidden; }
+    .auth-guard-inner { display: grid; place-items: center; gap: 14px; }
+    .auth-guard-spinner { width: 28px; height: 28px; border: 2px solid rgba(117, 144, 255, .2); border-top-color: #7590ff; border-radius: 50%; animation: authGuardSpin .7s linear infinite; }
+    .auth-guard-inner p { margin: 0; color: #8d9ab6; font-size: 11px; }
+    @keyframes authGuardSpin { to { transform: rotate(360deg); } }
+
     .account-hero { padding-bottom: 16px; }
     .account-hero h1 span { color: var(--blue); }
-
-    .profile-card {
-      display: flex; align-items: center; gap: 14px;
-      padding: 18px; border-radius: 22px;
-      border: 1px solid rgba(117, 144, 255, .24);
-      background:
-        radial-gradient(ellipse at 15% 0%, rgba(117,144,255,.14), transparent 60%),
-        linear-gradient(145deg, rgba(24, 33, 54, .96), rgba(14, 20, 35, .96));
-      box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
-      margin-top: 18px;
-    }
-    .profile-avatar {
-      display: grid; place-items: center;
-      width: 58px; height: 58px; border-radius: 19px;
-      background: linear-gradient(135deg, #4f68d8, #7b5be0);
-      color: #fff; font-size: 20px; font-weight: 800;
-      flex: 0 0 auto;
-      box-shadow: 0 8px 20px rgba(92,95,231,.28);
-      text-transform: uppercase; letter-spacing: -.5px;
-    }
+    .profile-card { display: flex; align-items: center; gap: 14px; padding: 18px; border-radius: 22px; border: 1px solid rgba(117, 144, 255, .24); background: radial-gradient(ellipse at 15% 0%, rgba(117,144,255,.14), transparent 60%), linear-gradient(145deg, rgba(24, 33, 54, .96), rgba(14, 20, 35, .96)); box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05); margin-top: 18px; }
+    .profile-avatar { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 19px; background: linear-gradient(135deg, #4f68d8, #7b5be0); color: #fff; font-size: 20px; font-weight: 800; flex: 0 0 auto; box-shadow: 0 8px 20px rgba(92,95,231,.28); text-transform: uppercase; letter-spacing: -.5px; }
     .profile-info { flex: 1; min-width: 0; }
-    .profile-info b {
-      display: block; font-size: 14px; letter-spacing: -.2px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .profile-info small {
-      display: block; color: var(--muted); font-size: 10px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      margin-top: 1px;
-    }
-    .profile-tier {
-      display: inline-block; margin-top: 6px;
-      padding: 4px 8px; border-radius: 7px;
-      background: rgba(105, 228, 177, .1);
-      border: 1px solid rgba(105, 228, 177, .2);
-      color: #8ee8c3; font-size: 8px; font-weight: 800; letter-spacing: 1px;
-    }
+    .profile-info b { display: block; font-size: 14px; letter-spacing: -.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .profile-info small { display: block; color: var(--muted); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+    .profile-tier { display: inline-block; margin-top: 6px; padding: 4px 8px; border-radius: 7px; background: rgba(105, 228, 177, .1); border: 1px solid rgba(105, 228, 177, .2); color: #8ee8c3; font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
 
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
-    .stat-box {
-      padding: 12px 8px; border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(7,11,21,.3); text-align: center;
-    }
+    .stat-box { padding: 12px 8px; border-radius: 14px; border: 1px solid var(--line); background: rgba(7,11,21,.3); text-align: center; }
     .stat-box b { display: block; font-size: 18px; letter-spacing: -.5px; }
     .stat-box small { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .8px; }
 
     .settings-list { display: grid; gap: 8px; margin-top: 4px; }
-    .setting-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 13px; border: 1px solid var(--line);
-      border-radius: 13px; background: rgba(7,11,21,.3);
-    }
-    .setting-icon {
-      display: grid; place-items: center;
-      width: 34px; height: 34px; border-radius: 10px;
-      background: rgba(117,144,255,.08);
-      color: #9eafff; flex: 0 0 auto;
-    }
+    .setting-row { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(7,11,21,.3); }
+    .setting-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: rgba(117,144,255,.08); color: #9eafff; flex: 0 0 auto; }
     .setting-icon svg { width: 16px; height: 16px; }
     .setting-body { flex: 1; min-width: 0; }
     .setting-body b { display: block; font-size: 11px; }
-    .setting-body small {
-      display: block; color: var(--muted); font-size: 9px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      margin-top: 2px;
-    }
-    .switch {
-      position: relative; width: 40px; height: 24px; flex: 0 0 auto;
-      border-radius: 20px;
-      border: 1px solid var(--line);
-      background: rgba(160,177,219,.1);
-      cursor: pointer;
-      transition: background .2s, border-color .2s;
-    }
-    .switch::after {
-      content: ''; position: absolute; top: 3px; left: 3px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #8d9ab6;
-      transition: transform .2s, background .2s;
-    }
-    .switch.on { background: rgba(117,144,255,.28); border-color: rgba(117,144,255,.4); }
-    .switch.on::after { transform: translateX(16px); background: #c6d2ff; }
+    .setting-body small { display: block; color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
 
-    .danger-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; min-height: 44px; margin-top: 12px;
-      border: 1px solid rgba(255,110,110,.2);
-      border-radius: 12px;
-      background: rgba(255,110,110,.06);
-      color: #ff9e9e; font-size: 11px; font-weight: 700;
-      cursor: pointer;
-    }
-    .danger-btn svg { width: 15px; height: 15px; }
-    .danger-btn:active { transform: scale(.99); }
-    .danger-btn:disabled { opacity: .55; cursor: wait; }
-
-    .primary-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; min-height: 44px; margin-top: 12px;
-      border: 1px solid rgba(192,201,255,.23);
-      border-radius: 12px;
-      background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8);
-      box-shadow: 0 12px 28px rgba(92,95,231,.22);
-      color: #fff; font-size: 11px; font-weight: 700;
-      cursor: pointer;
-    }
+    .primary-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; margin-top: 12px; border: 1px solid rgba(192,201,255,.23); border-radius: 12px; background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8); box-shadow: 0 12px 28px rgba(92,95,231,.22); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; }
     .primary-btn svg { width: 15px; height: 15px; }
-    .primary-btn:active { transform: scale(.99); }
-    .primary-btn:disabled { opacity: .55; cursor: wait; }
+    .danger-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; margin-top: 12px; border: 1px solid rgba(255,110,110,.2); border-radius: 12px; background: rgba(255,110,110,.06); color: #ff9e9e; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .danger-btn svg { width: 15px; height: 15px; }
 
-    .field-error {
-      display: none; margin-top: 6px;
-      color: #ff8a8a; font-size: 10px; line-height: 1.5;
-      align-items: center; gap: 5px;
-    }
+    .field-error { display: none; margin-top: 6px; color: #ff8a8a; font-size: 10px; line-height: 1.5; align-items: center; gap: 5px; }
     .field-error svg { width: 11px; height: 11px; flex: 0 0 auto; }
     .field-error.visible { display: flex; }
-    .input-wrap.invalid {
-      border-color: rgba(255,110,110,.55);
-      box-shadow: 0 0 0 3px rgba(255,110,110,.08);
-    }
+    .input-wrap.invalid { border-color: rgba(255,110,110,.55); box-shadow: 0 0 0 3px rgba(255,110,110,.08); }
   </style>
 </head>
 <body>
   <div class="auth-guard" id="authGuard">
-    <div class="auth-guard-inner">
-      <div class="auth-guard-spinner"></div>
-      <p id="authGuardText">Memeriksa sesi…</p>
-    </div>
+    <div class="auth-guard-inner"><div class="auth-guard-spinner"></div><p id="authGuardText">Memeriksa sesi…</p></div>
   </div>
 
   <div class="ambient ambient-one"></div>
@@ -158,14 +71,9 @@
     <header class="topbar">
       <a class="brand" href="index.html">
         <span class="brand-icon"><i data-lucide="layers"></i></span>
-        <span class="brand-copy">
-          <strong>Web2APK</strong>
-          <small>BY FASTDEV</small>
-        </span>
+        <span class="brand-copy"><strong>Web2APK</strong><small>BY FASTDEV</small></span>
       </a>
-      <button class="icon-button" type="button" id="helpBtn" aria-label="Bantuan">
-        <i data-lucide="circle-help"></i>
-      </button>
+      <button class="icon-button" type="button" id="helpBtn" aria-label="Bantuan"><i data-lucide="circle-help"></i></button>
     </header>
 
     <section class="hero account-hero">
@@ -189,102 +97,57 @@
       </div>
     </section>
 
+    <!-- PANEL ADMIN RAHASIA (Hanya muncul untuk email tertentu) -->
+    <div class="section-heading hidden" id="adminSection" style="margin-top:28px;">
+      <div><span class="eyebrow">RESTRICTED</span><h2>Admin Access</h2></div>
+    </div>
+
+    <div class="panel hidden" id="adminCard" style="padding:16px; border-color: rgba(255, 110, 110, .3); background: linear-gradient(145deg, rgba(40, 20, 25, .9), rgba(20, 10, 15, .9));">
+      <p style="margin:0 0 12px;color:#ff9e9e;font-size:10.5px;line-height:1.7;">
+        <b>PERINGATAN:</b> Halaman ini hanya untuk Developer. Di sini kamu bisa mengelola role user lain.
+      </p>
+      <a href="fastprivat.html" class="primary-btn" style="background: linear-gradient(110deg, #ff6e6e, #ff4d4d); color: white; border: none;">
+        <i data-lucide="shield-alert"></i>
+        <span>Buka Panel Admin (Fast Privat)</span>
+      </a>
+    </div>
+
     <div class="section-heading">
-      <div>
-        <span class="eyebrow">DATA PROFIL</span>
-        <h2>Informasi akun</h2>
-      </div>
+      <div><span class="eyebrow">DATA PROFIL</span><h2>Informasi akun</h2></div>
     </div>
 
     <div class="panel" style="padding:16px;">
       <div class="field" style="margin-top:0;">
         <label for="editUsername">Username</label>
-        <div class="input-wrap">
-          <i data-lucide="user"></i>
-          <input id="editUsername" type="text" placeholder="Minimal 3 karakter" maxlength="30" spellcheck="false" autocomplete="username">
-        </div>
-        <div class="field-error" data-for="editUsername">
-          <i data-lucide="alert-circle"></i>
-          <span></span>
-        </div>
+        <div class="input-wrap"><i data-lucide="user"></i><input id="editUsername" type="text" placeholder="Minimal 3 karakter" maxlength="30" spellcheck="false" autocomplete="username"></div>
+        <div class="field-error" data-for="editUsername"><i data-lucide="alert-circle"></i><span></span></div>
       </div>
 
       <div class="field">
         <label for="editEmail">Email</label>
-        <div class="input-wrap">
-          <i data-lucide="mail"></i>
-          <input id="editEmail" type="email" readonly disabled style="opacity:.7;cursor:not-allowed;">
-        </div>
+        <div class="input-wrap"><i data-lucide="mail"></i><input id="editEmail" type="email" readonly disabled style="opacity:.7;cursor:not-allowed;"></div>
         <small class="field-hint">Email tidak bisa diubah di sini.</small>
       </div>
 
       <div class="field">
         <label for="editWhatsapp">No WhatsApp <span class="optional">OPSIONAL</span></label>
-        <div class="input-wrap">
-          <i data-lucide="phone"></i>
-          <input id="editWhatsapp" type="tel" placeholder="0812xxxxxxx" maxlength="16" spellcheck="false" autocomplete="tel">
-        </div>
+        <div class="input-wrap"><i data-lucide="phone"></i><input id="editWhatsapp" type="tel" placeholder="0812xxxxxxx" maxlength="16" spellcheck="false" autocomplete="tel"></div>
         <small class="field-hint">Format: 08xxx, 62xxx, atau +62xxx.</small>
-        <div class="field-error" data-for="editWhatsapp">
-          <i data-lucide="alert-circle"></i>
-          <span></span>
-        </div>
+        <div class="field-error" data-for="editWhatsapp"><i data-lucide="alert-circle"></i><span></span></div>
       </div>
 
-      <button class="primary-btn" id="saveProfileBtn" type="button">
-        <i data-lucide="save"></i>
-        <span>Simpan perubahan</span>
-      </button>
+      <button class="primary-btn" id="saveProfileBtn" type="button"><i data-lucide="save"></i><span>Simpan perubahan</span></button>
     </div>
 
     <div class="section-heading" style="margin-top:28px;">
-      <div>
-        <span class="eyebrow">PREFERENSI</span>
-        <h2>Pengaturan</h2>
-      </div>
-    </div>
-
-    <div class="settings-list">
-      <div class="setting-row">
-        <span class="setting-icon"><i data-lucide="bell"></i></span>
-        <div class="setting-body"><b>Notifikasi build</b><small>Beri tahu saat build selesai</small></div>
-        <button class="switch on" type="button" aria-label="Notifikasi build" aria-pressed="true" data-pref="notifyBuild"></button>
-      </div>
-      <div class="setting-row">
-        <span class="setting-icon"><i data-lucide="save"></i></span>
-        <div class="setting-body"><b>Simpan draft otomatis</b><small>Simpan konfigurasi form</small></div>
-        <button class="switch on" type="button" aria-label="Simpan draft" aria-pressed="true" data-pref="autosaveDraft"></button>
-      </div>
-      <div class="setting-row">
-        <span class="setting-icon"><i data-lucide="activity"></i></span>
-        <div class="setting-body"><b>Analitik anonim</b><small>Bantu tingkatkan aplikasi</small></div>
-        <button class="switch" type="button" aria-label="Analitik" aria-pressed="false" data-pref="analytics"></button>
-      </div>
-    </div>
-
-    <div class="section-heading" style="margin-top:28px;">
-      <div>
-        <span class="eyebrow">AKUN</span>
-        <h2>Sesi & data</h2>
-      </div>
+      <div><span class="eyebrow">AKUN</span><h2>Sesi & data</h2></div>
     </div>
 
     <div class="panel" style="padding:16px;">
-      <p style="margin:0 0 10px;color:var(--muted);font-size:10px;line-height:1.7;">
-        Logout akan mengakhiri sesi di perangkat ini. Data lokal (draft, riwayat tools, preferensi) tetap tersimpan di browser.
-      </p>
-      <button class="danger-btn" id="logoutBtn" type="button">
-        <i data-lucide="log-out"></i>
-        <span>Logout</span>
-      </button>
-
-      <p style="margin:16px 0 10px;color:var(--muted);font-size:10px;line-height:1.7;">
-        Menghapus data lokal akan menghapus draft form, riwayat tools, dan preferensi di perangkat ini.
-      </p>
-      <button class="danger-btn" id="clearData" type="button">
-        <i data-lucide="trash-2"></i>
-        <span>Hapus data lokal</span>
-      </button>
+      <p style="margin:0 0 10px;color:var(--muted);font-size:10px;line-height:1.7;">Logout akan mengakhiri sesi di perangkat ini. Data lokal (draft, riwayat tools, preferensi) tetap tersimpan di browser.</p>
+      <button class="danger-btn" id="logoutBtn" type="button"><i data-lucide="log-out"></i><span>Logout</span></button>
+      <p style="margin:16px 0 10px;color:var(--muted);font-size:10px;line-height:1.7;">Menghapus data lokal akan menghapus draft form, riwayat tools, dan preferensi di perangkat ini.</p>
+      <button class="danger-btn" id="clearData" type="button"><i data-lucide="trash-2"></i><span>Hapus data lokal</span></button>
     </div>
 
     <footer class="footer">
@@ -302,18 +165,12 @@
   </nav>
 
   <div class="modal-backdrop hidden" id="helpModal">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup">
-        <i data-lucide="x"></i>
-      </button>
+    <section class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="closeHelp" type="button"><i data-lucide="x"></i></button>
       <span class="section-icon"><i data-lucide="circle-help"></i></span>
-      <h3 id="helpTitle">Bantuan Akun</h3>
+      <h3>Bantuan Akun</h3>
       <p>Di sini kamu bisa mengubah username dan nomor WhatsApp. Email tidak bisa diubah.</p>
-      <p>Tombol logout mengakhiri sesi di perangkat ini. Data lokal (draft, riwayat) tetap tersimpan sampai kamu hapus manual.</p>
-      <button class="primary-btn" id="closeHelpBottom" type="button" style="margin-top:14px;">
-        <i data-lucide="check"></i>
-        <span>Mengerti</span>
-      </button>
+      <button class="primary-btn" id="closeHelpBottom" type="button" style="margin-top:14px;"><i data-lucide="check"></i><span>Mengerti</span></button>
     </section>
   </div>
 
@@ -336,7 +193,6 @@
     let currentProfile = null;
     let savingProfile = false;
 
-    /* ---------- Toast ---------- */
     let toastTimer = null;
     function toast(msg, type) {
       const el = $('#toast');
@@ -348,99 +204,53 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
     }
 
-    /* ---------- Field errors ---------- */
     function setFieldError(fieldId, message) {
       const errEl = document.querySelector('.field-error[data-for="' + fieldId + '"]');
       const input = document.getElementById(fieldId);
       if (!input) return;
       const wrap = input.closest('.input-wrap');
       if (message) {
-        if (errEl) {
-          errEl.querySelector('span').textContent = message;
-          errEl.classList.add('visible');
-        }
+        if (errEl) { errEl.querySelector('span').textContent = message; errEl.classList.add('visible'); }
         if (wrap) wrap.classList.add('invalid');
       } else {
-        if (errEl) {
-          errEl.classList.remove('visible');
-          errEl.querySelector('span').textContent = '';
-        }
+        if (errEl) { errEl.classList.remove('visible'); errEl.querySelector('span').textContent = ''; }
         if (wrap) wrap.classList.remove('invalid');
       }
     }
 
-    /* ---------- Prefs ---------- */
-    function readPrefs() {
-      try { return JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; }
-      catch (_) { return {}; }
-    }
-    function writePrefs(prefs) {
-      try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }
-      catch (_) { /* ignore */ }
-    }
-    function initPrefs() {
-      const prefs = readPrefs();
-      $$('.switch[data-pref]').forEach((sw) => {
-        const key = sw.dataset.pref;
-        const val = prefs[key] === undefined ? sw.classList.contains('on') : !!prefs[key];
-        sw.classList.toggle('on', val);
-        sw.setAttribute('aria-pressed', val ? 'true' : 'false');
-        sw.addEventListener('click', () => {
-          const next = !sw.classList.contains('on');
-          sw.classList.toggle('on', next);
-          sw.setAttribute('aria-pressed', next ? 'true' : 'false');
-          const p = readPrefs();
-          p[key] = next;
-          writePrefs(p);
-        });
-      });
-    }
-
-    /* ---------- UI render ---------- */
     function renderProfile() {
-      const nameEl = $('#profileName');
-      const emailEl = $('#profileEmail');
-      const avatarEl = $('#profileAvatar');
-      const tierEl = $('#profileTier');
-      const statDaysEl = $('#statDays');
-
       const email = (currentUser && currentUser.email) || '—';
       const username = (currentProfile && currentProfile.username) || '';
       const displayName = username || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'Pengguna');
+      const role = (currentProfile && currentProfile.role) || 'free';
 
-      if (nameEl) nameEl.textContent = displayName;
-      if (emailEl) emailEl.textContent = email;
+      $('#profileName').textContent = displayName;
+      $('#profileEmail').textContent = email;
+      $('#profileAvatar').textContent = displayName.trim().charAt(0).toUpperCase() || '?';
+      $('#profileTier').textContent = `${role} PLAN`;
 
-      if (avatarEl) {
-        const initial = displayName.trim().charAt(0) || '?';
-        avatarEl.textContent = initial.toUpperCase();
+      if (currentUser && currentUser.created_at) {
+        const days = Math.max(1, Math.floor((Date.now() - new Date(currentUser.created_at).getTime()) / (1000 * 60 * 60 * 24)));
+        $('#statDays').textContent = String(days);
       }
 
-      if (tierEl) tierEl.textContent = 'FREE PLAN';
-
-      if (statDaysEl) {
-        let created = null;
-        if (currentUser && currentUser.created_at) created = new Date(currentUser.created_at);
-        else if (currentProfile && currentProfile.updated_at) created = new Date(currentProfile.updated_at);
-
-        if (created && !isNaN(created.getTime())) {
-          const days = Math.max(1, Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24)));
-          statDaysEl.textContent = String(days);
-        } else {
-          statDaysEl.textContent = '1';
-        }
-      }
-
-      // Isi form edit — jangan timpa kalau user sedang mengetik
       const u = $('#editUsername');
       const e = $('#editEmail');
       const w = $('#editWhatsapp');
       if (u && document.activeElement !== u) u.value = username;
       if (e) e.value = email;
       if (w && document.activeElement !== w) w.value = (currentProfile && currentProfile.whatsapp) || '';
+
+      // TAMPILKAN PANEL ADMIN JIKA EMAIL COCOK
+      if (email === 'fortech.developer@gmail.com') {
+        show($('#adminSection'));
+        show($('#adminCard'));
+      } else {
+        hide($('#adminSection'));
+        hide($('#adminCard'));
+      }
     }
 
-    /* ---------- Validation ---------- */
     function validateUsername(v) {
       if (!v) return 'Username wajib diisi.';
       if (v.length < 3) return 'Minimal 3 karakter.';
@@ -455,165 +265,76 @@
       return null;
     }
 
-    /* ---------- Save profile ---------- */
     async function saveProfile() {
       if (savingProfile) return;
       const sb = window.supabaseClient;
-      if (!sb || !currentUser) {
-        toast('Sesi tidak valid. Coba refresh halaman.', 'error');
-        return;
-      }
+      if (!sb || !currentUser) return toast('Sesi tidak valid. Refresh halaman.', 'error');
 
-      const uEl = $('#editUsername');
-      const wEl = $('#editWhatsapp');
-      const btn = $('#saveProfileBtn');
-      if (!uEl || !wEl || !btn) return;
-
+      const uEl = $('#editUsername'); const wEl = $('#editWhatsapp'); const btn = $('#saveProfileBtn');
       const username = (uEl.value || '').trim();
       const whatsappRaw = (wEl.value || '').trim();
       const whatsapp = whatsappRaw ? whatsappRaw.replace(/[\s\-\.]/g, '') : null;
 
-      setFieldError('editUsername', null);
-      setFieldError('editWhatsapp', null);
-
-      const uErr = validateUsername(username);
-      if (uErr) { setFieldError('editUsername', uErr); return; }
-      const wErr = validateWhatsApp(whatsappRaw);
-      if (wErr) { setFieldError('editWhatsapp', wErr); return; }
+      setFieldError('editUsername', null); setFieldError('editWhatsapp', null);
+      if (validateUsername(username)) return setFieldError('editUsername', validateUsername(username));
+      if (validateWhatsApp(whatsappRaw)) return setFieldError('editWhatsapp', validateWhatsApp(whatsappRaw));
 
       const oldUsername = (currentProfile && currentProfile.username) || '';
       const oldWhatsapp = (currentProfile && currentProfile.whatsapp) || null;
-      if (username === oldUsername && (whatsapp || null) === oldWhatsapp) {
-        toast('Tidak ada perubahan.', 'info');
-        return;
-      }
+      if (username === oldUsername && (whatsapp || null) === oldWhatsapp) return toast('Tidak ada perubahan.', 'info');
 
       savingProfile = true;
-      const span = btn.querySelector('span');
-      const originalText = span ? span.textContent : 'Simpan perubahan';
-      if (span) span.textContent = 'Menyimpan…';
-      btn.disabled = true;
+      const span = btn.querySelector('span'); const originalText = span ? span.textContent : 'Simpan perubahan';
+      if (span) span.textContent = 'Menyimpan…'; btn.disabled = true;
 
       try {
         if (username !== oldUsername) {
-          const { data: avail, error: availErr } = await sb.rpc('is_username_available', { uname: username });
-          if (!availErr && avail === false) {
-            setFieldError('editUsername', 'Username sudah dipakai.');
-            return;
-          }
+          const { data: avail } = await sb.rpc('is_username_available', { uname: username });
+          if (avail === false) { setFieldError('editUsername', 'Username sudah dipakai.'); return; }
         }
 
-        const { error } = await sb
-          .from('profiles')
-          .update({
-            username: username,
-            whatsapp: whatsapp,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', currentUser.id);
+        const { error } = await sb.from('profiles').update({ username, whatsapp, updated_at: new Date().toISOString() }).eq('id', currentUser.id);
+        if (error) throw error;
 
-        if (error) {
-          const msg = (error.message || '').toLowerCase();
-          if (msg.includes('duplicate') || msg.includes('unique')) {
-            setFieldError('editUsername', 'Username sudah dipakai.');
-          } else {
-            toast('Gagal menyimpan: ' + error.message, 'error');
-          }
-          return;
-        }
-
-        currentProfile = {
-          ...(currentProfile || {}),
-          username: username,
-          whatsapp: whatsapp,
-          updated_at: new Date().toISOString(),
-        };
+        currentProfile = { ...(currentProfile || {}), username, whatsapp };
         window.currentProfile = currentProfile;
         renderProfile();
         toast('Profil disimpan.', 'success');
       } catch (err) {
-        toast('Gagal menyimpan. Coba lagi.', 'error');
+        toast('Gagal menyimpan: ' + (err.message || 'Error'), 'error');
       } finally {
-        savingProfile = false;
-        btn.disabled = false;
-        if (span) span.textContent = originalText;
+        savingProfile = false; btn.disabled = false; if (span) span.textContent = originalText;
       }
     }
 
-    /* ---------- Logout ---------- */
     async function logout() {
       const sb = window.supabaseClient;
-      if (!sb) {
-        window.location.replace('login.html');
-        return;
-      }
-      const btn = $('#logoutBtn');
-      if (btn) btn.disabled = true;
-      try {
-        await sb.auth.signOut();
-      } catch (err) {
-        console.warn('signOut error:', err);
-      }
+      if (sb) { try { await sb.auth.signOut(); } catch (_) {} }
       window.location.replace('login.html');
     }
 
-    /* ---------- Clear local data ---------- */
     function clearLocalData() {
       try {
         localStorage.removeItem('fastdev:tools:history:v1');
-        localStorage.removeItem('fastdev:tools:pinterest-history:v1');
-        localStorage.removeItem('fastdev:tools:happymod-history:v1');
-        localStorage.removeItem('web2apk:draft:v1');
-        localStorage.removeItem('web2apk:prefs:v1');
+        localStorage.removeItem('web2apk:build-count:v1');
         localStorage.removeItem(PREFS_KEY);
         toast('Data lokal dihapus.', 'success');
-      } catch (_) {
-        toast('Gagal menghapus data.', 'error');
-      }
+      } catch (_) { toast('Gagal menghapus data.', 'error'); }
     }
 
-    /* ---------- Bind ---------- */
     function bind() {
-      const saveBtn = $('#saveProfileBtn');
-      if (saveBtn) saveBtn.addEventListener('click', saveProfile);
-
-      const logoutBtn = $('#logoutBtn');
-      if (logoutBtn) logoutBtn.addEventListener('click', logout);
-
-      const clearBtn = $('#clearData');
-      if (clearBtn) clearBtn.addEventListener('click', clearLocalData);
-
-      const uEl = $('#editUsername');
-      if (uEl) uEl.addEventListener('input', () => setFieldError('editUsername', null));
-      const wEl = $('#editWhatsapp');
-      if (wEl) wEl.addEventListener('input', () => setFieldError('editWhatsapp', null));
-
-      const helpBtn = $('#helpBtn');
+      $('#saveProfileBtn')?.addEventListener('click', saveProfile);
+      $('#logoutBtn')?.addEventListener('click', logout);
+      $('#clearData')?.addEventListener('click', clearLocalData);
       const helpModal = $('#helpModal');
-      const closeHelp = $('#closeHelp');
-      const closeHelpBottom = $('#closeHelpBottom');
-      const closeModal = () => {
-        hide(helpModal);
-        document.body.style.overflow = '';
-      };
-      if (helpBtn) helpBtn.addEventListener('click', () => {
-        show(helpModal);
-        document.body.style.overflow = 'hidden';
-      });
-      if (closeHelp) closeHelp.addEventListener('click', closeModal);
-      if (closeHelpBottom) closeHelpBottom.addEventListener('click', closeModal);
-      if (helpModal) helpModal.addEventListener('click', (e) => {
-        if (e.target === helpModal) closeModal();
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) closeModal();
-      });
+      const closeHelpFn = () => hide(helpModal);
+      $('#helpBtn')?.addEventListener('click', () => show(helpModal));
+      $('#closeHelp')?.addEventListener('click', closeHelpFn);
+      $('#closeHelpBottom')?.addEventListener('click', closeHelpFn);
     }
 
-    /* ---------- Init ---------- */
     function init() {
       if (window.lucide) window.lucide.createIcons();
-      initPrefs();
       bind();
 
       if (window.currentUser) {
@@ -628,7 +349,6 @@
         }, { once: true });
       }
 
-      // Update saat profile selesai diverifikasi background
       window.addEventListener('authprofile', (e) => {
         currentUser = e.detail.user;
         currentProfile = e.detail.profile;
@@ -636,11 +356,8 @@
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
   })();
   </script>
 </body>
