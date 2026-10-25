@@ -10,9 +10,7 @@
   (function () {
     'use strict';
     if (location.pathname.indexOf('login.html') !== -1) return;
-
     function bail() { location.replace('login.html'); }
-
     try {
       var raw = localStorage.getItem('fortech-auth-session');
       if (!raw) { bail(); return; }
@@ -23,9 +21,7 @@
         return;
       }
       document.documentElement.classList.add('auth-pending');
-    } catch (e) {
-      bail();
-    }
+    } catch (e) { bail(); }
   })();
   </script>
 
@@ -96,7 +92,11 @@
         <span class="eyebrow">WORKSPACE</span>
         <h2>Build aplikasi</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> READY</span>
+      <!-- WIDGET SISA LIMIT -->
+      <span class="version-chip" id="limitChip">
+        <span class="live-dot"></span> 
+        <span id="limitText">Memuat limit...</span>
+      </span>
     </div>
 
     <form id="buildForm" class="build-form" enctype="multipart/form-data">
