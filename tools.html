@@ -1680,7 +1680,18 @@
 
         if (!res.ok) {
           let errMsg = 'HTTP ' + res.status;
-          try { const j = await res.json(); if (j.error?.message) errMsg = j.error.message; else if (j.message) errMsg = j.message; else if (j.error) errMsg = typeof j.error === 'string' ? j.error : JSON.stringify(j.error); } catch (_) {}
+          try { 
+            const j = await res.json(); 
+            if (j.error) errMsg = j.error;
+            if (j.detail) {
+              try {
+                const detailObj = JSON.parse(j.detail);
+                errMsg += ': ' + (detailObj.error?.message || detailObj.message || j.detail);
+              } catch (_) {
+                errMsg += ': ' + j.detail;
+              }
+            }
+          } catch (_) {}
           throw new Error(errMsg);
         }
 
