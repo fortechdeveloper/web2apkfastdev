@@ -1,8 +1,7 @@
 /* ============================================================
-   Auth Guard v3 — fail-closed
-   - Sync check sudah dilakukan inline di <head>
-   - File ini: verify session di background, redirect kalau invalid
-   - Kalau ada error apapun → redirect ke login (bukan biarkan lolos)
+   Auth Guard v4 — role-aware + realtime
+   - Fetch profile termasuk kolom 'role'
+   - Auto-update UI jika role diubah admin (Realtime)
    ============================================================ */
 
 (function () {
@@ -138,9 +137,10 @@
 
     setStatus('Memuat profil…');
     try {
+      // PERBAIKAN: Tambahkan 'role' di select
       const { data, error } = await sb
         .from('profiles')
-        .select('username, full_name, whatsapp, updated_at')
+        .select('username, full_name, whatsapp, role, updated_at')
         .eq('id', session.user.id)
         .maybeSingle();
 
@@ -150,6 +150,25 @@
           detail: { profile: data, user: session.user },
         }));
       }
+
+      // TAMBAHAN: Realtime listener untuk update role secara langsung
+      sb.channel('profile-changes')
+        .on('postgres_changes', { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'profiles', 
+          filter: `id=eq.${session.user.id}` 
+        }, (payload) => {
+          if (payload.new) {
+            window.currentProfile = payload.new;
+            window.dispatchEvent(new CustomEvent('authprofile', {
+              detail: { profile: payload.new, user: session.user },
+            }));
+            console.log('[auth-guard] Profile diupdate secara realtime oleh admin:', payload.new);
+          }
+        })
+        .subscribe();
+
     } catch (_) { /* profile gagal bukan blocker */ }
 
     html.classList.remove('auth-pending');
