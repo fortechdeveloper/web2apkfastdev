@@ -7,7 +7,6 @@ export default async function handler(req, res) {
   const API_KEY = 'jv-pub-QLZym5vrm1wUVvcPlyAaHlGw3PaEEG9Kp___MRA2Eck';
   const MODEL = 'Asep/deepseek-ai/DeepSeek-V4-Flash-0731-uncensored';
 
-  // Vercel otomatis nge-parse JSON body
   const { messages, stream } = req.body;
 
   try {
@@ -16,6 +15,12 @@ export default async function handler(req, res) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
+        // Trik 1: Berpura-pura jadi browser Chrome
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        // Trik 2: Header standar untuk platform penyedia LLM
+        'HTTP-Referer': 'https://web2apk.fastdev.my.id',
+        'X-Title': 'Web2APK Chat AI'
       },
       body: JSON.stringify({
         model: MODEL,
@@ -26,17 +31,20 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      return res.status(response.status).send(errorText);
+      console.error('9router Error:', response.status, errorText);
+      // Kirim detail error dari server ke frontend
+      return res.status(response.status).json({ 
+        error: `Server AI menolak (${response.status})`, 
+        detail: errorText 
+      });
     }
 
-    // Teruskan header Content-Type dari server AI (JSON atau SSE stream)
     res.setHeader('Content-Type', response.headers.get('Content-Type') || 'application/json');
 
     if (stream && response.body) {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       
-      // Looping stream data dari server AI dan teruskan ke browser (streaming teks ngetik)
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
