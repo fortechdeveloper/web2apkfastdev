@@ -45,12 +45,54 @@
     .admin-header h1 { font-size: 24px; font-weight: 800; margin: 0 0 6px; color: #fff; }
     .admin-header p { margin: 0; color: var(--muted); font-size: 11px; }
 
-    .search-box { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 15px; border: 1px solid rgba(155, 170, 210, .13); border-radius: 14px; background: rgba(6, 10, 20, .6); margin-bottom: 20px; }
+    /* --- CHART SECTION (BAGIAN ATAS) --- */
+    .chart-panel {
+      margin-top: 15px;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(117, 144, 255, .24);
+      background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92));
+      box-shadow: 0 10px 30px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .chart-header h3 { margin: 0; font-size: 14px; font-weight: 700; color: #dbe3f6; }
+    .chart-total { font-size: 11px; color: var(--muted); }
+    .chart-total b { color: #fff; font-size: 14px; margin-left: 4px; }
+
+    .chart-bar-container {
+      display: flex;
+      height: 12px;
+      border-radius: 10px;
+      background: rgba(5,9,18,.6);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,.3);
+    }
+    .bar-segment { height: 100%; transition: width .5s ease; }
+    .bar-segment.free { background: #5e6a86; } /* Abu-abu */
+    .bar-segment.pro { background: #657fff; } /* Biru */
+    .bar-segment.promax { background: #8b64e8; } /* Ungu */
+
+    .chart-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+    .legend-dot.free { background: #5e6a86; }
+    .legend-dot.pro { background: #657fff; }
+    .legend-dot.promax { background: #8b64e8; }
+    .legend-item b { color: #fff; font-size: 11px; margin-left: auto; }
+
+    /* --- ROLE MANAGEMENT SECTION (BAGIAN BAWAH) --- */
+    .section-title { margin: 24px 0 12px; display: flex; align-items: center; justify-content: space-between; }
+    .section-title h2 { margin: 0; font-size: 16px; font-weight: 800; color: #fff; }
+    .section-title span { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: #9eafff; background: rgba(117, 144, 255, .1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(117, 144, 255, .2); }
+
+    .search-box { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 15px; border: 1px solid rgba(155, 170, 210, .13); border-radius: 14px; background: rgba(6, 10, 20, .6); margin-bottom: 16px; }
     .search-box svg { width: 18px; height: 18px; color: var(--muted); }
     .search-box input { flex: 1; border: 0; background: transparent; color: var(--text); font-size: 13px; outline: 0; }
     
     .user-list { display: grid; gap: 12px; }
-    .user-card { padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92)); display: flex; flex-direction: column; gap: 10px; }
+    .user-card { padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92)); display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+    .user-card:hover { border-color: rgba(117, 144, 255, .4); }
     .user-info { display: grid; gap: 4px; }
     .user-info b { font-size: 14px; color: #dbe3f6; }
     .user-info small { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 5px; }
@@ -60,7 +102,7 @@
     .btn-save-role { height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: linear-gradient(110deg, #657fff, #795ce8); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
     .btn-save-role:disabled { opacity: 0.5; cursor: wait; }
 
-    .empty-state { padding: 30px; text-align: center; color: var(--muted); font-size: 12px; }
+    .empty-state { padding: 30px; text-align: center; color: var(--muted); font-size: 12px; border: 1px dashed var(--line); border-radius: 16px; }
   </style>
 </head>
 <body>
@@ -84,9 +126,41 @@
     </header>
 
     <section class="admin-header">
-      <h1>Manajemen User</h1>
-      <p>Cari user dan ubah paket akses mereka.</p>
+      <h1>Dashboard Admin</h1>
+      <p>Pantau statistik user dan kelola akses mereka.</p>
     </section>
+
+    <!-- BAGIAN 1: GRAFIK AKUN (BORDER) -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <h3><i data-lucide="bar-chart-3" style="width:16px;height:16px;display:inline-block;vertical-align:text-bottom;margin-right:6px;color:#9eafff;"></i>Grafik Akun</h3>
+        <div class="chart-total">Total: <b id="totalUsers">0</b></div>
+      </div>
+      
+      <div class="chart-bar-container">
+        <div class="bar-segment free" id="bar-free" style="width: 0%"></div>
+        <div class="bar-segment pro" id="bar-pro" style="width: 0%"></div>
+        <div class="bar-segment promax" id="bar-promax" style="width: 0%"></div>
+      </div>
+
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-dot free"></span> Free <b id="count-free">0</b>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot pro"></span> Pro <b id="count-pro">0</b>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot promax"></span> ProMax <b id="count-promax">0</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAGIAN 2: MANAJEMEN ROLE USER (BAWAH) -->
+    <div class="section-title">
+      <h2>Manajemen Role</h2>
+      <span>USER LIST</span>
+    </div>
 
     <div class="search-box">
       <i data-lucide="search"></i>
@@ -110,8 +184,7 @@
 
     const ADMIN_EMAIL = 'fortech.developer@gmail.com';
     const $ = (s, r) => (r || document).querySelector(s);
-    const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
-
+    
     let toastTimer = null;
     function toast(msg, type) {
       const el = $('#toast');
@@ -123,7 +196,6 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
     }
 
-    // Cek apakah email yang login beneran Admin
     function checkAdmin() {
       if (!window.currentUser || window.currentUser.email !== ADMIN_EMAIL) {
         document.body.innerHTML = `
@@ -140,15 +212,47 @@
       return true;
     }
 
+    // Update Grafik
+    function updateChart(users) {
+      const total = users.length;
+      let free = 0, pro = 0, promax = 0;
+
+      users.forEach(u => {
+        if (u.role === 'promax') promax++;
+        else if (u.role === 'pro') pro++;
+        else free++;
+      });
+
+      // Update Text
+      $('#totalUsers').textContent = total;
+      $('#count-free').textContent = free;
+      $('#count-pro').textContent = pro;
+      $('#count-promax').textContent = promax;
+
+      // Update Bar Width
+      if (total > 0) {
+        $('#bar-free').style.width = `${(free / total) * 100}%`;
+        $('#bar-pro').style.width = `${(pro / total) * 100}%`;
+        $('#bar-promax').style.width = `${(promax / total) * 100}%`;
+      } else {
+        $('#bar-free').style.width = '0%';
+        $('#bar-pro').style.width = '0%';
+        $('#bar-promax').style.width = '0%';
+      }
+    }
+
     async function loadUsers(search = '') {
       const listEl = $('#userList');
       listEl.innerHTML = '<div class="empty-state">Mencari data...</div>';
 
       try {
-        // Memanggil RPC yang udah kita buat di Supabase
         const { data, error } = await window.supabaseClient.rpc('admin_get_users', { search_term: search });
         
         if (error) throw error;
+        
+        // Update grafik berdasarkan hasil pencarian/fetch
+        updateChart(data || []);
+
         if (!data || data.length === 0) {
           listEl.innerHTML = '<div class="empty-state">User tidak ditemukan.</div>';
           return;
@@ -176,11 +280,10 @@
         });
         if (window.lucide) window.lucide.createIcons();
       } catch (err) {
-        listEl.innerHTML = `<div class="empty-state" style="color:#ff6e6e;">Gagal memuat data: ${err.message}</div>`;
+        listEl.innerHTML = `<div class="empty-state" style="color:#ff6e6e; border-color:rgba(255,110,110,.3);">Gagal memuat data: ${err.message}</div>`;
       }
     }
 
-    // Fungsi global buat tombol simpan
     window.saveRole = async function(userId) {
       const select = $(`#role-${userId}`);
       const btn = document.querySelector(`button[data-id="${userId}"]`);
@@ -197,6 +300,9 @@
         
         if (error) throw error;
         toast('Role berhasil diubah!', 'success');
+        
+        // Refresh data untuk update grafik jika perlu
+        // (Opsional: loadUsers($('#searchInput').value.trim()));
       } catch (err) {
         toast('Gagal mengubah role: ' + err.message, 'error');
       } finally {
@@ -209,7 +315,6 @@
     function init() {
       if (window.lucide) window.lucide.createIcons();
       
-      // Tunggu auth-guard selesai load profile
       setTimeout(() => {
         if (!checkAdmin()) return;
         loadUsers();
