@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d18">
+
+  <!-- Inline auth guard -->
+  <script>
+  (function () {
+    'use strict';
+    if (location.pathname.indexOf('login.html') !== -1) return;
+    function bail() { location.replace('login.html'); }
+    try {
+      var raw = localStorage.getItem('fortech-auth-session');
+      if (!raw) { bail(); return; }
+      var s = JSON.parse(raw);
+      if (!s || !s.access_token || !s.user) { bail(); return; }
+      document.documentElement.classList.add('auth-pending');
+    } catch (e) { bail(); }
+  })();
+  </script>
+
+  <title>Fast Privat — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth-guard.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth-guard.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    .auth-guard { position: fixed; inset: 0; z-index: 9999; display: none; place-items: center; padding: 20px; background: #090d18; text-align: center; }
+    html.auth-pending .auth-guard { display: grid; }
+    html.auth-pending body > *:not(.auth-guard) { visibility: hidden; }
+    html.auth-pending { overflow: hidden; }
+    .auth-guard-inner { display: grid; place-items: center; gap: 14px; }
+    .auth-guard-spinner { width: 28px; height: 28px; border: 2px solid rgba(117, 144, 255, .2); border-top-color: #7590ff; border-radius: 50%; animation: authGuardSpin .7s linear infinite; }
+    .auth-guard-inner p { margin: 0; color: #8d9ab6; font-size: 11px; }
+    @keyframes authGuardSpin { to { transform: rotate(360deg); } }
+
+    .admin-header { padding: 20px 0 10px; text-align: center; }
+    .admin-header h1 { font-size: 24px; font-weight: 800; margin: 0 0 6px; color: #fff; }
+    .admin-header p { margin: 0; color: var(--muted); font-size: 11px; }
+
+    .search-box { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 15px; border: 1px solid rgba(155, 170, 210, .13); border-radius: 14px; background: rgba(6, 10, 20, .6); margin-bottom: 20px; }
+    .search-box svg { width: 18px; height: 18px; color: var(--muted); }
+    .search-box input { flex: 1; border: 0; background: transparent; color: var(--text); font-size: 13px; outline: 0; }
+    
+    .user-list { display: grid; gap: 12px; }
+    .user-card { padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92)); display: flex; flex-direction: column; gap: 10px; }
+    .user-info { display: grid; gap: 4px; }
+    .user-info b { font-size: 14px; color: #dbe3f6; }
+    .user-info small { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 5px; }
+    
+    .action-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .role-select { flex: 1; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(155, 170, 210, .2); background: rgba(5,9,18,.6); color: #fff; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; }
+    .btn-save-role { height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: linear-gradient(110deg, #657fff, #795ce8); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+    .btn-save-role:disabled { opacity: 0.5; cursor: wait; }
+
+    .empty-state { padding: 30px; text-align: center; color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="auth-guard" id="authGuard">
+    <div class="auth-guard-inner"><div class="auth-guard-spinner"></div><p id="authGuardText">Memeriksa sesi…</p></div>
+  </div>
+
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <a class="brand" href="akun.html">
+        <span class="brand-icon" style="background:linear-gradient(135deg, #ff6e6e, #ff4d4d);"><i data-lucide="shield-alert"></i></span>
+        <span class="brand-copy">
+          <strong>Fast Privat</strong>
+          <small>ADMIN PANEL</small>
+        </span>
+      </a>
+      <a href="akun.html" class="icon-button" style="text-decoration:none;"><i data-lucide="x"></i></a>
+    </header>
+
+    <section class="admin-header">
+      <h1>Manajemen User</h1>
+      <p>Cari user dan ubah paket akses mereka.</p>
+    </section>
+
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" id="searchInput" placeholder="Cari username atau email..." autocomplete="off">
+    </div>
+
+    <div class="user-list" id="userList">
+      <div class="empty-state">Memuat data user...</div>
+    </div>
+
+    <footer class="footer" style="margin-top:20px;">
+      <p><b>FASTDEV</b> · Admin Access Only</p>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const ADMIN_EMAIL = 'fortech.developer@gmail.com';
+    const $ = (s, r) => (r || document).querySelector(s);
+    const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+    let toastTimer = null;
+    function toast(msg, type) {
+      const el = $('#toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.dataset.type = type || 'info';
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    // Cek apakah email yang login beneran Admin
+    function checkAdmin() {
+      if (!window.currentUser || window.currentUser.email !== ADMIN_EMAIL) {
+        document.body.innerHTML = `
+          <div style="display:grid; place-items:center; height:100vh; text-align:center; padding:20px;">
+            <div>
+              <h2 style="color:#ff6e6e; margin-bottom:10px;">Access Denied</h2>
+              <p style="color:#8d9ab6; font-size:12px;">Halaman ini hanya untuk developer.</p>
+              <a href="akun.html" style="color:#657fff; font-size:12px; margin-top:20px; display:inline-block;">Kembali ke Akun</a>
+            </div>
+          </div>
+        `;
+        return false;
+      }
+      return true;
+    }
+
+    async function loadUsers(search = '') {
+      const listEl = $('#userList');
+      listEl.innerHTML = '<div class="empty-state">Mencari data...</div>';
+
+      try {
+        // Memanggil RPC yang udah kita buat di Supabase
+        const { data, error } = await window.supabaseClient.rpc('admin_get_users', { search_term: search });
+        
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          listEl.innerHTML = '<div class="empty-state">User tidak ditemukan.</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        data.forEach(user => {
+          const card = document.createElement('div');
+          card.className = 'user-card';
+          card.innerHTML = `
+            <div class="user-info">
+              <b>${user.username || 'No Username'}</b>
+              <small><i data-lucide="mail" style="width:12px;height:12px;"></i> ${user.email}</small>
+            </div>
+            <div class="action-row">
+              <select class="role-select" id="role-${user.id}">
+                <option value="free" ${user.role === 'free' ? 'selected' : ''}>Free</option>
+                <option value="pro" ${user.role === 'pro' ? 'selected' : ''}>Pro</option>
+                <option value="promax" ${user.role === 'promax' ? 'selected' : ''}>ProMax</option>
+              </select>
+              <button class="btn-save-role" data-id="${user.id}" onclick="saveRole('${user.id}')">Simpan</button>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+        if (window.lucide) window.lucide.createIcons();
+      } catch (err) {
+        listEl.innerHTML = `<div class="empty-state" style="color:#ff6e6e;">Gagal memuat data: ${err.message}</div>`;
+      }
+    }
+
+    // Fungsi global buat tombol simpan
+    window.saveRole = async function(userId) {
+      const select = $(`#role-${userId}`);
+      const btn = document.querySelector(`button[data-id="${userId}"]`);
+      const newRole = select.value;
+      
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      try {
+        const { error } = await window.supabaseClient.rpc('admin_update_role', { 
+          target_id: userId, 
+          new_role: newRole 
+        });
+        
+        if (error) throw error;
+        toast('Role berhasil diubah!', 'success');
+      } catch (err) {
+        toast('Gagal mengubah role: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan';
+      }
+    };
+
+    let searchDebounce;
+    function init() {
+      if (window.lucide) window.lucide.createIcons();
+      
+      // Tunggu auth-guard selesai load profile
+      setTimeout(() => {
+        if (!checkAdmin()) return;
+        loadUsers();
+
+        $('#searchInput').addEventListener('input', (e) => {
+          clearTimeout(searchDebounce);
+          searchDebounce = setTimeout(() => loadUsers(e.target.value.trim()), 500);
+        });
+      }, 800); 
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+  </script>
+</body>
+</html>
