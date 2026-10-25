@@ -64,7 +64,6 @@
       const remaining = Math.max(0, limit - data.count);
       limitTextEl.textContent = `SISA: ${remaining}/${limit}`;
       
-      // Ubah warna kalau limit habis
       if (remaining === 0) {
         limitTextEl.textContent = `HABIS (0/${limit})`;
         if (limitChipEl) limitChipEl.style.borderColor = "rgba(255, 110, 110, 0.4)";
@@ -321,11 +320,28 @@
 
       if (!downloadUrl) throw new Error(message);
 
-      // --- JIKA SUKSES, TAMBAH COUNTER & UPDATE UI ---
+      // --- JIKA SUKSES, TAMBAH COUNTER & KIRIM NOTIFIKASI TELEGRAM ---
       const buildData = limitCheck.data;
       buildData.count += 1;
       try { localStorage.setItem('web2apk:build-count:v1', JSON.stringify(buildData)); } catch (e) {}
-      updateLimitUI(); // Langsung ubah tampilan sisa limit
+      updateLimitUI();
+
+      const creator = window.currentProfile?.username || window.currentUser?.email || 'Unknown';
+      
+      fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          type: 'build', 
+          data: { 
+            sourceType: sourceType, 
+            sourceUrl: websiteUrl, 
+            appName: appName, 
+            creator: creator, 
+            packageName: packageName 
+          } 
+        })
+      }).catch(console.error);
 
       setProgress(100, "Build selesai!", "APK siap diunduh.", "Selesai");
       showResult("Build berhasil!", message, downloadUrl);
