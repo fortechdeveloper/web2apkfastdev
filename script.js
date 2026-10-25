@@ -21,7 +21,7 @@
   }
 
   // ==========================================
-  // SISTEM BATAS BUILD HARIAN PER DEVICE
+  // SISTEM BATAS BUILD HARIAN
   // ==========================================
   function getTodayDateString() {
     const d = new Date();
@@ -34,10 +34,9 @@
     return 3; // Default free
   }
 
-  function checkDailyLimit() {
+  function getBuildData() {
     const today = getTodayDateString();
     let data = { date: today, count: 0 };
-    
     try {
       const saved = localStorage.getItem('web2apk:build-count:v1');
       if (saved) {
@@ -45,18 +44,45 @@
         if (parsed.date === today) data = parsed;
       }
     } catch (e) {}
+    return data;
+  }
 
-    // Ambil plan dari profile user (auth-guard.js)
+  function updateLimitUI() {
     const plan = (window.currentProfile?.role || 'free').toLowerCase();
     const limit = getBuildLimit(plan);
+    const data = getBuildData();
+    
+    const limitTextEl = $("#limitText");
+    const limitChipEl = $("#limitChip");
+
+    if (!limitTextEl) return;
+
+    if (limit === Infinity) {
+      limitTextEl.textContent = "UNLIMITED";
+      if (limitChipEl) limitChipEl.style.borderColor = "rgba(105, 228, 177, 0.3)";
+    } else {
+      const remaining = Math.max(0, limit - data.count);
+      limitTextEl.textContent = `SISA: ${remaining}/${limit}`;
+      
+      // Ubah warna kalau limit habis
+      if (remaining === 0) {
+        limitTextEl.textContent = `HABIS (0/${limit})`;
+        if (limitChipEl) limitChipEl.style.borderColor = "rgba(255, 110, 110, 0.4)";
+        if (limitChipEl) limitChipEl.style.color = "#ff9e9e";
+      } else {
+        if (limitChipEl) limitChipEl.style.borderColor = "rgba(160, 177, 219, .13)";
+        if (limitChipEl) limitChipEl.style.color = "#a0e8ca";
+      }
+    }
+  }
+
+  function checkDailyLimit() {
+    const plan = (window.currentProfile?.role || 'free').toLowerCase();
+    const limit = getBuildLimit(plan);
+    const data = getBuildData();
 
     if (data.count >= limit) return { allowed: false, count: data.count, limit: limit, plan: plan };
     return { allowed: true, count: data.count, limit: limit, plan: plan, data };
-  }
-
-  function incrementBuildCount(data) {
-    data.count += 1;
-    try { localStorage.setItem('web2apk:build-count:v1', JSON.stringify(data)); } catch (e) {}
   }
 
   // ==========================================
@@ -206,6 +232,10 @@
   helpModal?.addEventListener("click", (event) => { if (event.target === helpModal) closeHelp(); });
   document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeHelp(); });
 
+  // Dengerin event dari auth-guard kalau profile berhasil dimuat
+  window.addEventListener('authready', updateLimitUI);
+  window.addEventListener('authprofile', updateLimitUI);
+
   $("#buildForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (building) return;
@@ -291,8 +321,11 @@
 
       if (!downloadUrl) throw new Error(message);
 
-      // JIKA SUKSES, TAMBAH COUNTER
-      incrementBuildCount(limitCheck.data);
+      // --- JIKA SUKSES, TAMBAH COUNTER & UPDATE UI ---
+      const buildData = limitCheck.data;
+      buildData.count += 1;
+      try { localStorage.setItem('web2apk:build-count:v1', JSON.stringify(buildData)); } catch (e) {}
+      updateLimitUI(); // Langsung ubah tampilan sisa limit
 
       setProgress(100, "Build selesai!", "APK siap diunduh.", "Selesai");
       showResult("Build berhasil!", message, downloadUrl);
