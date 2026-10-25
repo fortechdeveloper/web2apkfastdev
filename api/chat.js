@@ -1,24 +1,32 @@
-export default async function handler(req, res) {
+// api/chat.js
+// Menggunakan Vercel Edge Runtime untuk bypass blokir Cloudflare WAF
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const API_URL = 'https://9routeruncensored.my.id/v1/chat/completions';
   const API_KEY = 'jv-pub-QLZym5vrm1wUVvcPlyAaHlGw3PaEEG9Kp___MRA2Eck';
   const MODEL = 'Asep/deepseek-ai/DeepSeek-V4-Flash-0731-uncensored';
 
-  const { messages, stream } = req.body;
-
   try {
+    const body = await req.json();
+    const { messages, stream } = body;
+
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
-        // Trik 1: Berpura-pura jadi browser Chrome
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
         'Accept': 'application/json',
-        // Trik 2: Header standar untuk platform penyedia LLM
         'HTTP-Referer': 'https://web2apk.fastdev.my.id',
         'X-Title': 'Web2APK Chat AI'
       },
@@ -29,34 +37,35 @@ export default async function handler(req, res) {
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('9router Error:', response.status, errorText);
-      // Kirim detail error dari server ke frontend
-      return res.status(response.status).json({ 
-        error: `Server AI menolak (${response.status})`, 
-        detail: errorText 
-      });
-    }
-
-    res.setHeader('Content-Type', response.headers.get('Content-Type') || 'application/json');
-
-    if (stream && response.body) {
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(decoder.decode(value, { stream: true }));
+    // Cek jika masih ditolak oleh Cloudflare
+    const contentType = response.headers.get('Content-Type') || '';
+    if (!response.ok && contentType.includes('text/html')) {
+      const htmlText = await response.text();
+      if (htmlText.includes('Just a moment...')) {
+        return new Response(JSON.stringify({ 
+          error: 'Diblokir oleh keamanan Cloudflare Server AI.',
+          detail: 'IP Vercel masih diblokir. Coba lagi nanti atau gunakan proxy lain.'
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        });
       }
-      res.end();
-    } else {
-      const json = await response.json();
-      return res.status(200).json(json);
     }
+
+    // Kembalikan response stream ke frontend
+    return new Response(response.body, {
+      status: response.status,
+      headers: {
+        'Content-Type': contentType || 'application/json',
+        // Teruskan header jika perlu
+        'Cache-Control': 'no-cache',
+      },
+    });
+
   } catch (error) {
-    console.error('Chat Proxy Error:', error);
-    return res.status(500).json({ error: error.message || 'Gagal menghubungi server AI.' });
+    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
