@@ -1597,9 +1597,8 @@
     /* ============================================================
        CHAT AI
        ============================================================ */
-    const CHAT_API_BASE = 'https://9routeruncensored.my.id/v1';
-    const CHAT_API_KEY = 'jv-pub-QLZym5vrm1wUVvcPlyAaHlGw3PaEEG9Kp___MRA2Eck';
-    const CHAT_MODEL = 'Asep/deepseek-ai/DeepSeek-V4-Flash-0731-uncensored';
+    // Gunakan API Proxy Vercel agar tidak kena CORS
+    const CHAT_API_BASE = '/api/chat';
 
     const chatDom = {
       form: $('#chatForm'),
@@ -1668,14 +1667,12 @@
       chatAppendTyping();
 
       try {
-        const res = await fetch(CHAT_API_BASE + '/chat/completions', {
+        const res = await fetch(CHAT_API_BASE, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + CHAT_API_KEY,
           },
           body: JSON.stringify({
-            model: CHAT_MODEL,
             messages: chatState.history,
             stream: true,
           }),
@@ -1683,7 +1680,7 @@
 
         if (!res.ok) {
           let errMsg = 'HTTP ' + res.status;
-          try { const j = await res.json(); if (j.error?.message) errMsg = j.error.message; else if (j.message) errMsg = j.message; } catch (_) {}
+          try { const j = await res.json(); if (j.error?.message) errMsg = j.error.message; else if (j.message) errMsg = j.message; else if (j.error) errMsg = typeof j.error === 'string' ? j.error : JSON.stringify(j.error); } catch (_) {}
           throw new Error(errMsg);
         }
 
@@ -1694,13 +1691,11 @@
         const contentType = res.headers.get('content-type') || '';
 
         if (contentType.includes('application/json')) {
-          // Fallback non-streaming
           const json = await res.json();
           assistantText = json.choices?.[0]?.message?.content || '';
           bubble.textContent = assistantText || '(Tidak ada balasan)';
           chatScrollToBottom();
         } else if (res.body && res.body.getReader) {
-          // SSE streaming
           const reader = res.body.getReader();
           const decoder = new TextDecoder();
           let buffer = '';
@@ -1727,7 +1722,6 @@
               } catch (_) {}
             }
           }
-
           if (!assistantText) bubble.textContent = '(Tidak ada balasan)';
         } else {
           throw new Error('Format respons tidak didukung');
