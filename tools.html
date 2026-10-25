@@ -10,37 +10,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth-guard.css">
+  <script>document.documentElement.classList.add('auth-pending');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth-guard.js" defer></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* ============================================================
-       TOOLS PAGE — extends style.css
-       ============================================================ */
+    .auth-guard { position: fixed; inset: 0; z-index: 9999; display: none; place-items: center; padding: 20px; background: #090d18; text-align: center; }
+    html.auth-pending .auth-guard { display: grid; }
+    html.auth-pending body > *:not(.auth-guard) { visibility: hidden; }
+    html.auth-pending { overflow: hidden; }
+    .auth-guard-inner { display: grid; place-items: center; gap: 14px; }
+    .auth-guard-spinner { width: 28px; height: 28px; border: 2px solid rgba(117, 144, 255, .2); border-top-color: #7590ff; border-radius: 50%; animation: authGuardSpin .7s linear infinite; }
+    .auth-guard-inner p { margin: 0; color: #8d9ab6; font-size: 11px; }
+    @keyframes authGuardSpin { to { transform: rotate(360deg); } }
 
     .tools-hero { padding-bottom: 22px; }
     .tools-hero h1 span { color: var(--cyan); }
 
     .clay-card {
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 24px;
+      margin-top: 20px; padding: 18px; border-radius: 24px;
       border: 1px solid rgba(160, 177, 219, .14);
-      background:
-        radial-gradient(ellipse at 20% 0%, rgba(117, 144, 255, .16), transparent 55%),
-        linear-gradient(145deg, rgba(28, 38, 62, .96), rgba(15, 22, 38, .96));
-      box-shadow:
-        0 22px 45px rgba(0, 0, 0, .3),
-        inset 0 1px 0 rgba(255, 255, 255, .06),
-        inset 0 -3px 10px rgba(0, 0, 0, .35);
+      background: radial-gradient(ellipse at 20% 0%, rgba(117, 144, 255, .16), transparent 55%), linear-gradient(145deg, rgba(28, 38, 62, .96), rgba(15, 22, 38, .96));
+      box-shadow: 0 22px 45px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -3px 10px rgba(0, 0, 0, .35);
     }
     .clay-row { display: flex; align-items: center; gap: 12px; }
-    .clay-icon {
-      display: grid; place-items: center;
-      width: 42px; height: 42px; border-radius: 14px;
-      background: rgba(112, 137, 255, .12);
-      color: #9eafff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(92,95,231,.15);
-    }
+    .clay-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: rgba(112, 137, 255, .12); color: #9eafff; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(92,95,231,.15); }
     .clay-icon svg { width: 20px; height: 20px; }
     .clay-row b { font-size: 13px; display: block; }
     .clay-row small { color: var(--muted); font-size: 10px; }
@@ -51,8 +47,7 @@
 
     .tool-grid { display: grid; gap: 11px; margin-bottom: 15px; }
     .tool-card {
-      display: flex; align-items: center; gap: 13px;
-      width: 100%; padding: 15px;
+      display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px;
       border-radius: 18px;
       background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92));
       border: 1px solid var(--line);
@@ -60,66 +55,23 @@
       transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
     .tool-card:active { transform: scale(.99); }
-    .tool-card:hover {
-      transform: translateY(-1px);
-      border-color: rgba(129, 151, 255, .55);
-      box-shadow: 0 0 0 1px rgba(117, 144, 255, .12), 0 12px 28px rgba(92, 95, 231, .1);
-    }
-    .tool-card.active {
-      background: linear-gradient(145deg, rgba(26, 36, 58, .98), rgba(18, 25, 42, .98));
-      border-color: rgba(129, 151, 255, .55);
-      box-shadow: 0 0 0 1px rgba(117, 144, 255, .12);
-    }
-    .tool-card-icon {
-      display: grid; place-items: center;
-      width: 44px; height: 44px; flex: 0 0 auto;
-      border-radius: 14px;
-      background: rgba(112, 137, 255, .1);
-      color: #9eafff;
-    }
+    .tool-card:hover { transform: translateY(-1px); border-color: rgba(129, 151, 255, .55); box-shadow: 0 0 0 1px rgba(117, 144, 255, .12), 0 12px 28px rgba(92, 95, 231, .1); }
+    .tool-card.active { background: linear-gradient(145deg, rgba(26, 36, 58, .98), rgba(18, 25, 42, .98)); border-color: rgba(129, 151, 255, .55); box-shadow: 0 0 0 1px rgba(117, 144, 255, .12); }
+    .tool-card-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 auto; border-radius: 14px; background: rgba(112, 137, 255, .1); color: #9eafff; }
     .tool-card-icon svg { width: 20px; height: 20px; }
     .tool-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
     .tool-card-body b { font-size: 12px; }
     .tool-card-body small { color: var(--muted); font-size: 10px; }
-    .tool-card-badge {
-      flex: 0 0 auto;
-      padding: 5px 8px;
-      border-radius: 8px;
-      background: rgba(105, 228, 177, .1);
-      border: 1px solid rgba(105, 228, 177, .2);
-      color: #8ee8c3;
-      font-size: 8px; font-weight: 800; letter-spacing: 1px;
-    }
-    .tool-card-badge.soon {
-      background: rgba(160, 177, 219, .08);
-      border-color: rgba(160, 177, 219, .16);
-      color: #8d9ab6;
-    }
+    .tool-card-badge { flex: 0 0 auto; padding: 5px 8px; border-radius: 8px; background: rgba(105, 228, 177, .1); border: 1px solid rgba(105, 228, 177, .2); color: #8ee8c3; font-size: 8px; font-weight: 800; letter-spacing: 1px; }
 
     .tool-panel { margin-top: 15px; }
     .tool-panel .panel-heading { margin-bottom: 20px; }
     .tool-form .field { margin-top: 0; }
 
-    .input-clear {
-      display: grid; place-items: center;
-      width: 24px; height: 24px;
-      border: 0; border-radius: 8px;
-      background: rgba(255,255,255,.04);
-      color: var(--muted); cursor: pointer; flex: 0 0 auto;
-    }
+    .input-clear { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 8px; background: rgba(255,255,255,.04); color: var(--muted); cursor: pointer; flex: 0 0 auto; }
     .input-clear svg { width: 13px; height: 13px; }
 
-    .tool-action {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%; min-height: 48px; margin-top: 16px;
-      border: 1px solid rgba(192,201,255,.23);
-      border-radius: 14px;
-      background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8);
-      box-shadow: 0 12px 28px rgba(92,95,231,.22);
-      color: #fff; font-size: 12px; font-weight: 700;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s, opacity .2s;
-    }
+    .tool-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 48px; margin-top: 16px; border: 1px solid rgba(192,201,255,.23); border-radius: 14px; background: linear-gradient(110deg, #657fff, #795ce8 72%, #8b64e8); box-shadow: 0 12px 28px rgba(92,95,231,.22); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform .2s, box-shadow .2s, opacity .2s; }
     .tool-action:hover { box-shadow: 0 15px 35px rgba(92,95,231,.3); }
     .tool-action:active { transform: scale(.99); }
     .tool-action:disabled { opacity: .55; cursor: wait; }
@@ -127,384 +79,262 @@
 
     .tool-state { display: grid; place-items: center; gap: 12px; padding: 28px 0; text-align: center; }
     .tool-state p { margin: 0; color: var(--muted); font-size: 11px; }
-    .spinner {
-      width: 26px; height: 26px;
-      border: 2px solid rgba(117,144,255,.2);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
+    .spinner { width: 26px; height: 26px; border: 2px solid rgba(117,144,255,.2); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .tool-alert {
-      display: flex; align-items: flex-start; gap: 10px;
-      margin-top: 15px; padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 110, 110, .18);
-      background: rgba(255, 110, 110, .06);
-    }
+    .tool-alert { display: flex; align-items: flex-start; gap: 10px; margin-top: 15px; padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 110, 110, .18); background: rgba(255, 110, 110, .06); }
     .tool-alert svg { flex: 0 0 auto; width: 16px; color: #ff8a8a; }
     .tool-alert p { margin: 0; color: #ffb4b4; font-size: 11px; line-height: 1.6; }
 
-    .tool-result {
-      margin-top: 18px; overflow: hidden;
-      border-radius: 18px;
-      border: 1px solid rgba(117, 144, 255, .2);
-      background: rgba(7, 11, 21, .35);
-    }
+    .tool-result { margin-top: 18px; overflow: hidden; border-radius: 18px; border: 1px solid rgba(117, 144, 255, .2); background: rgba(7, 11, 21, .35); }
     .result-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #0b1120; }
     .result-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .duration-chip {
-      position: absolute; right: 10px; bottom: 10px;
-      padding: 4px 8px; border-radius: 7px;
-      background: rgba(4, 8, 16, .8);
-      color: #e6ecff; font-size: 10px; font-weight: 700;
-      backdrop-filter: blur(6px);
-    }
+    .duration-chip { position: absolute; right: 10px; bottom: 10px; padding: 4px 8px; border-radius: 7px; background: rgba(4, 8, 16, .8); color: #e6ecff; font-size: 10px; font-weight: 700; backdrop-filter: blur(6px); }
     .result-body { padding: 14px; display: grid; gap: 12px; }
     .result-author { display: flex; align-items: center; gap: 10px; }
-    .result-author img {
-      width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
-      border: 1px solid rgba(160,177,219,.2); background: #1b243a;
-    }
+    .result-author img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(160,177,219,.2); background: #1b243a; }
     .result-author div { display: grid; gap: 2px; min-width: 0; }
     .result-author b { font-size: 11px; }
     .result-author small { color: var(--muted); font-size: 9px; }
-    .result-title {
-      margin: 0;
-      color: #cfd8ee; font-size: 11px; line-height: 1.6;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
+    .result-title { margin: 0; color: #cfd8ee; font-size: 11px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .result-stats { display: flex; flex-wrap: wrap; gap: 12px; }
     .result-stats span { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 10px; }
     .result-stats svg { width: 12px; height: 12px; }
     .result-stats b { color: #cdd6ec; font-weight: 700; }
 
     .download-actions { display: grid; gap: 8px; }
-    .download-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      min-height: 42px;
-      border-radius: 11px;
-      background: linear-gradient(110deg, #667fff, #8563e9);
-      color: #fff; font-size: 11px; font-weight: 700; text-decoration: none;
-      transition: opacity .2s, transform .2s;
-    }
+    .download-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border-radius: 11px; background: linear-gradient(110deg, #667fff, #8563e9); color: #fff; font-size: 11px; font-weight: 700; text-decoration: none; transition: opacity .2s, transform .2s; }
     .download-btn:active { transform: scale(.99); }
-    .download-btn.secondary {
-      background: rgba(117,144,255,.12);
-      border: 1px solid rgba(117,144,255,.22);
-      color: #c6d2ff;
-    }
-    .download-btn.audio {
-      background: rgba(117,144,255,.1);
-      border: 1px solid rgba(117,144,255,.22);
-      color: #c6d2ff;
-    }
+    .download-btn.secondary { background: rgba(117,144,255,.12); border: 1px solid rgba(117,144,255,.22); color: #c6d2ff; }
+    .download-btn.audio { background: rgba(117,144,255,.1); border: 1px solid rgba(117,144,255,.22); color: #c6d2ff; }
     .download-btn svg { width: 15px; height: 15px; }
     .download-btn.hidden { display: none; }
 
-    .ghost-btn {
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      width: 100%; min-height: 38px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: transparent;
-      color: var(--muted); font-size: 10px; font-weight: 700;
-      cursor: pointer;
-    }
+    .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
-    .soon-panel { text-align: center; }
-    .soon-content { display: grid; place-items: center; gap: 10px; padding: 30px 10px; }
-    .soon-icon {
-      display: grid; place-items: center;
-      width: 60px; height: 60px; border-radius: 20px;
-      background: rgba(112, 137, 255, .1);
-      color: #9eafff;
-    }
-    .soon-icon svg { width: 26px; height: 26px; }
-    .soon-content h3 { margin: 4px 0 0; font-size: 16px; }
-    .soon-content p { max-width: 300px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
-    .soon-tag {
-      margin-top: 6px; padding: 6px 12px;
-      border-radius: 9px;
-      border: 1px solid rgba(160,177,219,.16);
-      background: rgba(160,177,219,.06);
-      color: #9aa8c8; font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
-    }
-
-    .history-list { display: grid; gap: 8px; margin-top: 4px; }
-    .history-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 10px;
-      border-radius: 11px;
-      border: 1px solid var(--line);
-      background: rgba(5,9,18,.3);
-      cursor: pointer; text-align: left; color: inherit; width: 100%;
-    }
-    .history-item img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; flex: 0 0 auto; background: #1b243a; }
-    .history-item div { min-width: 0; flex: 1; display: grid; gap: 2px; }
-    .history-item b { font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .history-item small { color: var(--muted); font-size: 9px; }
-    .history-item svg { width: 13px; color: var(--muted); flex: 0 0 auto; }
-
-    /* Pinterest grid */
-    .pin-grid {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px; margin-top: 16px;
-    }
-    .pin-card {
-      position: relative; display: block; width: 100%; padding: 0;
-      border: 1px solid var(--line); border-radius: 14px;
-      background: #0b1120; overflow: hidden; cursor: pointer;
-      text-align: left; color: inherit;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
-    }
-    .pin-card:hover {
-      border-color: rgba(129, 151, 255, .55);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0,0,0,.25);
-    }
-    .pin-card:active { transform: scale(.99); }
+    .pin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
+    .pin-card { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: #0b1120; overflow: hidden; cursor: pointer; text-align: left; color: inherit; transition: border-color .2s, transform .2s, box-shadow .2s; }
+    .pin-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
     .pin-card-thumb { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #131b2e; }
     .pin-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .pin-card-type {
-      position: absolute; top: 7px; left: 7px;
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 7px; border-radius: 6px;
-      background: rgba(4, 8, 16, .78);
-      color: #e6ecff; font-size: 8px; font-weight: 800; letter-spacing: .6px;
-      backdrop-filter: blur(6px);
-    }
+    .pin-card-type { position: absolute; top: 7px; left: 7px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 6px; background: rgba(4, 8, 16, .78); color: #e6ecff; font-size: 8px; font-weight: 800; letter-spacing: .6px; backdrop-filter: blur(6px); }
     .pin-card-type svg { width: 10px; height: 10px; }
     .pin-card-meta { padding: 8px 9px 10px; display: grid; gap: 3px; }
-    .pin-card-meta b {
-      font-size: 9.5px; line-height: 1.4; color: #cfd8ee;
-      overflow: hidden; text-overflow: ellipsis;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .pin-card-meta small {
-      color: var(--muted); font-size: 8.5px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .pin-empty {
-      grid-column: 1 / -1; padding: 30px 14px;
-      text-align: center; color: var(--muted); font-size: 11px;
-      border: 1px dashed var(--line); border-radius: 14px;
-    }
+    .pin-card-meta b { font-size: 9.5px; line-height: 1.4; color: #cfd8ee; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .pin-card-meta small { color: var(--muted); font-size: 8.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pin-empty { grid-column: 1 / -1; padding: 30px 14px; text-align: center; color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 14px; }
 
-    .pin-preview {
-      margin-top: 16px;
-      border: 1px solid var(--line); border-radius: 16px;
-      overflow: hidden;
-      background: rgba(7, 11, 21, .35);
-    }
-    .pin-preview-media {
-      position: relative; max-height: 62vh;
-      background: #050810;
-      display: grid; place-items: center; overflow: hidden;
-    }
-    .pin-preview-media img,
-    .pin-preview-media video {
-      display: block; width: 100%; height: auto;
-      max-height: 62vh; object-fit: contain; background: #050810;
-    }
-    .pin-preview-badge {
-      position: absolute; top: 10px; left: 10px;
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 8px; border-radius: 6px;
-      background: rgba(4, 8, 16, .78);
-      color: #e6ecff; font-size: 8.5px; font-weight: 800; letter-spacing: .6px;
-      backdrop-filter: blur(6px);
-    }
+    .pin-preview { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .pin-preview-media { position: relative; max-height: 62vh; background: #050810; display: grid; place-items: center; overflow: hidden; }
+    .pin-preview-media img, .pin-preview-media video { display: block; width: 100%; height: auto; max-height: 62vh; object-fit: contain; background: #050810; }
+    .pin-preview-badge { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: rgba(4, 8, 16, .78); color: #e6ecff; font-size: 8.5px; font-weight: 800; letter-spacing: .6px; backdrop-filter: blur(6px); }
     .pin-preview-badge svg { width: 10px; height: 10px; }
     .pin-preview-body { padding: 14px; display: grid; gap: 11px; }
     .pin-preview-title { margin: 0; color: #dbe3f6; font-size: 12px; font-weight: 700; line-height: 1.5; }
-    .pin-preview-desc {
-      margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65;
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-    }
+    .pin-preview-desc { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .pin-preview-meta { display: flex; flex-wrap: wrap; gap: 10px; }
     .pin-preview-meta span { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9.5px; }
     .pin-preview-meta svg { width: 11px; height: 11px; }
 
-    /* ============================================================
-       HAPPYMOD SPECIFIC
-       ============================================================ */
-
-    .hm-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px;
-      margin-top: 16px;
-    }
-    .hm-card {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 11px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(7, 11, 21, .35);
-      text-align: left; cursor: pointer; color: inherit;
-      transition: border-color .2s, transform .2s;
-    }
-    .hm-card:hover {
-      border-color: rgba(129, 151, 255, .55);
-      transform: translateY(-1px);
-    }
-    .hm-card:active { transform: scale(.99); }
-    .hm-card-icon {
-      width: 44px; height: 44px;
-      border-radius: 11px;
-      background: #131b2e;
-      flex: 0 0 auto; overflow: hidden;
-      border: 1px solid var(--line);
-    }
+    .hm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
+    .hm-card { position: relative; display: flex; align-items: center; gap: 10px; padding: 11px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 21, .35); text-align: left; cursor: pointer; color: inherit; transition: border-color .2s, transform .2s; }
+    .hm-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); }
+    .hm-card-icon { width: 44px; height: 44px; border-radius: 11px; background: #131b2e; flex: 0 0 auto; overflow: hidden; border: 1px solid var(--line); }
     .hm-card-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .hm-card-body { min-width: 0; flex: 1; display: grid; gap: 3px; }
-    .hm-card-body b {
-      font-size: 10.5px; line-height: 1.35; color: #dbe3f6;
-      overflow: hidden; text-overflow: ellipsis;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .hm-card-body small {
-      color: var(--muted); font-size: 9px;
-      display: flex; align-items: center; gap: 3px;
-    }
+    .hm-card-body b { font-size: 10.5px; line-height: 1.35; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .hm-card-body small { color: var(--muted); font-size: 9px; display: flex; align-items: center; gap: 3px; }
     .hm-card-body small svg { width: 10px; height: 10px; }
 
-    .hm-detail {
-      margin-top: 16px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      background: rgba(7, 11, 21, .35);
-    }
-    .hm-detail-head {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px;
-      border-bottom: 1px solid var(--line);
-    }
-    .hm-detail-icon {
-      width: 64px; height: 64px;
-      border-radius: 15px;
-      background: #131b2e;
-      overflow: hidden; flex: 0 0 auto;
-      border: 1px solid var(--line);
-    }
+    .hm-detail { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .hm-detail-head { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-bottom: 1px solid var(--line); }
+    .hm-detail-icon { width: 64px; height: 64px; border-radius: 15px; background: #131b2e; overflow: hidden; flex: 0 0 auto; border: 1px solid var(--line); }
     .hm-detail-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .hm-detail-meta { min-width: 0; flex: 1; display: grid; gap: 4px; }
     .hm-detail-meta h3 { margin: 0; font-size: 13px; line-height: 1.35; color: #dbe3f6; word-break: break-word; }
-    .hm-detail-meta small {
-      color: var(--muted); font-size: 9.5px;
-      display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
-    }
+    .hm-detail-meta small { color: var(--muted); font-size: 9.5px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .hm-detail-meta small svg { width: 10px; height: 10px; }
-
     .hm-detail-body { padding: 14px; display: grid; gap: 12px; }
     .hm-stat-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .hm-stat {
-      padding: 9px 10px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: rgba(5,9,18,.3);
-      display: grid; gap: 3px;
-    }
+    .hm-stat { padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(5,9,18,.3); display: grid; gap: 3px; }
     .hm-stat small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; letter-spacing: .6px; }
     .hm-stat b { font-size: 11px; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    .hm-desc {
-      margin: 0; color: var(--muted); font-size: 10.5px; line-height: 1.7;
-      display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    .hm-features {
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid rgba(105,228,177,.15);
-      background: rgba(105,228,177,.05);
-      font-size: 10px; color: #b8e8d4; line-height: 1.6;
-    }
-    .hm-features b {
-      color: #8ee8c3; font-weight: 800; font-size: 9px; letter-spacing: .6px;
-      display: block; margin-bottom: 3px;
-    }
-
-    .hm-section-label {
-      color: #c5cee4; font-size: 10px; font-weight: 700;
-      margin-bottom: 8px;
-      display: flex; align-items: center; gap: 6px;
-    }
+    .hm-desc { margin: 0; color: var(--muted); font-size: 10.5px; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+    .hm-features { padding: 10px 11px; border-radius: 10px; border: 1px solid rgba(105,228,177,.15); background: rgba(105,228,177,.05); font-size: 10px; color: #b8e8d4; line-height: 1.6; }
+    .hm-features b { color: #8ee8c3; font-weight: 800; font-size: 9px; letter-spacing: .6px; display: block; margin-bottom: 3px; }
+    .hm-section-label { color: #c5cee4; font-size: 10px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .hm-section-label svg { width: 12px; height: 12px; color: var(--blue); }
-
     .hm-versions { display: grid; gap: 6px; margin-bottom: 6px; }
-    .hm-version {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 9px 11px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: rgba(5,9,18,.3);
-      text-decoration: none; color: inherit;
-      transition: border-color .2s, background .2s;
-    }
+    .hm-version { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: rgba(5,9,18,.3); text-decoration: none; color: inherit; transition: border-color .2s, background .2s; }
     .hm-version:hover { border-color: rgba(129,151,255,.55); background: rgba(117,144,255,.06); }
     .hm-version-info { min-width: 0; display: grid; gap: 2px; flex: 1; }
-    .hm-version-info b {
-      font-size: 10.5px; color: #dbe3f6;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
+    .hm-version-info b { font-size: 10.5px; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .hm-version-info small { color: var(--muted); font-size: 9px; }
     .hm-version > svg { width: 14px; height: 14px; color: var(--muted); flex: 0 0 auto; }
-
     .hm-downloads { display: grid; gap: 8px; }
-    .hm-download-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      min-height: 42px; padding: 10px 12px;
-      border-radius: 11px;
-      background: linear-gradient(110deg, #667fff, #8563e9);
-      color: #fff; font-size: 11px; font-weight: 700; text-decoration: none;
-      transition: opacity .2s, transform .2s;
-      border: 0; cursor: pointer;
-    }
-    .hm-download-btn:active { transform: scale(.99); }
-    .hm-download-btn.secondary {
-      background: rgba(117,144,255,.12);
-      border: 1px solid rgba(117,144,255,.22);
-      color: #c6d2ff;
-    }
-    .hm-download-btn.warn {
-      background: rgba(245,184,92,.1);
-      border: 1px solid rgba(245,184,92,.24);
-      color: #f5c98a;
-    }
+    .hm-download-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 10px 12px; border-radius: 11px; background: linear-gradient(110deg, #667fff, #8563e9); color: #fff; font-size: 11px; font-weight: 700; text-decoration: none; transition: opacity .2s, transform .2s; border: 0; cursor: pointer; }
+    .hm-download-btn.secondary { background: rgba(117,144,255,.12); border: 1px solid rgba(117,144,255,.22); color: #c6d2ff; }
     .hm-download-btn svg { width: 15px; height: 15px; flex: 0 0 auto; }
     .hm-download-btn.hidden { display: none; }
-    .hm-download-tag {
-      font-size: 8px; padding: 2px 5px; border-radius: 4px;
-      background: rgba(255,255,255,.15); margin-left: 4px;
-      font-weight: 800; letter-spacing: .4px;
+    .hm-download-tag { font-size: 8px; padding: 2px 5px; border-radius: 4px; background: rgba(255,255,255,.15); margin-left: 4px; font-weight: 800; letter-spacing: .4px; }
+    .hm-note { padding: 10px 11px; border-radius: 10px; border: 1px solid rgba(117,144,255,.14); background: rgba(117,144,255,.05); color: #9baedf; font-size: 9.5px; line-height: 1.6; }
+    .hm-note b { color: #b9c7ff; }
+
+    /* ============================================================
+       CHAT AI
+       ============================================================ */
+    .chat-clear-btn {
+      margin-left: auto; display: grid; place-items: center;
+      width: 34px; height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      cursor: pointer; flex: 0 0 auto;
+      transition: color .15s, background .15s;
+    }
+    .chat-clear-btn:hover { color: #c5cee4; background: rgba(255,255,255,.07); }
+    .chat-clear-btn svg { width: 15px; height: 15px; }
+
+    .chat-container { display: flex; flex-direction: column; gap: 12px; }
+
+    .chat-messages {
+      display: flex; flex-direction: column; gap: 14px;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding: 4px 2px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(160,177,219,.2); border-radius: 2px; }
+
+    .chat-empty {
+      display: grid; place-items: center; gap: 8px;
+      padding: 40px 20px; text-align: center;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+    }
+    .chat-empty svg { width: 28px; height: 28px; color: #9eafff; margin-bottom: 4px; }
+    .chat-empty b { font-size: 13px; color: #dbe3f6; }
+    .chat-empty p { margin: 0; font-size: 10.5px; }
+
+    .chat-msg {
+      display: flex; align-items: flex-start; gap: 9px;
+      animation: chatFadeIn .25s ease;
+    }
+    @keyframes chatFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .chat-msg.user { flex-direction: row-reverse; }
+
+    .chat-avatar {
+      display: grid; place-items: center;
+      width: 30px; height: 30px; flex: 0 0 auto;
+      border-radius: 9px;
+      background: rgba(112,137,255,.12);
+      color: #9eafff;
+    }
+    .chat-msg.user .chat-avatar { background: rgba(161,122,255,.15); color: #c9b2ff; }
+    .chat-avatar svg { width: 15px; height: 15px; }
+
+    .chat-bubble {
+      max-width: calc(100% - 50px);
+      padding: 10px 13px;
+      border-radius: 14px;
+      background: rgba(20, 28, 47, .92);
+      border: 1px solid var(--line);
+      color: #dbe3f6;
+      font-size: 12px;
+      line-height: 1.65;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .chat-msg.user .chat-bubble {
+      background: linear-gradient(135deg, rgba(101,127,255,.18), rgba(121,92,232,.18));
+      border-color: rgba(117,144,255,.3);
+      color: #e4eaff;
     }
 
-    .hm-note {
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid rgba(117,144,255,.14);
-      background: rgba(117,144,255,.05);
-      color: #9baedf; font-size: 9.5px; line-height: 1.6;
+    .chat-typing { display: inline-flex; gap: 3px; padding: 4px 0; }
+    .chat-typing span { width: 5px; height: 5px; border-radius: 50%; background: #9eafff; animation: chatTyping 1.2s infinite ease-in-out; }
+    .chat-typing span:nth-child(2) { animation-delay: .2s; }
+    .chat-typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes chatTyping {
+      0%, 80%, 100% { opacity: .3; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-3px); }
     }
-    .hm-note b { color: #b9c7ff; }
+
+    .chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chat-suggestions button {
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      color: #b8c4df;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .chat-suggestions button:hover { border-color: rgba(117,144,255,.4); background: rgba(117,144,255,.08); color: #dbe3f6; }
+
+    .chat-input-area { margin-top: 4px; }
+    .chat-input-wrap {
+      display: flex; align-items: flex-end; gap: 8px;
+      padding: 6px 6px 6px 14px;
+      border: 1px solid rgba(155,170,210,.13);
+      border-radius: 16px;
+      background: rgba(6, 10, 20, .5);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .chat-input-wrap:focus-within { border-color: rgba(126,150,255,.55); box-shadow: 0 0 0 3px rgba(115,139,255,.08); }
+    .chat-input-wrap textarea {
+      flex: 1;
+      resize: none;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.5;
+      padding: 8px 0;
+      outline: 0;
+      max-height: 120px;
+      font-family: inherit;
+      min-height: 20px;
+    }
+    .chat-input-wrap textarea::placeholder { color: #5e6a86; }
+    .chat-send-btn {
+      display: grid; place-items: center;
+      width: 38px; height: 38px; flex: 0 0 auto;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(110deg, #657fff, #795ce8);
+      color: #fff;
+      cursor: pointer;
+      transition: transform .15s, opacity .2s;
+    }
+    .chat-send-btn:hover { transform: scale(1.04); }
+    .chat-send-btn:active { transform: scale(.96); }
+    .chat-send-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .chat-send-btn svg { width: 17px; height: 17px; }
 
     @media (max-width: 380px) {
       .clay-stats b { font-size: 16px; }
       .tool-card { padding: 12px; gap: 10px; }
       .tool-card-icon { width: 38px; height: 38px; border-radius: 12px; }
       .pin-grid, .hm-grid { gap: 7px; }
+      .chat-messages { max-height: 50vh; }
     }
   </style>
 </head>
 <body>
+  <div class="auth-guard" id="authGuard">
+    <div class="auth-guard-inner">
+      <div class="auth-guard-spinner"></div>
+      <p id="authGuardText">Memeriksa sesi…</p>
+    </div>
+  </div>
+
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
@@ -531,13 +361,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>3 tools aktif</b>
-            <small>TikTok · Pinterest · HappyMod</small>
+            <b>4 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>3</b><small>Aktif</small></div>
+          <div><b>4</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -549,7 +379,7 @@
         <span class="eyebrow">DOWNLOADER</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 3 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 4 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -576,6 +406,15 @@
         <span class="tool-card-body">
           <b>HappyMod Search &amp; DL</b>
           <small>APK &amp; MOD</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="chat" type="button" role="tab" aria-selected="false" aria-controls="panel-chat">
+        <span class="tool-card-icon"><i data-lucide="message-square"></i></span>
+        <span class="tool-card-body">
+          <b>Chat AI</b>
+          <small>Asisten cerdas tanpa batas</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -836,6 +675,45 @@
       </div>
     </section>
 
+    <!-- ================= CHAT AI PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-chat" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="message-square"></i></span>
+        <div>
+          <h3>Chat AI</h3>
+          <p>Ngobrol dengan asisten AI canggih.</p>
+        </div>
+        <button class="chat-clear-btn" id="chatClear" type="button" title="Reset chat" aria-label="Reset chat">
+          <i data-lucide="rotate-ccw"></i>
+        </button>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-empty" id="chatEmpty">
+            <i data-lucide="sparkles"></i>
+            <b>Mulai obrolan</b>
+            <p>Tanya apa saja — bebas, tanpa sensor.</p>
+          </div>
+        </div>
+
+        <div class="chat-suggestions" id="chatSuggestions">
+          <button type="button" data-suggest="Halo, siapa kamu?">Halo, siapa kamu?</button>
+          <button type="button" data-suggest="Buatkan puisi pendek tentang senja">Puisi senja</button>
+          <button type="button" data-suggest="Jelaskan cara kerja API REST secara singkat">API REST</button>
+        </div>
+
+        <form class="chat-input-area" id="chatForm">
+          <div class="chat-input-wrap">
+            <textarea id="chatInput" rows="1" placeholder="Ketik pesan..." autocomplete="off"></textarea>
+            <button type="submit" class="chat-send-btn" id="chatSend" aria-label="Kirim">
+              <i data-lucide="send"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <footer class="footer">
       <span class="footer-mark"><i data-lucide="layers"></i></span>
       <p><b>FASTDEV</b> · Web2APK Tools</p>
@@ -867,7 +745,8 @@
       <h3 id="helpTitle">Bantuan Tools</h3>
       <p><b>TikTok:</b> tempel link video untuk versi tanpa watermark.</p>
       <p><b>Pinterest:</b> mode Cari untuk eksplorasi, mode Unduh untuk pin URL.</p>
-      <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app. Unduhan APK langsung dari happyMod tidak selalu tersedia — gunakan versi tersedia atau HappyMod Client.</p>
+      <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app.</p>
+      <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
     </section>
   </div>
@@ -878,9 +757,6 @@
   (function () {
     'use strict';
 
-    /* ============================================================
-       UTIL
-       ============================================================ */
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
     const show = (el) => el && el.classList.remove('hidden');
@@ -928,9 +804,6 @@
       return new DOMParser().parseFromString(html, 'text/html');
     }
 
-    /* ============================================================
-       CORS PROXY (shared)
-       ============================================================ */
     const PROXIES = [
       (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
       (u) => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
@@ -938,7 +811,6 @@
     ];
 
     async function fetchViaProxy(url, accept) {
-      // Direct attempt (works with CORS extension or CORS-permissive hosts)
       try {
         const res = await fetch(url, {
           headers: {
@@ -950,9 +822,7 @@
         });
         if (res.ok) {
           const text = await res.text();
-          if (text && text.length > 200) {
-            return { text, url: res.url || url };
-          }
+          if (text && text.length > 200) return { text, url: res.url || url };
         }
       } catch (_) { /* fallback */ }
 
@@ -961,27 +831,22 @@
           const res = await fetch(proxy(url), { mode: 'cors' });
           if (!res.ok) continue;
           const text = await res.text();
-          if (text && text.length > 200) {
-            return { text, url };
-          }
+          if (text && text.length > 200) return { text, url };
         } catch (_) { /* next */ }
       }
 
       throw new Error('Gagal mengambil halaman. Server target mungkin memblokir. Coba lagi nanti.');
     }
 
-    /* ============================================================
-       TOAST
-       ============================================================ */
-    const toastEl = $('#toast');
     let toastTimer = null;
     function toast(msg, type) {
-      if (!toastEl) return;
-      toastEl.textContent = msg;
-      toastEl.dataset.type = type || 'info';
-      toastEl.classList.add('show');
+      const el = $('#toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.dataset.type = type || 'info';
+      el.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
     }
 
     /* ============================================================
@@ -992,6 +857,7 @@
       tiktok: $('#panel-tiktok'),
       pinterest: $('#panel-pinterest'),
       happymod: $('#panel-happymod'),
+      chat: $('#panel-chat'),
     };
 
     function setActiveTool(name) {
@@ -1020,31 +886,13 @@
     const TIKTOK_MIN_INTERVAL = 1100;
 
     const ttDom = {
-      form: $('#tiktokForm'),
-      url: $('#tiktokUrl'),
-      clear: $('#clearUrl'),
-      paste: $('#pasteUrl'),
-      submit: $('#tiktokSubmit'),
-      loading: $('#tiktokLoading'),
-      error: $('#tiktokError'),
-      errorText: $('#tiktokErrorText'),
-      result: $('#tiktokResult'),
-      cover: $('#ttCover'),
-      avatar: $('#ttAvatar'),
-      nickname: $('#ttNickname'),
-      username: $('#ttUsername'),
-      title: $('#ttTitle'),
-      duration: $('#ttDuration'),
-      plays: $('#ttPlays'),
-      likes: $('#ttLikes'),
-      comments: $('#ttComments'),
-      shares: $('#ttShares'),
-      dlHd: $('#ttDownloadHd'),
-      dlSd: $('#ttDownloadSd'),
-      dlAudio: $('#ttDownloadAudio'),
-      reset: $('#ttReset'),
-      historyField: $('#historyField'),
-      historyList: $('#historyList'),
+      form: $('#tiktokForm'), url: $('#tiktokUrl'), clear: $('#clearUrl'), paste: $('#pasteUrl'),
+      submit: $('#tiktokSubmit'), loading: $('#tiktokLoading'), error: $('#tiktokError'), errorText: $('#tiktokErrorText'),
+      result: $('#tiktokResult'), cover: $('#ttCover'), avatar: $('#ttAvatar'), nickname: $('#ttNickname'),
+      username: $('#ttUsername'), title: $('#ttTitle'), duration: $('#ttDuration'), plays: $('#ttPlays'),
+      likes: $('#ttLikes'), comments: $('#ttComments'), shares: $('#ttShares'), dlHd: $('#ttDownloadHd'),
+      dlSd: $('#ttDownloadSd'), dlAudio: $('#ttDownloadAudio'), reset: $('#ttReset'),
+      historyField: $('#historyField'), historyList: $('#historyList'),
     };
 
     const ttState = { loading: false, lastRequestAt: 0 };
@@ -1061,9 +909,7 @@
     }
     function addToHistory(entry) {
       const list = readHistory().filter((x) => x.id !== entry.id);
-      list.unshift(entry);
-      writeHistory(list);
-      renderHistory();
+      list.unshift(entry); writeHistory(list); renderHistory();
     }
     function renderHistory() {
       if (!ttDom.historyList || !ttDom.historyField) return;
@@ -1073,8 +919,7 @@
       ttDom.historyList.innerHTML = '';
       list.forEach((item) => {
         const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'history-item';
+        btn.type = 'button'; btn.className = 'history-item';
         btn.innerHTML =
           '<img src="' + escapeHtml(item.cover || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
           '<div><b>' + escapeHtml(item.title || 'Tanpa judul') + '</b><small>@' + escapeHtml(item.author || 'user') + '</small></div>' +
@@ -1093,15 +938,11 @@
       if (ttDom.errorText) ttDom.errorText.textContent = msg;
       show(ttDom.error); hide(ttDom.loading);
     }
-
     function setDownloadLink(el, url, filename) {
       if (!el) return;
       if (!url) { el.classList.add('hidden'); el.removeAttribute('href'); return; }
-      el.href = url;
-      el.setAttribute('download', filename);
-      el.classList.remove('hidden');
+      el.href = url; el.setAttribute('download', filename); el.classList.remove('hidden');
     }
-
     async function fetchTikTok(url) {
       const endpoint = TIKTOK_API_BASE + '?url=' + encodeURIComponent(url) + '&hd=1';
       const res = await fetch(endpoint, { method: 'GET', headers: { Accept: 'application/json' }, mode: 'cors' });
@@ -1110,14 +951,12 @@
       if (!json || json.code !== 0 || !json.data) throw new Error((json && json.msg) || 'Link tidak valid.');
       return json.data;
     }
-
     function renderTikTokResult(d) {
       const cover = fixUrl(d.cover || d.origin_cover || '');
       const avatar = fixUrl((d.author && d.author.avatar) || '');
       const hd = fixUrl(d.hdplay || d.play || '');
       const sd = fixUrl(d.play || '');
       const audio = fixUrl(d.music || '');
-
       if (ttDom.cover) ttDom.cover.src = cover;
       if (ttDom.avatar) ttDom.avatar.src = avatar;
       if (ttDom.nickname) ttDom.nickname.textContent = (d.author && d.author.nickname) || 'Unknown';
@@ -1128,89 +967,46 @@
       if (ttDom.likes) ttDom.likes.textContent = formatNumber(d.digg_count || 0);
       if (ttDom.comments) ttDom.comments.textContent = formatNumber(d.comment_count || 0);
       if (ttDom.shares) ttDom.shares.textContent = formatNumber(d.share_count || 0);
-
       const id = d.id || 'video';
       setDownloadLink(ttDom.dlHd, hd, 'tiktok-hd-' + id + '.mp4');
       setDownloadLink(ttDom.dlSd, sd, 'tiktok-sd-' + id + '.mp4');
       setDownloadLink(ttDom.dlAudio, audio, 'tiktok-audio-' + id + '.mp3');
-
       if (window.lucide) window.lucide.createIcons();
     }
-
     async function handleTikTokSubmit(evt) {
       evt.preventDefault();
       if (ttState.loading) return;
       const raw = ttDom.url.value.trim();
       if (!raw) return ttShowError('Tempel link TikTok terlebih dahulu.');
       if (!TIKTOK_REGEX.test(raw)) return ttShowError('Link tidak dikenali.');
-
       const now = Date.now();
       if (now - ttState.lastRequestAt < TIKTOK_MIN_INTERVAL) {
         const wait = Math.ceil((TIKTOK_MIN_INTERVAL - (now - ttState.lastRequestAt)) / 1000);
         return toast('Tunggu ' + wait + ' detik.', 'warn');
       }
       ttState.lastRequestAt = now;
-
       ttState.loading = true;
       hide(ttDom.error); hide(ttDom.result); show(ttDom.loading);
       ttDom.submit.disabled = true;
       ttDom.submit.querySelector('span').textContent = 'Memproses…';
-
       try {
         const data = await fetchTikTok(raw);
-        renderTikTokResult(data);
-        show(ttDom.result);
+        renderTikTokResult(data); show(ttDom.result);
         toast('Video berhasil diambil.', 'success');
-        addToHistory({
-          id: data.id || String(Date.now()),
-          url: raw,
-          title: data.title || 'Tanpa judul',
-          author: (data.author && data.author.unique_id) || 'user',
-          cover: fixUrl(data.cover || ''),
-        });
-      } catch (err) {
-        ttShowError(err.message || 'Gagal mengambil video.');
-      } finally {
-        ttState.loading = false;
-        hide(ttDom.loading);
-        ttDom.submit.disabled = false;
-        ttDom.submit.querySelector('span').textContent = 'Ambil video';
-      }
+        addToHistory({ id: data.id || String(Date.now()), url: raw, title: data.title || 'Tanpa judul', author: (data.author && data.author.unique_id) || 'user', cover: fixUrl(data.cover || '') });
+      } catch (err) { ttShowError(err.message || 'Gagal.'); }
+      finally { ttState.loading = false; hide(ttDom.loading); ttDom.submit.disabled = false; ttDom.submit.querySelector('span').textContent = 'Ambil video'; }
     }
-
-    if (ttDom.url) {
-      ttDom.url.addEventListener('input', () => {
-        ttDom.clear.classList.toggle('hidden', ttDom.url.value.length === 0);
-        hide(ttDom.error);
-      });
-    }
-    if (ttDom.clear) {
-      ttDom.clear.addEventListener('click', () => {
-        ttDom.url.value = '';
-        ttDom.clear.classList.add('hidden');
-        hide(ttDom.error); hide(ttDom.result);
-        ttDom.url.focus();
-      });
-    }
-    if (ttDom.paste) {
-      ttDom.paste.addEventListener('click', async () => {
-        try {
-          const text = await navigator.clipboard.readText();
-          if (!text) return toast('Clipboard kosong.', 'warn');
-          ttDom.url.value = text.trim();
-          ttDom.clear.classList.remove('hidden');
-          toast('Link ditempel.', 'success');
-        } catch (_) { toast('Tidak bisa membaca clipboard.', 'warn'); }
-      });
-    }
-    if (ttDom.reset) {
-      ttDom.reset.addEventListener('click', () => {
-        hide(ttDom.result); hide(ttDom.error);
-        ttDom.url.value = '';
-        ttDom.clear.classList.add('hidden');
-        ttDom.url.focus();
-      });
-    }
+    if (ttDom.url) ttDom.url.addEventListener('input', () => { ttDom.clear.classList.toggle('hidden', ttDom.url.value.length === 0); hide(ttDom.error); });
+    if (ttDom.clear) ttDom.clear.addEventListener('click', () => { ttDom.url.value = ''; ttDom.clear.classList.add('hidden'); hide(ttDom.error); hide(ttDom.result); ttDom.url.focus(); });
+    if (ttDom.paste) ttDom.paste.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (!text) return toast('Clipboard kosong.', 'warn');
+        ttDom.url.value = text.trim(); ttDom.clear.classList.remove('hidden'); toast('Link ditempel.', 'success');
+      } catch (_) { toast('Tidak bisa membaca clipboard.', 'warn'); }
+    });
+    if (ttDom.reset) ttDom.reset.addEventListener('click', () => { hide(ttDom.result); hide(ttDom.error); ttDom.url.value = ''; ttDom.clear.classList.add('hidden'); ttDom.url.focus(); });
     if (ttDom.form) ttDom.form.addEventListener('submit', handleTikTokSubmit);
 
     /* ============================================================
@@ -1221,33 +1017,15 @@
     const PIN_BLOCKED_HASH = 'd53b014d86a6b6761bf649a0ed813c2b';
 
     const pinDom = {
-      modeBtns: $$('.seg-btn[data-pinmode]'),
-      searchForm: $('#pinSearchForm'),
-      dlForm: $('#pinDownloadForm'),
-      query: $('#pinQuery'),
-      queryClear: $('#pinQueryClear'),
-      searchSubmit: $('#pinSearchSubmit'),
-      url: $('#pinUrl'),
-      urlClear: $('#pinUrlClear'),
-      dlSubmit: $('#pinDownloadSubmit'),
-      loading: $('#pinLoading'),
-      loadingText: $('#pinLoadingText'),
-      error: $('#pinError'),
-      errorText: $('#pinErrorText'),
-      results: $('#pinResults'),
-      preview: $('#pinPreview'),
-      previewMedia: $('#pinPreviewMedia'),
-      previewTitle: $('#pinPreviewTitle'),
-      previewDesc: $('#pinPreviewDesc'),
-      previewMeta: $('#pinPreviewMeta'),
-      dlPrimary: $('#pinDownloadPrimary'),
-      dlAlt: $('#pinDownloadAlt'),
-      openSource: $('#pinOpenSource'),
-      back: $('#pinBack'),
-      historyField: $('#pinHistoryField'),
-      historyList: $('#pinHistoryList'),
+      modeBtns: $$('.seg-btn[data-pinmode]'), searchForm: $('#pinSearchForm'), dlForm: $('#pinDownloadForm'),
+      query: $('#pinQuery'), queryClear: $('#pinQueryClear'), searchSubmit: $('#pinSearchSubmit'),
+      url: $('#pinUrl'), urlClear: $('#pinUrlClear'), dlSubmit: $('#pinDownloadSubmit'),
+      loading: $('#pinLoading'), loadingText: $('#pinLoadingText'), error: $('#pinError'), errorText: $('#pinErrorText'),
+      results: $('#pinResults'), preview: $('#pinPreview'), previewMedia: $('#pinPreviewMedia'),
+      previewTitle: $('#pinPreviewTitle'), previewDesc: $('#pinPreviewDesc'), previewMeta: $('#pinPreviewMeta'),
+      dlPrimary: $('#pinDownloadPrimary'), dlAlt: $('#pinDownloadAlt'), openSource: $('#pinOpenSource'),
+      back: $('#pinBack'), historyField: $('#pinHistoryField'), historyList: $('#pinHistoryList'),
     };
-
     const pinState = { mode: 'search', loading: false, searchResults: [] };
     const PIN_HISTORY_KEY = 'fastdev:tools:pinterest-history:v1';
     const PIN_HISTORY_MAX = 6;
@@ -1262,9 +1040,7 @@
     }
     function pinAddToHistory(entry) {
       const list = pinReadHistory().filter((x) => x.id !== entry.id);
-      list.unshift(entry);
-      pinWriteHistory(list);
-      pinRenderHistory();
+      list.unshift(entry); pinWriteHistory(list); pinRenderHistory();
     }
     function pinRenderHistory() {
       if (!pinDom.historyList || !pinDom.historyField) return;
@@ -1274,8 +1050,7 @@
       pinDom.historyList.innerHTML = '';
       list.forEach((item) => {
         const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'history-item';
+        btn.type = 'button'; btn.className = 'history-item';
         const thumb = item.thumb || item.image || item.video || '';
         btn.innerHTML =
           '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
@@ -1286,18 +1061,13 @@
             pinDom.url.value = item.pinUrl;
             pinDom.urlClear.classList.remove('hidden');
             pinSetMode('download');
-            pinShowPreviewFromData({
-              title: item.title, image: item.image, video: item.video,
-              pinUrl: item.pinUrl, username: item.username,
-              type: item.video ? 'video' : 'image',
-            });
+            pinShowPreviewFromData({ title: item.title, image: item.image, video: item.video, pinUrl: item.pinUrl, username: item.username, type: item.video ? 'video' : 'image' });
           }
         });
         pinDom.historyList.appendChild(btn);
       });
       if (window.lucide) window.lucide.createIcons();
     }
-
     function pinSetMode(mode) {
       if (mode !== 'search' && mode !== 'download') return;
       pinState.mode = mode;
@@ -1306,70 +1076,44 @@
       else { hide(pinDom.searchForm); show(pinDom.dlForm); }
       hide(pinDom.error);
     }
-
-    function pinShowError(msg) {
-      if (pinDom.errorText) pinDom.errorText.textContent = msg;
-      show(pinDom.error); hide(pinDom.loading);
-    }
-    function pinShowLoading(text) {
-      if (pinDom.loadingText) pinDom.loadingText.textContent = text || 'Memproses…';
-      show(pinDom.loading); hide(pinDom.error);
-    }
+    function pinShowError(msg) { if (pinDom.errorText) pinDom.errorText.textContent = msg; show(pinDom.error); hide(pinDom.loading); }
+    function pinShowLoading(text) { if (pinDom.loadingText) pinDom.loadingText.textContent = text || 'Memproses…'; show(pinDom.loading); hide(pinDom.error); }
 
     async function pinterestSearch(query, limit) {
       const lim = limit || 12;
       const endpoint = PIN_API + '?query=' + encodeURIComponent(query);
-      const res = await fetch(endpoint, {
-        method: 'GET',
-        headers: { 'User-Agent': UA, Accept: 'application/json' },
-        mode: 'cors',
-      });
+      const res = await fetch(endpoint, { method: 'GET', headers: { 'User-Agent': UA, Accept: 'application/json' }, mode: 'cors' });
       if (!res.ok) throw new Error('Server pencarian merespons ' + res.status + '.');
       const json = await res.json();
       const rawList = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
-
       return rawList.slice(0, lim).map((item) => {
         const rawImg = item.image_url || item.image || item.images?.orig?.url || '';
         const cleanImg = rawImg.replace(/\/\d+x\d*([_\/])/, '/originals$1').replace(/\/\d+x\//, '/originals/');
         return {
-          id: item.id || null,
-          title: item.grid_title || item.title || '',
-          description: (item.description || '').trim(),
+          id: item.id || null, title: item.grid_title || item.title || '', description: (item.description || '').trim(),
           pin: item.pin || (item.id ? 'https://www.pinterest.com/pin/' + item.id + '/' : null),
-          type: item.type || 'image',
-          image: cleanImg || null,
-          video: item.video_url || null,
-          pinner: {
-            username: item.pinner?.username || '',
-            name: item.pinner?.full_name || '',
-          },
+          type: item.type || 'image', image: cleanImg || null, video: item.video_url || null,
+          pinner: { username: item.pinner?.username || '', name: item.pinner?.full_name || '' },
         };
       });
     }
-
     function renderPinResults(list) {
       if (!pinDom.results) return;
       pinDom.results.innerHTML = '';
       if (!list || list.length === 0) {
         const empty = document.createElement('div');
-        empty.className = 'pin-empty';
-        empty.textContent = 'Tidak ada hasil. Coba kata kunci lain.';
-        pinDom.results.appendChild(empty);
-        show(pinDom.results);
-        return;
+        empty.className = 'pin-empty'; empty.textContent = 'Tidak ada hasil. Coba kata kunci lain.';
+        pinDom.results.appendChild(empty); show(pinDom.results); return;
       }
       list.forEach((item) => {
         const isVideo = Boolean(item.video);
         const thumb = isVideo ? (item.image || item.video) : (item.image || '');
         const card = document.createElement('button');
-        card.type = 'button';
-        card.className = 'pin-card';
+        card.type = 'button'; card.className = 'pin-card';
         card.innerHTML =
           '<div class="pin-card-thumb">' +
             '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
-            '<span class="pin-card-type">' +
-              '<i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR') +
-            '</span>' +
+            '<span class="pin-card-type"><i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR') + '</span>' +
           '</div>' +
           '<div class="pin-card-meta">' +
             '<b>' + escapeHtml(item.title || 'Tanpa judul') + '</b>' +
@@ -1378,159 +1122,85 @@
         card.addEventListener('click', () => pinShowPreviewFromData(item));
         pinDom.results.appendChild(card);
       });
-      show(pinDom.results);
-      if (window.lucide) window.lucide.createIcons();
+      show(pinDom.results); if (window.lucide) window.lucide.createIcons();
     }
-
     function pinShowPreviewFromData(item) {
       if (!pinDom.preview) return;
-      hide(pinDom.results); hide(pinDom.error);
-      show(pinDom.preview);
+      hide(pinDom.results); hide(pinDom.error); show(pinDom.preview);
       pinDom.previewMedia.innerHTML = '';
-
       const isVideo = Boolean(item.video);
       const primaryUrl = isVideo ? item.video : item.image;
       const mediaEl = isVideo ? document.createElement('video') : document.createElement('img');
-      if (isVideo) {
-        mediaEl.controls = true; mediaEl.playsInline = true; mediaEl.preload = 'metadata';
-        mediaEl.src = item.video;
-      } else {
-        mediaEl.loading = 'lazy'; mediaEl.referrerPolicy = 'no-referrer';
-        mediaEl.src = item.image;
-      }
+      if (isVideo) { mediaEl.controls = true; mediaEl.playsInline = true; mediaEl.preload = 'metadata'; mediaEl.src = item.video; }
+      else { mediaEl.loading = 'lazy'; mediaEl.referrerPolicy = 'no-referrer'; mediaEl.src = item.image; }
       pinDom.previewMedia.appendChild(mediaEl);
-
       const badge = document.createElement('span');
       badge.className = 'pin-preview-badge';
       badge.innerHTML = '<i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR');
       pinDom.previewMedia.appendChild(badge);
-
       const title = item.title || 'Pinterest Media';
       pinDom.previewTitle.textContent = title;
-
-      if (item.description) {
-        pinDom.previewDesc.textContent = item.description;
-        show(pinDom.previewDesc);
-      } else { hide(pinDom.previewDesc); }
-
+      if (item.description) { pinDom.previewDesc.textContent = item.description; show(pinDom.previewDesc); }
+      else hide(pinDom.previewDesc);
       pinDom.previewMeta.innerHTML = '';
-      if (item.pinner && item.pinner.username) {
-        pinDom.previewMeta.innerHTML += '<span><i data-lucide="user"></i> @' + escapeHtml(item.pinner.username) + '</span>';
-      }
+      if (item.pinner && item.pinner.username) pinDom.previewMeta.innerHTML += '<span><i data-lucide="user"></i> @' + escapeHtml(item.pinner.username) + '</span>';
       pinDom.previewMeta.innerHTML += '<span><i data-lucide="file-type"></i> ' + (isVideo ? 'Video' : 'Gambar') + '</span>';
-
       if (primaryUrl) {
         pinDom.dlPrimary.href = primaryUrl;
         pinDom.dlPrimary.setAttribute('download', safeFileName(title, 'pinterest') + (isVideo ? '.mp4' : '.jpg'));
         pinDom.dlPrimary.classList.remove('hidden');
         pinDom.dlPrimary.innerHTML = '<i data-lucide="download"></i> Unduh ' + (isVideo ? 'video' : 'gambar');
-      } else {
-        pinDom.dlPrimary.classList.add('hidden');
-        pinDom.dlPrimary.removeAttribute('href');
-      }
-
+      } else { pinDom.dlPrimary.classList.add('hidden'); pinDom.dlPrimary.removeAttribute('href'); }
       if (isVideo && item.image) {
         pinDom.dlAlt.href = item.image;
         pinDom.dlAlt.setAttribute('download', safeFileName(title, 'pinterest') + '.jpg');
         pinDom.dlAlt.classList.remove('hidden');
         pinDom.dlAlt.innerHTML = '<i data-lucide="image"></i> Unduh thumbnail';
-      } else {
-        pinDom.dlAlt.classList.add('hidden');
-        pinDom.dlAlt.removeAttribute('href');
-      }
-
+      } else { pinDom.dlAlt.classList.add('hidden'); pinDom.dlAlt.removeAttribute('href'); }
       const pinUrl = item.pin || item.pinUrl || '';
-      if (pinUrl) {
-        pinDom.openSource.href = pinUrl;
-        pinDom.openSource.classList.remove('hidden');
-      } else {
-        pinDom.openSource.classList.add('hidden');
-        pinDom.openSource.removeAttribute('href');
-      }
+      if (pinUrl) { pinDom.openSource.href = pinUrl; pinDom.openSource.classList.remove('hidden'); }
+      else { pinDom.openSource.classList.add('hidden'); pinDom.openSource.removeAttribute('href'); }
       if (window.lucide) window.lucide.createIcons();
     }
-
     function parsePinHtml(html, finalUrl) {
       const rawTitle = html.match(/<title[^>]*>(.*?)<\/title>/i)?.[1] || '';
       const title = rawTitle.replace(/\s*\|\s*Pinterest.*$/i, '').trim();
       const description = (html.match(/<meta[^>]+name="description"[^>]+content="([^"]*)"/i)?.[1] || '').trim();
-
       const rawVids = [...new Set(html.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/gi) || [])];
       const cleanVids = rawVids.map((v) => v.replace(/&amp;/g, '&')).filter((v) => v.includes('pinimg.com'));
-
-      const bestVid =
-        cleanVids.find((v) => v.includes('720w')) ||
-        cleanVids.find((v) => v.includes('540w')) ||
-        cleanVids.find((v) => v.includes('360w')) ||
-        cleanVids[0] || null;
-
-      const hashMatches = [...html.matchAll(/\/([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{32}\.(?:jpg|jpeg|png|webp))/gi)]
-        .map((m) => m[1]).filter((h) => !h.includes(PIN_BLOCKED_HASH));
+      const bestVid = cleanVids.find((v) => v.includes('720w')) || cleanVids.find((v) => v.includes('540w')) || cleanVids.find((v) => v.includes('360w')) || cleanVids[0] || null;
+      const hashMatches = [...html.matchAll(/\/([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{32}\.(?:jpg|jpeg|png|webp))/gi)].map((m) => m[1]).filter((h) => !h.includes(PIN_BLOCKED_HASH));
       const uniqueHashes = [...new Set(hashMatches)];
       const image = uniqueHashes[0] ? 'https://i.pinimg.com/originals/' + uniqueHashes[0] : null;
-
       return { title: title || 'Pinterest Media', description, video: bestVid, image, url: finalUrl };
     }
-
     async function pinterestDownload(url) {
       const { text, url: finalUrl } = await fetchViaProxy(url);
       return parsePinHtml(text, finalUrl);
     }
 
-    pinDom.modeBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        pinSetMode(btn.dataset.pinmode);
-        hide(pinDom.results); hide(pinDom.preview);
-      });
-    });
-    if (pinDom.query) pinDom.query.addEventListener('input', () => {
-      pinDom.queryClear.classList.toggle('hidden', pinDom.query.value.length === 0);
-      hide(pinDom.error);
-    });
-    if (pinDom.queryClear) pinDom.queryClear.addEventListener('click', () => {
-      pinDom.query.value = ''; pinDom.queryClear.classList.add('hidden'); pinDom.query.focus();
-    });
-    if (pinDom.url) pinDom.url.addEventListener('input', () => {
-      pinDom.urlClear.classList.toggle('hidden', pinDom.url.value.length === 0);
-      hide(pinDom.error);
-    });
-    if (pinDom.urlClear) pinDom.urlClear.addEventListener('click', () => {
-      pinDom.url.value = ''; pinDom.urlClear.classList.add('hidden'); pinDom.url.focus();
-    });
-    if (pinDom.back) pinDom.back.addEventListener('click', () => {
-      hide(pinDom.preview);
-      if (pinState.mode === 'search' && pinState.searchResults.length > 0) show(pinDom.results);
-      pinDom.previewMedia.innerHTML = '';
-    });
+    pinDom.modeBtns.forEach((btn) => btn.addEventListener('click', () => { pinSetMode(btn.dataset.pinmode); hide(pinDom.results); hide(pinDom.preview); }));
+    if (pinDom.query) pinDom.query.addEventListener('input', () => { pinDom.queryClear.classList.toggle('hidden', pinDom.query.value.length === 0); hide(pinDom.error); });
+    if (pinDom.queryClear) pinDom.queryClear.addEventListener('click', () => { pinDom.query.value = ''; pinDom.queryClear.classList.add('hidden'); pinDom.query.focus(); });
+    if (pinDom.url) pinDom.url.addEventListener('input', () => { pinDom.urlClear.classList.toggle('hidden', pinDom.url.value.length === 0); hide(pinDom.error); });
+    if (pinDom.urlClear) pinDom.urlClear.addEventListener('click', () => { pinDom.url.value = ''; pinDom.urlClear.classList.add('hidden'); pinDom.url.focus(); });
+    if (pinDom.back) pinDom.back.addEventListener('click', () => { hide(pinDom.preview); if (pinState.mode === 'search' && pinState.searchResults.length > 0) show(pinDom.results); pinDom.previewMedia.innerHTML = ''; });
 
     if (pinDom.searchForm) pinDom.searchForm.addEventListener('submit', async (evt) => {
       evt.preventDefault();
       if (pinState.loading) return;
       const query = (pinDom.query.value || '').trim();
       if (!query) return pinShowError('Kata kunci tidak boleh kosong.');
-
-      pinState.loading = true;
-      hide(pinDom.error); hide(pinDom.results); hide(pinDom.preview);
+      pinState.loading = true; hide(pinDom.error); hide(pinDom.results); hide(pinDom.preview);
       pinShowLoading('Mencari di Pinterest…');
-      pinDom.searchSubmit.disabled = true;
-      pinDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
-
+      pinDom.searchSubmit.disabled = true; pinDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
       try {
         const results = await pinterestSearch(query, 12);
-        pinState.searchResults = results;
-        hide(pinDom.loading);
-        renderPinResults(results);
+        pinState.searchResults = results; hide(pinDom.loading); renderPinResults(results);
         if (results.length === 0) toast('Tidak ada hasil.', 'warn');
         else toast(results.length + ' hasil ditemukan.', 'success');
-      } catch (err) {
-        pinState.searchResults = [];
-        pinShowError(err.message || 'Gagal mencari.');
-      } finally {
-        pinState.loading = false;
-        hide(pinDom.loading);
-        pinDom.searchSubmit.disabled = false;
-        pinDom.searchSubmit.querySelector('span').textContent = 'Cari';
-      }
+      } catch (err) { pinState.searchResults = []; pinShowError(err.message || 'Gagal.'); }
+      finally { pinState.loading = false; hide(pinDom.loading); pinDom.searchSubmit.disabled = false; pinDom.searchSubmit.querySelector('span').textContent = 'Cari'; }
     });
 
     if (pinDom.dlForm) pinDom.dlForm.addEventListener('submit', async (evt) => {
@@ -1539,37 +1209,18 @@
       const url = (pinDom.url.value || '').trim();
       if (!url) return pinShowError('URL Pinterest tidak boleh kosong.');
       if (!PIN_URL_REGEX.test(url)) return pinShowError('URL tidak dikenali.');
-
-      pinState.loading = true;
-      hide(pinDom.error); hide(pinDom.results); hide(pinDom.preview);
+      pinState.loading = true; hide(pinDom.error); hide(pinDom.results); hide(pinDom.preview);
       pinShowLoading('Mengambil halaman Pinterest…');
-      pinDom.dlSubmit.disabled = true;
-      pinDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
-
+      pinDom.dlSubmit.disabled = true; pinDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
       try {
         const data = await pinterestDownload(url);
         hide(pinDom.loading);
         if (!data.video && !data.image) throw new Error('Media tidak ditemukan.');
-        pinShowPreviewFromData({
-          title: data.title, description: data.description,
-          image: data.image, video: data.video, pinUrl: data.url || url,
-        });
-        pinAddToHistory({
-          id: String(data.url || url),
-          title: data.title || 'Pinterest Media',
-          source: data.video ? 'video pin' : 'image pin',
-          pinUrl: data.url || url, image: data.image || '', video: data.video || '',
-          thumb: data.image || '',
-        });
+        pinShowPreviewFromData({ title: data.title, description: data.description, image: data.image, video: data.video, pinUrl: data.url || url });
+        pinAddToHistory({ id: String(data.url || url), title: data.title || 'Pinterest Media', source: data.video ? 'video pin' : 'image pin', pinUrl: data.url || url, image: data.image || '', video: data.video || '', thumb: data.image || '' });
         toast(data.video ? 'Video diambil.' : 'Gambar diambil.', 'success');
-      } catch (err) {
-        pinShowError(err.message || 'Gagal mengambil media.');
-      } finally {
-        pinState.loading = false;
-        hide(pinDom.loading);
-        pinDom.dlSubmit.disabled = false;
-        pinDom.dlSubmit.querySelector('span').textContent = 'Ambil media';
-      }
+      } catch (err) { pinShowError(err.message || 'Gagal.'); }
+      finally { pinState.loading = false; hide(pinDom.loading); pinDom.dlSubmit.disabled = false; pinDom.dlSubmit.querySelector('span').textContent = 'Ambil media'; }
     });
 
     /* ============================================================
@@ -1583,41 +1234,17 @@
     const HM_HISTORY_MAX = 6;
 
     const hmDom = {
-      modeBtns: $$('.seg-btn[data-hmmode]'),
-      searchForm: $('#hmSearchForm'),
-      dlForm: $('#hmDownloadForm'),
-      query: $('#hmQuery'),
-      queryClear: $('#hmQueryClear'),
-      searchSubmit: $('#hmSearchSubmit'),
-      url: $('#hmUrl'),
-      urlClear: $('#hmUrlClear'),
-      dlSubmit: $('#hmDownloadSubmit'),
-      loading: $('#hmLoading'),
-      loadingText: $('#hmLoadingText'),
-      error: $('#hmError'),
-      errorText: $('#hmErrorText'),
-      results: $('#hmResults'),
-      detail: $('#hmDetail'),
-      historyField: $('#hmHistoryField'),
-      historyList: $('#hmHistoryList'),
+      modeBtns: $$('.seg-btn[data-hmmode]'), searchForm: $('#hmSearchForm'), dlForm: $('#hmDownloadForm'),
+      query: $('#hmQuery'), queryClear: $('#hmQueryClear'), searchSubmit: $('#hmSearchSubmit'),
+      url: $('#hmUrl'), urlClear: $('#hmUrlClear'), dlSubmit: $('#hmDownloadSubmit'),
+      loading: $('#hmLoading'), loadingText: $('#hmLoadingText'), error: $('#hmError'), errorText: $('#hmErrorText'),
+      results: $('#hmResults'), detail: $('#hmDetail'), historyField: $('#hmHistoryField'), historyList: $('#hmHistoryList'),
     };
-
     const hmState = { mode: 'search', loading: false, searchResults: [] };
 
-    function hmReadHistory() {
-      try { return JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]') || []; }
-      catch (_) { return []; }
-    }
-    function hmWriteHistory(arr) {
-      try { localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(arr.slice(0, HM_HISTORY_MAX))); }
-      catch (_) {}
-    }
-    function hmAddToHistory(entry) {
-      const list = hmReadHistory().filter((x) => x.id !== entry.id);
-      list.unshift(entry);
-      hmWriteHistory(list);
-      hmRenderHistory();
-    }
+    function hmReadHistory() { try { return JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]') || []; } catch (_) { return []; } }
+    function hmWriteHistory(arr) { try { localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(arr.slice(0, HM_HISTORY_MAX))); } catch (_) {} }
+    function hmAddToHistory(entry) { const list = hmReadHistory().filter((x) => x.id !== entry.id); list.unshift(entry); hmWriteHistory(list); hmRenderHistory(); }
     function hmRenderHistory() {
       if (!hmDom.historyList || !hmDom.historyField) return;
       const list = hmReadHistory();
@@ -1626,25 +1253,18 @@
       hmDom.historyList.innerHTML = '';
       list.forEach((item) => {
         const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'history-item';
+        btn.type = 'button'; btn.className = 'history-item';
         btn.innerHTML =
           '<img src="' + escapeHtml(item.icon || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
           '<div><b>' + escapeHtml(item.title || 'Unknown') + '</b><small>' + escapeHtml(item.version || 'app') + '</small></div>' +
           '<i data-lucide="chevron-right"></i>';
         btn.addEventListener('click', () => {
-          if (item.url) {
-            hmDom.url.value = item.url;
-            hmDom.urlClear.classList.remove('hidden');
-            hmSetMode('download');
-            hmDom.dlForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-          }
+          if (item.url) { hmDom.url.value = item.url; hmDom.urlClear.classList.remove('hidden'); hmSetMode('download'); hmDom.dlForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); }
         });
         hmDom.historyList.appendChild(btn);
       });
       if (window.lucide) window.lucide.createIcons();
     }
-
     function hmSetMode(mode) {
       if (mode !== 'search' && mode !== 'download') return;
       hmState.mode = mode;
@@ -1653,25 +1273,16 @@
       else { hide(hmDom.searchForm); show(hmDom.dlForm); }
       hide(hmDom.error);
     }
-
-    function hmShowError(msg) {
-      if (hmDom.errorText) hmDom.errorText.textContent = msg;
-      show(hmDom.error); hide(hmDom.loading);
-    }
-    function hmShowLoading(text) {
-      if (hmDom.loadingText) hmDom.loadingText.textContent = text || 'Memproses…';
-      show(hmDom.loading); hide(hmDom.error);
-    }
+    function hmShowError(msg) { if (hmDom.errorText) hmDom.errorText.textContent = msg; show(hmDom.error); hide(hmDom.loading); }
+    function hmShowLoading(text) { if (hmDom.loadingText) hmDom.loadingText.textContent = text || 'Memproses…'; show(hmDom.loading); hide(hmDom.error); }
     function hmHideLoading() { hide(hmDom.loading); }
     function hmHideResults() { hide(hmDom.results); }
     function hmHideDetail() { hide(hmDom.detail); hmDom.detail.innerHTML = ''; }
 
-    /* --- Search --- */
     async function happySearch(query, limit) {
       const lim = limit || 12;
       const q = query.trim();
       let results = [];
-
       try {
         const { text } = await fetchViaProxy(HM_BASE_TO + '/search.html?q=' + encodeURIComponent(q));
         const doc = parseHtml(text);
@@ -1683,16 +1294,9 @@
           const icon = img ? (img.getAttribute('data-original') || img.getAttribute('data-src') || img.getAttribute('src')) : null;
           const ratingEl = el.querySelector('.a-search-num');
           const rating = ratingEl ? ratingEl.textContent.trim() : null;
-          if (title && link) {
-            results.push({
-              title, rating,
-              icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_TO + icon) : null,
-              url: link.startsWith('http') ? link : HM_BASE_TO + link,
-            });
-          }
+          if (title && link) results.push({ title, rating, icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_TO + icon) : null, url: link.startsWith('http') ? link : HM_BASE_TO + link });
         });
-      } catch (_) { /* fallback */ }
-
+      } catch (_) {}
       if (results.length === 0) {
         try {
           const { text } = await fetchViaProxy(HM_BASE_NET + '/search.html?q=' + encodeURIComponent(q));
@@ -1706,72 +1310,44 @@
             const icon = img ? (img.getAttribute('data-src') || img.getAttribute('src')) : null;
             const ratingEl = el.querySelector('.star, .rate, .score');
             const rating = ratingEl ? ratingEl.textContent.trim() : null;
-            if (title && link && !link.includes('download.html')) {
-              results.push({
-                title, rating,
-                icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_NET + icon) : null,
-                url: link.startsWith('http') ? link : HM_BASE_NET + link,
-              });
-            }
+            if (title && link && !link.includes('download.html')) results.push({ title, rating, icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_NET + icon) : null, url: link.startsWith('http') ? link : HM_BASE_NET + link });
           });
         } catch (_) {}
       }
-
       const seen = new Set();
       const filtered = [];
-      for (const item of results) {
-        if (!seen.has(item.url)) { seen.add(item.url); filtered.push(item); }
-      }
+      for (const item of results) { if (!seen.has(item.url)) { seen.add(item.url); filtered.push(item); } }
       return filtered.slice(0, lim);
     }
-
     function renderHmResults(list) {
       if (!hmDom.results) return;
       hmDom.results.innerHTML = '';
       if (!list || list.length === 0) {
         const empty = document.createElement('div');
-        empty.className = 'pin-empty';
-        empty.textContent = 'Tidak ada hasil. Coba kata kunci lain.';
-        hmDom.results.appendChild(empty);
-        show(hmDom.results);
-        return;
+        empty.className = 'pin-empty'; empty.textContent = 'Tidak ada hasil. Coba kata kunci lain.';
+        hmDom.results.appendChild(empty); show(hmDom.results); return;
       }
       list.forEach((item) => {
         const card = document.createElement('button');
-        card.type = 'button';
-        card.className = 'hm-card';
+        card.type = 'button'; card.className = 'hm-card';
         card.innerHTML =
-          '<div class="hm-card-icon">' +
-            (item.icon ? '<img src="' + escapeHtml(item.icon) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') +
-          '</div>' +
-          '<div class="hm-card-body">' +
-            '<b>' + escapeHtml(item.title || 'Unknown') + '</b>' +
-            '<small><i data-lucide="star"></i> ' + escapeHtml(item.rating || 'N/A') + '</small>' +
-          '</div>';
+          '<div class="hm-card-icon">' + (item.icon ? '<img src="' + escapeHtml(item.icon) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') + '</div>' +
+          '<div class="hm-card-body"><b>' + escapeHtml(item.title || 'Unknown') + '</b><small><i data-lucide="star"></i> ' + escapeHtml(item.rating || 'N/A') + '</small></div>';
         card.addEventListener('click', () => loadHappyDetail(item.url));
         hmDom.results.appendChild(card);
       });
-      show(hmDom.results);
-      if (window.lucide) window.lucide.createIcons();
+      show(hmDom.results); if (window.lucide) window.lucide.createIcons();
     }
-
-    /* --- Detail page parsing --- */
     function parseHappyDetail(html, targetUrl) {
       const doc = parseHtml(html);
       const bodyText = doc.body ? doc.body.textContent : '';
-
-      let title = null, version = null, size = null, rating = null;
-      let category = null, operatingSystem = 'Android', developer = null;
-      let icon = null, description = null, modFeatures = null;
-
+      let title = null, version = null, size = null, rating = null, category = null, operatingSystem = 'Android', developer = null, icon = null, description = null, modFeatures = null;
       doc.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
         try {
           const json = JSON.parse(el.textContent || '{}');
           const list = json['@graph'] || [json];
           for (const item of list) {
-            const app = (item.mainEntity && item.mainEntity['@type'] === 'MobileApplication')
-              ? item.mainEntity
-              : (item['@type'] === 'MobileApplication' ? item : null);
+            const app = (item.mainEntity && item.mainEntity['@type'] === 'MobileApplication') ? item.mainEntity : (item['@type'] === 'MobileApplication' ? item : null);
             if (app) {
               if (!title) title = app.name;
               if (!version) version = app.softwareVersion;
@@ -1793,60 +1369,27 @@
           }
         } catch (_) {}
       });
-
-      if (!title) {
-        const h1 = doc.querySelector('h1');
-        title = (h1 ? h1.textContent.trim() : '') || (doc.title || '').replace(/\s*\|.*$/, '').trim();
-      }
-      if (!icon) {
-        const img = doc.querySelector('img[alt*="Icon" i], img.lazy, .list-icon img, .pdt-app-img img');
-        icon = img ? (img.getAttribute('data-src') || img.getAttribute('data-original') || img.getAttribute('src')) : null;
-      }
-      if (!description) {
-        const meta = doc.querySelector('meta[name="description"]');
-        const descEl = doc.querySelector('.detail-desc, .app-detail-desc');
-        description = (meta ? meta.getAttribute('content') : null) || (descEl ? descEl.textContent.trim() : null);
-      }
-      if (!rating) {
-        const r = doc.querySelector('.a-search-num, .score, .rate');
-        rating = r ? r.textContent.trim() : null;
-      }
-      if (!version) {
-        const m = (title && title.match(/v(\d+\.\d+(?:\.\d+)*)/i)) || bodyText.match(/Version[:\s]+(\d+\.\d+(?:\.\d+)*)/i);
-        if (m) version = m[1];
-      }
-      if (!size) {
-        const m = bodyText.match(/Size[:\s]+([0-9.]+\s*(?:MB|GB|KB))/i);
-        if (m) size = m[1];
-      }
-      if (!modFeatures && title) {
-        const m = title.match(/\[(.*?)\]/);
-        if (m) modFeatures = m[1];
-      }
-
+      if (!title) { const h1 = doc.querySelector('h1'); title = (h1 ? h1.textContent.trim() : '') || (doc.title || '').replace(/\s*\|.*$/, '').trim(); }
+      if (!icon) { const img = doc.querySelector('img[alt*="Icon" i], img.lazy, .list-icon img, .pdt-app-img img'); icon = img ? (img.getAttribute('data-src') || img.getAttribute('data-original') || img.getAttribute('src')) : null; }
+      if (!description) { const meta = doc.querySelector('meta[name="description"]'); const descEl = doc.querySelector('.detail-desc, .app-detail-desc'); description = (meta ? meta.getAttribute('content') : null) || (descEl ? descEl.textContent.trim() : null); }
+      if (!rating) { const r = doc.querySelector('.a-search-num, .score, .rate'); rating = r ? r.textContent.trim() : null; }
+      if (!version) { const m = (title && title.match(/v(\d+\.\d+(?:\.\d+)*)/i)) || bodyText.match(/Version[:\s]+(\d+\.\d+(?:\.\d+)*)/i); if (m) version = m[1]; }
+      if (!size) { const m = bodyText.match(/Size[:\s]+([0-9.]+\s*(?:MB|GB|KB))/i); if (m) size = m[1]; }
+      if (!modFeatures && title) { const m = title.match(/\[(.*?)\]/); if (m) modFeatures = m[1]; }
       const pathOnly = targetUrl.replace(/^https?:\/\/[^/]+\//, '');
       const packageMatch = pathOnly.match(/(?:^|\/)([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)+)(?:\/|$)/);
       const packageName = packageMatch ? packageMatch[1] : null;
-
       const descMatch = bodyText.match(/developed by ([^.]+)\./i);
       if (descMatch) developer = descMatch[1].split(',')[0].trim();
-
-      return {
-        title: title || 'Unknown App',
-        version, size, rating, category, operatingSystem,
-        developer, package: packageName, icon, description, mod_features: modFeatures,
-      };
+      return { title: title || 'Unknown App', version, size, rating, category, operatingSystem, developer, package: packageName, icon, description, mod_features: modFeatures };
     }
-
     function parseHappyDownloadPage(html, detailUrl, baseDomain) {
       const doc = parseHtml(html);
       const openMatch = html.match(/open_app_data\s*=\s*"([^"]+)"/);
       const pdtMatch = html.match(/pdt_id\s*=\s*"([^"]+)"/);
       const dlinkMatch = html.match(/dlink\s*=\s*"([^"]+)"/);
-
       const pdtId = pdtMatch ? pdtMatch[1] : null;
       const clientApk = dlinkMatch ? dlinkMatch[1] : HM_CLIENT_APK;
-
       const versions = [];
       doc.querySelectorAll('.allversions-list--btn, a[href*="-down.html"]').forEach((el) => {
         const link = el.getAttribute('href');
@@ -1855,45 +1398,23 @@
         const rowText = (rowEl ? rowEl.textContent : '').replace(/\s+/g, ' ').trim();
         const sizeRow = rowText.match(/\(([^)]+MB|[0-9.]+\s*GB)\)/i);
         const verRow = rowText.match(/\b(\d+\.\d+(?:\.\d+)*)\b/);
-        if (link) {
-          versions.push({
-            name: verTitle.replace(/\s*Download\s*$/i, '').trim(),
-            version: verRow ? verRow[1] : null,
-            size: sizeRow ? sizeRow[1] : null,
-            url: link.startsWith('http') ? link : baseDomain + link,
-          });
-        }
+        if (link) versions.push({ name: verTitle.replace(/\s*Download\s*$/i, '').trim(), version: verRow ? verRow[1] : null, size: sizeRow ? sizeRow[1] : null, url: link.startsWith('http') ? link : baseDomain + link });
       });
-
       if (versions.length === 0) {
         doc.querySelectorAll('a').forEach((el) => {
           const href = el.getAttribute('href');
           const text = (el.textContent || '').trim().replace(/\s+/g, ' ');
           if (href && (href.includes('fast-download') || href.includes('downloading.html') || href.includes('-download.html'))) {
-            versions.push({
-              name: text,
-              version: (text.match(/v(\d+\.\d+(?:\.\d+)*)/i) || [])[1] || null,
-              size: (text.match(/\(([^)]+MB|[0-9.]+\s*GB)\)/i) || [])[1] || null,
-              url: href.startsWith('http') ? href : baseDomain + href,
-            });
+            versions.push({ name: text, version: (text.match(/v(\d+\.\d+(?:\.\d+)*)/i) || [])[1] || null, size: (text.match(/\(([^)]+MB|[0-9.]+\s*GB)\)/i) || [])[1] || null, url: href.startsWith('http') ? href : baseDomain + href });
           }
         });
       }
-
-      return {
-        openAppData: openMatch ? openMatch[1] : null,
-        pdtId,
-        clientApk,
-        versions,
-      };
+      return { openAppData: openMatch ? openMatch[1] : null, pdtId, clientApk, versions };
     }
-
-    /* --- Aptoide fallback for direct APK --- */
     async function happyResolveAptoide(candidates, packageName) {
       const queries = [];
       if (packageName) queries.push(packageName);
       candidates.forEach((c) => { if (!queries.includes(c)) queries.push(c); });
-
       for (const q of queries.slice(0, 3)) {
         try {
           const url = 'https://ws75.aptoide.com/api/7/apps/search?query=' + encodeURIComponent(q) + '&limit=3';
@@ -1901,49 +1422,27 @@
           if (!res.ok) continue;
           const json = await res.json();
           const list = (json && json.datalist && json.datalist.list) || [];
-          if (packageName) {
-            const exact = list.find((x) => x.package === packageName && x.file && x.file.path);
-            if (exact) return exact.file.path;
-          }
+          if (packageName) { const exact = list.find((x) => x.package === packageName && x.file && x.file.path); if (exact) return exact.file.path; }
           if (list[0] && list[0].file && list[0].file.path) return list[0].file.path;
         } catch (_) {}
       }
       return null;
     }
-
-    /* --- Main download flow --- */
     async function happyDownload(input) {
       let targetUrl = input.trim();
-
       if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-        if (targetUrl.startsWith('/')) {
-          targetUrl = HM_BASE_TO + targetUrl;
-        } else {
-          const s = await happySearch(targetUrl, 1);
-          if (!s || s.length === 0) throw new Error('Aplikasi tidak ditemukan: ' + targetUrl);
-          targetUrl = s[0].url;
-        }
+        if (targetUrl.startsWith('/')) { targetUrl = HM_BASE_TO + targetUrl; }
+        else { const s = await happySearch(targetUrl, 1); if (!s || s.length === 0) throw new Error('Aplikasi tidak ditemukan: ' + targetUrl); targetUrl = s[0].url; }
       }
-
       const isNet = targetUrl.includes('happymod.net');
       const baseDomain = isNet ? HM_BASE_NET : HM_BASE_TO;
-
       const isDirectDownloadPage = /\/(?:download|downloading|fast-download|com\.mod\.[^/]+)\.html(?:[?#]|$)/i.test(targetUrl);
-      const detailUrl = isDirectDownloadPage
-        ? targetUrl.replace(/\/(?:download|downloading|fast-download|com\.mod\.[^/]+)\.html.*$/i, '/')
-        : targetUrl;
-
+      const detailUrl = isDirectDownloadPage ? targetUrl.replace(/\/(?:download|downloading|fast-download|com\.mod\.[^/]+)\.html.*$/i, '/') : targetUrl;
       const detailRes = await fetchViaProxy(detailUrl);
       const info = parseHappyDetail(detailRes.text, targetUrl);
-
       const dlPageUrl = isDirectDownloadPage ? targetUrl : detailUrl.replace(/\/+$/, '') + '/download.html';
       let dlData = { openAppData: null, pdtId: null, clientApk: HM_CLIENT_APK, versions: [] };
-      try {
-        const dlRes = await fetchViaProxy(dlPageUrl);
-        dlData = parseHappyDownloadPage(dlRes.text, detailUrl, baseDomain);
-      } catch (_) { /* keep defaults */ }
-
-      // Build candidate queries for aptoide fallback
+      try { const dlRes = await fetchViaProxy(dlPageUrl); dlData = parseHappyDownloadPage(dlRes.text, detailUrl, baseDomain); } catch (_) {}
       const slugMatch = targetUrl.match(/happymod\.(?:net|to)\/([^/]+)/);
       const slug = slugMatch ? slugMatch[1] : '';
       const candidates = [];
@@ -1953,43 +1452,21 @@
         const words = clean.split(/\s+/).slice(0, 3).join(' ');
         if (words && !candidates.includes(words)) candidates.push(words);
       }
-      if (info.title) {
-        const cleanTitle = info.title.replace(/\[.*?\]|\(.*?\)|v\d+.*$|mod.*$/gi, '').replace(/[^\w\s]/g, ' ').trim();
-        if (cleanTitle && !candidates.includes(cleanTitle)) candidates.push(cleanTitle);
-      }
-
+      if (info.title) { const cleanTitle = info.title.replace(/\[.*?\]|\(.*?\)|v\d+.*$|mod.*$/gi, '').replace(/[^\w\s]/g, ' ').trim(); if (cleanTitle && !candidates.includes(cleanTitle)) candidates.push(cleanTitle); }
       const directMod = await happyResolveAptoide(candidates, info.package);
       const finalApkUrl = directMod || dlData.clientApk;
-
       return {
-        ...info,
-        source: targetUrl,
-        detailUrl,
-        downloadPage: dlPageUrl,
-        download: {
-          url: finalApkUrl,
-          direct_mod: directMod,
-          client_apk: dlData.clientApk,
-          fast_download: HM_CLIENT_APK,
-          deep_link: dlData.pdtId ? 'happymod://paltformapi/startApp?url_id=' + dlData.pdtId + '&type=mod' : null,
-          web_url: dlPageUrl,
-          versions: dlData.versions,
-        },
+        ...info, source: targetUrl, detailUrl, downloadPage: dlPageUrl,
+        download: { url: finalApkUrl, direct_mod: directMod, client_apk: dlData.clientApk, fast_download: HM_CLIENT_APK, deep_link: dlData.pdtId ? 'happymod://paltformapi/startApp?url_id=' + dlData.pdtId + '&type=mod' : null, web_url: dlPageUrl, versions: dlData.versions },
       };
     }
-
-    /* --- Detail UI render --- */
     function renderHappyDetail(data) {
       if (!hmDom.detail) return;
       hmDom.detail.innerHTML = '';
-
-      // Header
       const head = document.createElement('div');
       head.className = 'hm-detail-head';
       head.innerHTML =
-        '<div class="hm-detail-icon">' +
-          (data.icon ? '<img src="' + escapeHtml(data.icon) + '" alt="" referrerpolicy="no-referrer" loading="lazy">' : '') +
-        '</div>' +
+        '<div class="hm-detail-icon">' + (data.icon ? '<img src="' + escapeHtml(data.icon) + '" alt="" referrerpolicy="no-referrer" loading="lazy">' : '') + '</div>' +
         '<div class="hm-detail-meta">' +
           '<h3>' + escapeHtml(data.title || 'Unknown App') + '</h3>' +
           (data.developer ? '<small><i data-lucide="user"></i> ' + escapeHtml(data.developer) + '</small>' : '') +
@@ -1997,214 +1474,106 @@
           (data.package ? '<small><i data-lucide="package"></i> ' + escapeHtml(data.package) + '</small>' : '') +
         '</div>';
       hmDom.detail.appendChild(head);
-
-      // Body
       const body = document.createElement('div');
       body.className = 'hm-detail-body';
-
-      // Stats
       const stats = document.createElement('div');
       stats.className = 'hm-stat-row';
-      stats.innerHTML = [
-        { label: 'Versi', value: data.version || '-' },
-        { label: 'Ukuran', value: data.size || '-' },
-        { label: 'Kategori', value: data.category || '-' },
-        { label: 'OS', value: data.operatingSystem || 'Android' },
-      ].map((s) =>
-        '<div class="hm-stat"><small>' + escapeHtml(s.label) + '</small><b>' + escapeHtml(s.value) + '</b></div>'
-      ).join('');
+      stats.innerHTML = [{ label: 'Versi', value: data.version || '-' }, { label: 'Ukuran', value: data.size || '-' }, { label: 'Kategori', value: data.category || '-' }, { label: 'OS', value: data.operatingSystem || 'Android' }].map((s) => '<div class="hm-stat"><small>' + escapeHtml(s.label) + '</small><b>' + escapeHtml(s.value) + '</b></div>').join('');
       body.appendChild(stats);
-
-      // Mod features
-      if (data.mod_features) {
-        const f = document.createElement('div');
-        f.className = 'hm-features';
-        f.innerHTML = '<b>MOD FEATURES</b>' + escapeHtml(data.mod_features);
-        body.appendChild(f);
-      }
-
-      // Description
-      if (data.description) {
-        const d = document.createElement('p');
-        d.className = 'hm-desc';
-        d.textContent = data.description;
-        body.appendChild(d);
-      }
-
-      // Download section
+      if (data.mod_features) { const f = document.createElement('div'); f.className = 'hm-features'; f.innerHTML = '<b>MOD FEATURES</b>' + escapeHtml(data.mod_features); body.appendChild(f); }
+      if (data.description) { const d = document.createElement('p'); d.className = 'hm-desc'; d.textContent = data.description; body.appendChild(d); }
       const dlLabel = document.createElement('div');
-      dlLabel.className = 'hm-section-label';
-      dlLabel.innerHTML = '<i data-lucide="download"></i> Unduhan';
+      dlLabel.className = 'hm-section-label'; dlLabel.innerHTML = '<i data-lucide="download"></i> Unduhan';
       body.appendChild(dlLabel);
-
       const dlWrap = document.createElement('div');
       dlWrap.className = 'hm-downloads';
-
-      // Direct MOD APK (aptoide)
       if (data.download.direct_mod) {
         const a = document.createElement('a');
-        a.className = 'hm-download-btn';
-        a.href = data.download.direct_mod;
+        a.className = 'hm-download-btn'; a.href = data.download.direct_mod;
         a.setAttribute('download', safeFileName(data.title, 'happymod') + '.apk');
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
         a.innerHTML = '<i data-lucide="download"></i> Unduh APK <span class="hm-download-tag">DIRECT</span>';
         dlWrap.appendChild(a);
       }
-
-      // Client APK (from dlink)
       if (data.download.client_apk) {
         const a = document.createElement('a');
-        a.className = 'hm-download-btn secondary';
-        a.href = data.download.client_apk;
+        a.className = 'hm-download-btn secondary'; a.href = data.download.client_apk;
         a.setAttribute('download', 'happymod-client.apk');
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
         a.innerHTML = '<i data-lucide="smartphone"></i> HappyMod Client <span class="hm-download-tag">APK</span>';
         dlWrap.appendChild(a);
       }
-
-      // Web download page
       if (data.download.web_url) {
         const a = document.createElement('a');
-        a.className = 'hm-download-btn secondary';
-        a.href = data.download.web_url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
+        a.className = 'hm-download-btn secondary'; a.href = data.download.web_url;
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
         a.innerHTML = '<i data-lucide="external-link"></i> Buka halaman unduhan';
         dlWrap.appendChild(a);
       }
-
       body.appendChild(dlWrap);
-
-      // Versions list
       if (data.download.versions && data.download.versions.length > 0) {
         const vLabel = document.createElement('div');
-        vLabel.className = 'hm-section-label';
-        vLabel.style.marginTop = '4px';
+        vLabel.className = 'hm-section-label'; vLabel.style.marginTop = '4px';
         vLabel.innerHTML = '<i data-lucide="layers"></i> Versi tersedia';
         body.appendChild(vLabel);
-
         const vList = document.createElement('div');
         vList.className = 'hm-versions';
         data.download.versions.slice(0, 8).forEach((v) => {
           const a = document.createElement('a');
-          a.className = 'hm-version';
-          a.href = v.url;
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          a.innerHTML =
-            '<div class="hm-version-info">' +
-              '<b>' + escapeHtml(v.name || ('Versi ' + (v.version || '?'))) + '</b>' +
-              (v.size ? '<small>' + escapeHtml(v.size) + '</small>' : '') +
-            '</div>' +
-            '<i data-lucide="external-link"></i>';
+          a.className = 'hm-version'; a.href = v.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.innerHTML = '<div class="hm-version-info"><b>' + escapeHtml(v.name || ('Versi ' + (v.version || '?'))) + '</b>' + (v.size ? '<small>' + escapeHtml(v.size) + '</small>' : '') + '</div><i data-lucide="external-link"></i>';
           vList.appendChild(a);
         });
         body.appendChild(vList);
       }
-
-      // Note
       if (!data.download.direct_mod) {
         const note = document.createElement('div');
         note.className = 'hm-note';
         note.innerHTML = '<b>Catatan:</b> APK MOD langsung dari server HappyMod tidak bisa diambil dari browser. Gunakan <b>HappyMod Client</b> atau klik salah satu <b>versi tersedia</b> untuk melanjutkan di halaman resminya.';
         body.appendChild(note);
       }
-
-      // Back button
       const back = document.createElement('button');
-      back.className = 'ghost-btn';
-      back.type = 'button';
+      back.className = 'ghost-btn'; back.type = 'button';
       back.innerHTML = '<i data-lucide="arrow-left"></i> Kembali';
-      back.addEventListener('click', () => {
-        hmHideDetail();
-        if (hmState.searchResults.length > 0) show(hmDom.results);
-      });
+      back.addEventListener('click', () => { hmHideDetail(); if (hmState.searchResults.length > 0) show(hmDom.results); });
       body.appendChild(back);
-
       hmDom.detail.appendChild(body);
       show(hmDom.detail);
       if (window.lucide) window.lucide.createIcons();
     }
-
     async function loadHappyDetail(url) {
       if (hmState.loading) return;
-      hmState.loading = true;
-      hmHideResults();
-      hmHideDetail();
-      hmShowLoading('Mengambil detail aplikasi…');
-
+      hmState.loading = true; hmHideResults(); hmHideDetail(); hmShowLoading('Mengambil detail aplikasi…');
       try {
         const data = await happyDownload(url);
-        hmHideLoading();
-        renderHappyDetail(data);
-        hmAddToHistory({
-          id: String(data.source || url),
-          title: data.title || 'Unknown App',
-          version: data.version || '',
-          icon: data.icon || '',
-          url: data.source || url,
-        });
+        hmHideLoading(); renderHappyDetail(data);
+        hmAddToHistory({ id: String(data.source || url), title: data.title || 'Unknown App', version: data.version || '', icon: data.icon || '', url: data.source || url });
         toast('Info aplikasi dimuat.', 'success');
-      } catch (err) {
-        hmShowError(err.message || 'Gagal mengambil info aplikasi.');
-      } finally {
-        hmState.loading = false;
-        hmHideLoading();
-      }
+      } catch (err) { hmShowError(err.message || 'Gagal.'); }
+      finally { hmState.loading = false; hmHideLoading(); }
     }
 
-    /* --- Events --- */
-    hmDom.modeBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        hmSetMode(btn.dataset.hmmode);
-        hmHideResults(); hmHideDetail();
-      });
-    });
-    if (hmDom.query) hmDom.query.addEventListener('input', () => {
-      hmDom.queryClear.classList.toggle('hidden', hmDom.query.value.length === 0);
-      hide(hmDom.error);
-    });
-    if (hmDom.queryClear) hmDom.queryClear.addEventListener('click', () => {
-      hmDom.query.value = ''; hmDom.queryClear.classList.add('hidden'); hmDom.query.focus();
-    });
-    if (hmDom.url) hmDom.url.addEventListener('input', () => {
-      hmDom.urlClear.classList.toggle('hidden', hmDom.url.value.length === 0);
-      hide(hmDom.error);
-    });
-    if (hmDom.urlClear) hmDom.urlClear.addEventListener('click', () => {
-      hmDom.url.value = ''; hmDom.urlClear.classList.add('hidden'); hmDom.url.focus();
-    });
+    hmDom.modeBtns.forEach((btn) => btn.addEventListener('click', () => { hmSetMode(btn.dataset.hmmode); hmHideResults(); hmHideDetail(); }));
+    if (hmDom.query) hmDom.query.addEventListener('input', () => { hmDom.queryClear.classList.toggle('hidden', hmDom.query.value.length === 0); hide(hmDom.error); });
+    if (hmDom.queryClear) hmDom.queryClear.addEventListener('click', () => { hmDom.query.value = ''; hmDom.queryClear.classList.add('hidden'); hmDom.query.focus(); });
+    if (hmDom.url) hmDom.url.addEventListener('input', () => { hmDom.urlClear.classList.toggle('hidden', hmDom.url.value.length === 0); hide(hmDom.error); });
+    if (hmDom.urlClear) hmDom.urlClear.addEventListener('click', () => { hmDom.url.value = ''; hmDom.urlClear.classList.add('hidden'); hmDom.url.focus(); });
 
     if (hmDom.searchForm) hmDom.searchForm.addEventListener('submit', async (evt) => {
       evt.preventDefault();
       if (hmState.loading) return;
       const query = (hmDom.query.value || '').trim();
       if (!query) return hmShowError('Nama aplikasi tidak boleh kosong.');
-
-      hmState.loading = true;
-      hide(hmDom.error); hmHideResults(); hmHideDetail();
+      hmState.loading = true; hide(hmDom.error); hmHideResults(); hmHideDetail();
       hmShowLoading('Mencari di HappyMod…');
-      hmDom.searchSubmit.disabled = true;
-      hmDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
-
+      hmDom.searchSubmit.disabled = true; hmDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
       try {
         const results = await happySearch(query, 12);
-        hmState.searchResults = results;
-        hmHideLoading();
-        renderHmResults(results);
+        hmState.searchResults = results; hmHideLoading(); renderHmResults(results);
         if (results.length === 0) toast('Tidak ada hasil.', 'warn');
         else toast(results.length + ' hasil ditemukan.', 'success');
-      } catch (err) {
-        hmState.searchResults = [];
-        hmShowError(err.message || 'Gagal mencari.');
-      } finally {
-        hmState.loading = false;
-        hmHideLoading();
-        hmDom.searchSubmit.disabled = false;
-        hmDom.searchSubmit.querySelector('span').textContent = 'Cari aplikasi';
-      }
+      } catch (err) { hmState.searchResults = []; hmShowError(err.message || 'Gagal.'); }
+      finally { hmState.loading = false; hmHideLoading(); hmDom.searchSubmit.disabled = false; hmDom.searchSubmit.querySelector('span').textContent = 'Cari aplikasi'; }
     });
 
     if (hmDom.dlForm) hmDom.dlForm.addEventListener('submit', async (evt) => {
@@ -2212,35 +1581,211 @@
       if (hmState.loading) return;
       const url = (hmDom.url.value || '').trim();
       if (!url) return hmShowError('URL HappyMod tidak boleh kosong.');
-      if (!HM_URL_REGEX.test(url)) return hmShowError('URL tidak dikenali. Gunakan link happymod.to atau happymod.net.');
-
-      hmState.loading = true;
-      hide(hmDom.error); hmHideResults(); hmHideDetail();
+      if (!HM_URL_REGEX.test(url)) return hmShowError('URL tidak dikenali.');
+      hmState.loading = true; hide(hmDom.error); hmHideResults(); hmHideDetail();
       hmShowLoading('Mengambil info aplikasi…');
-      hmDom.dlSubmit.disabled = true;
-      hmDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
-
+      hmDom.dlSubmit.disabled = true; hmDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
       try {
         const data = await happyDownload(url);
-        hmHideLoading();
-        renderHappyDetail(data);
-        hmAddToHistory({
-          id: String(data.source || url),
-          title: data.title || 'Unknown App',
-          version: data.version || '',
-          icon: data.icon || '',
-          url: data.source || url,
-        });
+        hmHideLoading(); renderHappyDetail(data);
+        hmAddToHistory({ id: String(data.source || url), title: data.title || 'Unknown App', version: data.version || '', icon: data.icon || '', url: data.source || url });
         toast('Info aplikasi dimuat.', 'success');
-      } catch (err) {
-        hmShowError(err.message || 'Gagal mengambil info aplikasi.');
-      } finally {
-        hmState.loading = false;
-        hmHideLoading();
-        hmDom.dlSubmit.disabled = false;
-        hmDom.dlSubmit.querySelector('span').textContent = 'Ambil info';
-      }
+      } catch (err) { hmShowError(err.message || 'Gagal.'); }
+      finally { hmState.loading = false; hmHideLoading(); hmDom.dlSubmit.disabled = false; hmDom.dlSubmit.querySelector('span').textContent = 'Ambil info'; }
     });
+
+    /* ============================================================
+       CHAT AI
+       ============================================================ */
+    const CHAT_API_BASE = 'https://9routeruncensored.my.id/v1';
+    const CHAT_API_KEY = 'jv-pub-QLZym5vrm1wUVvcPlyAaHlGw3PaEEG9Kp___MRA2Eck';
+    const CHAT_MODEL = 'Asep/deepseek-ai/DeepSeek-V4-Flash-0731-uncensored';
+
+    const chatDom = {
+      form: $('#chatForm'),
+      input: $('#chatInput'),
+      send: $('#chatSend'),
+      clear: $('#chatClear'),
+      messages: $('#chatMessages'),
+      empty: $('#chatEmpty'),
+      suggestions: $('#chatSuggestions'),
+    };
+
+    const chatState = { history: [], loading: false };
+
+    function chatScrollToBottom() {
+      if (chatDom.messages) chatDom.messages.scrollTop = chatDom.messages.scrollHeight;
+    }
+    function chatAutoResize() {
+      const el = chatDom.input;
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+    function chatHideEmpty() {
+      if (chatDom.empty) chatDom.empty.style.display = 'none';
+      if (chatDom.suggestions) chatDom.suggestions.style.display = 'none';
+    }
+    function chatAppendMessage(role, text) {
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg ' + role;
+      const avatarIcon = role === 'user' ? 'user' : 'bot';
+      msg.innerHTML =
+        '<div class="chat-avatar"><i data-lucide="' + avatarIcon + '"></i></div>' +
+        '<div class="chat-bubble">' + escapeHtml(text || '') + '</div>';
+      chatDom.messages.appendChild(msg);
+      if (window.lucide) window.lucide.createIcons();
+      chatScrollToBottom();
+      return msg.querySelector('.chat-bubble');
+    }
+    function chatAppendTyping() {
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg assistant';
+      msg.id = 'chat-typing-indicator';
+      msg.innerHTML =
+        '<div class="chat-avatar"><i data-lucide="bot"></i></div>' +
+        '<div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+      chatDom.messages.appendChild(msg);
+      if (window.lucide) window.lucide.createIcons();
+      chatScrollToBottom();
+    }
+    function chatRemoveTyping() {
+      const el = document.getElementById('chat-typing-indicator');
+      if (el) el.remove();
+    }
+
+    async function chatSendMessage(text) {
+      if (!text || chatState.loading) return;
+
+      chatHideEmpty();
+      chatState.loading = true;
+      if (chatDom.send) chatDom.send.disabled = true;
+
+      chatState.history.push({ role: 'user', content: text });
+      chatAppendMessage('user', text);
+      if (chatDom.input) { chatDom.input.value = ''; chatAutoResize(); }
+
+      chatAppendTyping();
+
+      try {
+        const res = await fetch(CHAT_API_BASE + '/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + CHAT_API_KEY,
+          },
+          body: JSON.stringify({
+            model: CHAT_MODEL,
+            messages: chatState.history,
+            stream: true,
+          }),
+        });
+
+        if (!res.ok) {
+          let errMsg = 'HTTP ' + res.status;
+          try { const j = await res.json(); if (j.error?.message) errMsg = j.error.message; else if (j.message) errMsg = j.message; } catch (_) {}
+          throw new Error(errMsg);
+        }
+
+        chatRemoveTyping();
+        const bubble = chatAppendMessage('assistant', '');
+        let assistantText = '';
+
+        const contentType = res.headers.get('content-type') || '';
+
+        if (contentType.includes('application/json')) {
+          // Fallback non-streaming
+          const json = await res.json();
+          assistantText = json.choices?.[0]?.message?.content || '';
+          bubble.textContent = assistantText || '(Tidak ada balasan)';
+          chatScrollToBottom();
+        } else if (res.body && res.body.getReader) {
+          // SSE streaming
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const rawLine of lines) {
+              const line = rawLine.trim();
+              if (!line || !line.startsWith('data:')) continue;
+              const dataStr = line.slice(5).trim();
+              if (dataStr === '[DONE]') continue;
+              try {
+                const j = JSON.parse(dataStr);
+                const delta = j.choices?.[0]?.delta?.content || '';
+                if (delta) {
+                  assistantText += delta;
+                  bubble.textContent = assistantText;
+                  chatScrollToBottom();
+                }
+              } catch (_) {}
+            }
+          }
+
+          if (!assistantText) bubble.textContent = '(Tidak ada balasan)';
+        } else {
+          throw new Error('Format respons tidak didukung');
+        }
+
+        if (assistantText) chatState.history.push({ role: 'assistant', content: assistantText });
+      } catch (err) {
+        chatRemoveTyping();
+        const bubble = chatAppendMessage('assistant', '');
+        bubble.textContent = '⚠ Gagal memuat balasan: ' + (err.message || 'Unknown error');
+        bubble.style.color = '#ff9e9e';
+      } finally {
+        chatState.loading = false;
+        if (chatDom.send) chatDom.send.disabled = false;
+        if (chatDom.input) chatDom.input.focus();
+      }
+    }
+
+    if (chatDom.form) {
+      chatDom.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = (chatDom.input?.value || '').trim();
+        if (!text) return;
+        chatSendMessage(text);
+      });
+    }
+    if (chatDom.input) {
+      chatDom.input.addEventListener('input', chatAutoResize);
+      chatDom.input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          chatDom.form?.requestSubmit();
+        }
+      });
+    }
+    if (chatDom.clear) {
+      chatDom.clear.addEventListener('click', () => {
+        chatState.history = [];
+        if (chatDom.messages) {
+          chatDom.messages.innerHTML = '';
+          if (chatDom.empty) {
+            chatDom.messages.appendChild(chatDom.empty);
+            chatDom.empty.style.display = '';
+          }
+        }
+        if (chatDom.suggestions) chatDom.suggestions.style.display = '';
+        if (window.lucide) window.lucide.createIcons();
+        toast('Chat di-reset.', 'info');
+      });
+    }
+    if (chatDom.suggestions) {
+      chatDom.suggestions.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const text = btn.dataset.suggest || btn.textContent.trim();
+          if (text) chatSendMessage(text);
+        });
+      });
+    }
 
     /* ============================================================
        HELP MODAL
@@ -2257,9 +1802,7 @@
     if (closeHelp) closeHelp.addEventListener('click', closeModal);
     if (closeHelpBottom) closeHelpBottom.addEventListener('click', closeModal);
     if (helpModal) helpModal.addEventListener('click', (e) => { if (e.target === helpModal) closeModal(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) closeModal();
-    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) closeModal(); });
 
     /* ============================================================
        INIT
@@ -2272,6 +1815,7 @@
       setActiveTool('tiktok');
       pinSetMode('search');
       hmSetMode('search');
+      chatAutoResize();
     }
 
     if (document.readyState === 'loading') {
