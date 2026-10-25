@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090d18">
 
-  <!-- Inline auth guard -->
   <script>
   (function () {
     'use strict';
@@ -16,17 +15,13 @@
       if (!raw) { bail(); return; }
       var s = JSON.parse(raw);
       if (!s || !s.access_token || !s.user) { bail(); return; }
-      if (s.expires_at && !s.refresh_token && (s.expires_at * 1000) < Date.now()) {
-        bail();
-        return;
-      }
+      if (s.expires_at && !s.refresh_token && (s.expires_at * 1000) < Date.now()) { bail(); return; }
       document.documentElement.classList.add('auth-pending');
     } catch (e) { bail(); }
   })();
   </script>
 
   <title>Akses — FastDev Web2APK</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,77 +32,32 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* ============================================================
-       PRICING PAGE
-       ============================================================ */
-       
-    .auth-guard {
-      position: fixed; inset: 0; z-index: 9999;
-      display: none; place-items: center; padding: 20px;
-      background: #090d18; text-align: center;
-    }
+    .auth-guard { position: fixed; inset: 0; z-index: 9999; display: none; place-items: center; padding: 20px; background: #090d18; text-align: center; }
     html.auth-pending .auth-guard { display: grid; }
     html.auth-pending body > *:not(.auth-guard) { visibility: hidden; }
     html.auth-pending { overflow: hidden; }
     .auth-guard-inner { display: grid; place-items: center; gap: 14px; }
-    .auth-guard-spinner {
-      width: 28px; height: 28px;
-      border: 2px solid rgba(117, 144, 255, .2); border-top-color: #7590ff;
-      border-radius: 50%; animation: authGuardSpin .7s linear infinite;
-    }
+    .auth-guard-spinner { width: 28px; height: 28px; border: 2px solid rgba(117, 144, 255, .2); border-top-color: #7590ff; border-radius: 50%; animation: authGuardSpin .7s linear infinite; }
     .auth-guard-inner p { margin: 0; color: #8d9ab6; font-size: 11px; }
     @keyframes authGuardSpin { to { transform: rotate(360deg); } }
 
-    /* Hero */
     .pricing-hero { padding-bottom: 20px; text-align: center; }
     .pricing-hero h1 span { color: var(--blue); background: none; -webkit-text-fill-color: var(--blue); }
     .pricing-hero > p { margin-left: auto; margin-right: auto; max-width: 340px; }
 
-    /* Plan Grid */
     .plan-grid { display: grid; gap: 14px; margin-top: 10px; }
-    
-    .plan-card {
-      position: relative;
-      padding: 22px;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92));
-      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-    }
+    .plan-card { position: relative; padding: 22px; border-radius: 22px; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92)); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
     .plan-card:hover { transform: translateY(-2px); }
-    
-    /* Warna Border Tiap Paket */
     .plan-card--free { border-color: rgba(160, 177, 219, .2); }
-    
-    .plan-card--pro { 
-      border-color: rgba(117, 144, 255, .42); 
-      box-shadow: 0 0 0 1px rgba(117,144,255,.1), 0 18px 40px rgba(92,95,231,.1); 
-    }
-    
-    .plan-card--promax { 
-      border-color: rgba(161, 122, 255, .42); 
-      box-shadow: 0 0 0 1px rgba(161,122,255,.1), 0 18px 40px rgba(137,86,255,.1); 
-    }
+    .plan-card--pro { border-color: rgba(117, 144, 255, .42); box-shadow: 0 0 0 1px rgba(117,144,255,.1), 0 18px 40px rgba(92,95,231,.1); }
+    .plan-card--promax { border-color: rgba(161, 122, 255, .42); box-shadow: 0 0 0 1px rgba(161,122,255,.1), 0 18px 40px rgba(137,86,255,.1); }
 
-    .plan-badge {
-      position: absolute; top: 16px; right: 16px;
-      padding: 5px 9px; border-radius: 8px;
-      font-size: 8px; font-weight: 800; letter-spacing: 1px;
-    }
-    .plan-card--pro .plan-badge {
-      background: rgba(117, 144, 255, .14);
-      border: 1px solid rgba(117, 144, 255, .24);
-      color: #c0ccff;
-    }
-    .plan-card--promax .plan-badge {
-      background: rgba(161,122,255,.14);
-      border: 1px solid rgba(161,122,255,.24);
-      color: #d4c4ff;
-    }
+    .plan-badge { position: absolute; top: 16px; right: 16px; padding: 5px 9px; border-radius: 8px; font-size: 8px; font-weight: 800; letter-spacing: 1px; }
+    .plan-card--pro .plan-badge { background: rgba(117, 144, 255, .14); border: 1px solid rgba(117, 144, 255, .24); color: #c0ccff; }
+    .plan-card--promax .plan-badge { background: rgba(161,122,255,.14); border: 1px solid rgba(161,122,255,.24); color: #d4c4ff; }
 
     .plan-name { font-size: 15px; font-weight: 800; letter-spacing: -.2px; }
     .plan-desc { margin: 6px 0 16px; color: var(--muted); font-size: 10.5px; line-height: 1.6; }
-    
     .plan-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 20px; }
     .plan-price b { font-size: 28px; letter-spacing: -1px; }
     .plan-price span { color: var(--muted); font-size: 10px; }
@@ -118,55 +68,17 @@
     .plan-features li.off { color: #5e6a86; }
     .plan-features li.off svg { color: #4a5570; }
 
-    .plan-cta {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; min-height: 44px;
-      border: 1px solid rgba(160, 177, 219, .2);
-      border-radius: 12px;
-      background: rgba(255,255,255,.04);
-      color: #dbe3f6; font-size: 12px; font-weight: 700;
-      cursor: pointer; text-decoration: none;
-      transition: all .2s ease;
-    }
+    .plan-cta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; border: 1px solid rgba(160, 177, 219, .2); border-radius: 12px; background: rgba(255,255,255,.04); color: #dbe3f6; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all .2s ease; }
     .plan-cta:active { transform: scale(.99); }
-    
-    .plan-card--pro .plan-cta {
-      background: linear-gradient(110deg, #657fff, #795ce8);
-      border-color: rgba(192,201,255,.23);
-      box-shadow: 0 10px 24px rgba(92,95,231,.22);
-      color: #fff;
-    }
-    
-    .plan-card--promax .plan-cta {
-      background: linear-gradient(110deg, #8b64e8, #a17aff);
-      border-color: rgba(210,190,255,.23);
-      box-shadow: 0 10px 24px rgba(137,86,255,.22);
-      color: #fff;
-    }
+    .plan-card--pro .plan-cta { background: linear-gradient(110deg, #657fff, #795ce8); border-color: rgba(192,201,255,.23); box-shadow: 0 10px 24px rgba(92,95,231,.22); color: #fff; }
+    .plan-card--promax .plan-cta { background: linear-gradient(110deg, #8b64e8, #a17aff); border-color: rgba(210,190,255,.23); box-shadow: 0 10px 24px rgba(137,86,255,.22); color: #fff; }
 
-    /* FAQ */
     .faq-list { display: grid; gap: 8px; margin-top: 4px; }
-    .faq-item {
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: rgba(7,11,21,.3);
-      overflow: hidden;
-    }
-    .faq-q {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      width: 100%; padding: 14px;
-      border: 0; background: transparent;
-      color: #dbe3f6; font-size: 11px; font-weight: 700; text-align: left;
-      cursor: pointer;
-    }
+    .faq-item { border: 1px solid var(--line); border-radius: 13px; background: rgba(7,11,21,.3); overflow: hidden; }
+    .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 14px; border: 0; background: transparent; color: #dbe3f6; font-size: 11px; font-weight: 700; text-align: left; cursor: pointer; }
     .faq-q svg { width: 15px; height: 15px; color: var(--muted); transition: transform .2s; }
     .faq-item.open .faq-q svg { transform: rotate(180deg); }
-    .faq-a {
-      max-height: 0; overflow: hidden;
-      padding: 0 14px;
-      color: var(--muted); font-size: 10.5px; line-height: 1.7;
-      transition: max-height .25s ease, padding .25s ease;
-    }
+    .faq-a { max-height: 0; overflow: hidden; padding: 0 14px; color: var(--muted); font-size: 10.5px; line-height: 1.7; transition: max-height .25s ease, padding .25s ease; }
     .faq-item.open .faq-a { max-height: 200px; padding: 0 14px 14px; }
   </style>
 </head>
@@ -210,7 +122,6 @@
     </div>
 
     <div class="plan-grid">
-      <!-- FREE -->
       <article class="plan-card plan-card--free">
         <div class="plan-name">Free</div>
         <p class="plan-desc">Cocok untuk coba-coba dan proyek kecil.</p>
@@ -222,12 +133,9 @@
           <li class="off"><i data-lucide="x-circle"></i> Unlimited build</li>
           <li class="off"><i data-lucide="x-circle"></i> Akses ubah role orang lain</li>
         </ul>
-        <button class="plan-cta" type="button" data-plan="Free">
-          Paket Saat Ini
-        </button>
+        <button class="plan-cta" type="button" data-plan="Free">Paket Saat Ini</button>
       </article>
 
-      <!-- PRO -->
       <article class="plan-card plan-card--pro">
         <span class="plan-badge">POPULER</span>
         <div class="plan-name">Pro</div>
@@ -239,12 +147,9 @@
           <li class="off"><i data-lucide="x-circle"></i> Unlimited build</li>
           <li class="off"><i data-lucide="x-circle"></i> Akses ubah role orang lain</li>
         </ul>
-        <button class="plan-cta" type="button" data-plan="Pro">
-          <i data-lucide="zap"></i> Pilih Pro
-        </button>
+        <button class="plan-cta" type="button" data-plan="Pro"><i data-lucide="zap"></i> Pilih Pro</button>
       </article>
 
-      <!-- PROMAX -->
       <article class="plan-card plan-card--promax">
         <span class="plan-badge">ULTIMATE</span>
         <div class="plan-name">ProMax</div>
@@ -255,31 +160,22 @@
           <li><i data-lucide="check-circle-2"></i> Semua tools terbuka</li>
           <li><i data-lucide="check-circle-2"></i> Akses ubah role orang lain</li>
         </ul>
-        <button class="plan-cta" type="button" data-plan="ProMax">
-          <i data-lucide="crown"></i> Pilih ProMax
-        </button>
+        <button class="plan-cta" type="button" data-plan="ProMax"><i data-lucide="crown"></i> Pilih ProMax</button>
       </article>
     </div>
 
     <div class="section-heading" style="margin-top:28px;">
-      <div>
-        <span class="eyebrow">FAQ</span>
-        <h2>Pertanyaan umum</h2>
-      </div>
+      <div><span class="eyebrow">FAQ</span><h2>Pertanyaan umum</h2></div>
     </div>
 
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" type="button">Apakah limit build di-reset setiap hari?<i data-lucide="chevron-down"></i></button>
-        <div class="faq-a"><p>Ya, limit build akan di-reset otomatis setiap pergantian hari (00:00 WIB).</p></div>
+        <div class="faq-a"><p>Ya, limit build akan di-reset otomatis setiap pergantian hari (00:00).</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" type="button">Bagaimana cara upgrade paket?<i data-lucide="chevron-down"></i></button>
-        <div class="faq-a"><p>Saat ini pembayaran masih diproses manual oleh admin. Silakan hubungi kontak admin yang tersedia setelah menekan tombol pilih paket.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" type="button">Apa itu "Akses ubah role orang lain"?<i data-lucide="chevron-down"></i></button>
-        <div class="faq-a"><p>Fitur eksklusif ProMax yang memungkinkan kamu (sebagai admin/reseller) untuk mengubah status/role pengguna lain di platform ini.</p></div>
+        <div class="faq-a"><p>Saat ini pembayaran diproses manual oleh admin via WhatsApp. Silakan klik tombol Pilih Paket untuk diarahkan ke admin.</p></div>
       </div>
     </div>
 
@@ -291,28 +187,18 @@
   </main>
 
   <nav class="bottom-nav" aria-label="Navigasi utama">
-    <a href="index.html" class="nav-item">
-      <i data-lucide="hammer"></i><span>Build</span>
-    </a>
-    <a href="tools.html" class="nav-item">
-      <i data-lucide="wrench"></i><span>Tools</span>
-    </a>
-    <a href="pricing.html" class="nav-item active" aria-current="page">
-      <i data-lucide="shield-check"></i><span>Akses</span>
-    </a>
-    <a href="akun.html" class="nav-item">
-      <i data-lucide="user-round"></i><span>Akun</span>
-    </a>
+    <a href="index.html" class="nav-item"><i data-lucide="hammer"></i><span>Build</span></a>
+    <a href="tools.html" class="nav-item"><i data-lucide="wrench"></i><span>Tools</span></a>
+    <a href="pricing.html" class="nav-item active" aria-current="page"><i data-lucide="shield-check"></i><span>Akses</span></a>
+    <a href="akun.html" class="nav-item"><i data-lucide="user-round"></i><span>Akun</span></a>
   </nav>
 
   <div class="modal-backdrop hidden" id="helpModal">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup">
-        <i data-lucide="x"></i>
-      </button>
+    <section class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="closeHelp" type="button"><i data-lucide="x"></i></button>
       <span class="section-icon"><i data-lucide="circle-help"></i></span>
-      <h3 id="helpTitle">Bantuan Paket</h3>
-      <p>Pilih paket sesuai kebutuhan build kamu. Jika ada kendala terkait pembayaran atau upgrade, silakan hubungi admin.</p>
+      <h3>Bantuan Paket</h3>
+      <p>Pilih paket sesuai kebutuhan build kamu. Hubungi admin via WhatsApp untuk proses pembayaran.</p>
       <button class="primary-btn" id="closeHelpBottom" type="button" style="width:100%; padding:12px; border-radius:12px; background:#657fff; color:white; border:0; font-weight:bold; margin-top:14px; cursor:pointer;">Mengerti</button>
     </section>
   </div>
@@ -323,12 +209,14 @@
   (function () {
     'use strict';
 
+    // NOMOR WA LU
+    const WA_NUMBER = "6285196241829"; 
+
     const $ = (s, r) => (r || document).querySelector(s);
     const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
     const show = (el) => el && el.classList.remove('hidden');
     const hide = (el) => el && el.classList.add('hidden');
 
-    /* --- Toast --- */
     let toastTimer = null;
     function toast(msg, type) {
       const el = $('#toast');
@@ -340,7 +228,6 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
     }
 
-    /* --- FAQ Accordion --- */
     $$('.faq-q').forEach((btn) => {
       btn.addEventListener('click', () => {
         const item = btn.closest('.faq-item');
@@ -351,7 +238,6 @@
       });
     });
 
-    /* --- CTA Action --- */
     $$('.plan-cta').forEach((btn) => {
       btn.addEventListener('click', () => {
         const plan = btn.dataset.plan;
@@ -361,18 +247,24 @@
           return;
         }
 
-        if (plan === 'Pro') {
-          toast('Mengarahkan ke pembayaran Pro (Rp3.000)...', 'success');
-          // Nanti bisa diarahkan ke link WA / payment gateway
-          // window.open('https://wa.me/628xxx?text=Halo%20saya%20mau%20upgrade%20ke%20Pro', '_blank');
-        } else if (plan === 'ProMax') {
-          toast('Mengarahkan ke pembayaran ProMax (Rp10.000)...', 'success');
-          // window.open('https://wa.me/628xxx?text=Halo%20saya%20mau%20upgrade%20ke%20ProMax', '_blank');
+        const user = window.currentUser;
+        const profile = window.currentProfile;
+
+        if (!user) {
+          toast('Sesi tidak ditemukan. Silakan refresh.', 'error');
+          return;
         }
+
+        const email = user.email || '-';
+        const username = profile?.username || user.user_metadata?.username || '-';
+        
+        const textMessage = `Halo Admin FastDev,%0A%0ASaya ingin membeli akses *${plan}*.%0A%0A*Detail Akun:*%0AUsername: ${username}%0AEmail: ${email}%0AAkses dipilih: ${plan}%0A%0AMohon dibantu prosesnya. Terima kasih.`;
+        
+        window.open(`https://wa.me/${WA_NUMBER}?text=${textMessage}`, '_blank');
+        toast(`Mengarahkan ke WhatsApp untuk paket ${plan}...`, 'success');
       });
     });
 
-    /* --- Help Modal --- */
     const helpModal = $('#helpModal');
     const helpBtn = $('#helpBtn');
     const closeHelp = $('#closeHelp');
@@ -383,31 +275,15 @@
       document.body.style.overflow = '';
     }
 
-    if (helpBtn) helpBtn.addEventListener('click', () => {
-      show(helpModal);
-      document.body.style.overflow = 'hidden';
-    });
+    if (helpBtn) helpBtn.addEventListener('click', () => { show(helpModal); document.body.style.overflow = 'hidden'; });
     if (closeHelp) closeHelp.addEventListener('click', closeModal);
     if (closeHelpBottom) closeHelpBottom.addEventListener('click', closeModal);
-    if (helpModal) helpModal.addEventListener('click', (e) => {
-      if (e.target === helpModal) closeModal();
-    });
+    if (helpModal) helpModal.addEventListener('click', (e) => { if (e.target === helpModal) closeModal(); });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) {
-        closeModal();
-      }
+      if (e.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) closeModal();
     });
 
-    /* --- Init --- */
-    function init() {
-      if (window.lucide) window.lucide.createIcons();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
+    if (window.lucide) window.lucide.createIcons();
   })();
   </script>
 </body>
