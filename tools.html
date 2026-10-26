@@ -113,6 +113,7 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
+    /* ================= PINTEREST & HAPPYMOD ================= */
     .pin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
     .pin-card { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: #0b1120; overflow: hidden; cursor: pointer; text-align: left; color: inherit; transition: border-color .2s, transform .2s, box-shadow .2s; }
     .pin-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
@@ -181,23 +182,53 @@
     .hm-note { padding: 10px 11px; border-radius: 10px; border: 1px solid rgba(117,144,255,.14); background: rgba(117,144,255,.05); color: #9baedf; font-size: 9.5px; line-height: 1.6; }
     .hm-note b { color: #b9c7ff; }
 
-    /* ============================================================
-       DEPLOYER
-       ============================================================ */
+    /* ================= DEPLOYER ================= */
     .dep-tabs { display: flex; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .dep-tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .dep-tab svg { width: 14px; height: 14px; }
     .dep-tab.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
     .dep-tab:active { transform: scale(.98); }
-
-    .dep-textarea {
-      width: 100%; min-height: 200px; padding: 12px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-family: 'Courier New', ui-monospace, monospace; font-size: 12px; line-height: 1.6; resize: vertical; outline: none;
-    }
+    .dep-textarea { width: 100%; min-height: 200px; padding: 12px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-family: 'Courier New', ui-monospace, monospace; font-size: 12px; line-height: 1.6; resize: vertical; outline: none; }
     .dep-textarea:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
 
-    /* ============================================================
-       CHAT AI
-       ============================================================ */
+    /* ================= PLAYSTORE ================= */
+    .ps-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
+    .ps-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .ps-seg-btn svg { width: 14px; height: 14px; }
+    .ps-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    
+    .ps-grid { display: grid; gap: 10px; margin-top: 16px; }
+    .ps-card { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s, transform .2s; }
+    .ps-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); }
+    .ps-card-icon { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; flex: 0 0 auto; background: #131b2e; }
+    .ps-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
+    .ps-card-body b { font-size: 12.5px; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ps-card-body small { color: var(--muted); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ps-card-stats { display: flex; gap: 8px; margin-top: 2px; font-size: 9px; color: #8ee8c3; font-weight: 700; }
+    .ps-card-stats span { display: flex; align-items: center; gap: 3px; }
+    .ps-card-stats svg { width: 10px; height: 10px; }
+
+    .ps-detail-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .ps-header { position: relative; height: 120px; background-size: cover; background-position: center; }
+    .ps-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,11,21,1), transparent); }
+    .ps-head-content { position: relative; z-index: 1; display: flex; gap: 12px; padding: 0 16px; margin-top: -30px; }
+    .ps-detail-icon { width: 72px; height: 72px; border-radius: 16px; border: 2px solid rgba(255,255,255,.1); background: #131b2e; object-fit: cover; }
+    .ps-head-info { display: grid; gap: 3px; padding-bottom: 8px; }
+    .ps-head-info h3 { margin: 0; font-size: 15px; color: #fff; line-height: 1.3; }
+    .ps-head-info small { color: var(--blue); font-size: 11px; font-weight: 600; }
+    .ps-detail-body { padding: 16px; display: grid; gap: 16px; }
+    .ps-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; }
+    .ps-stat { text-align: center; border-right: 1px solid var(--line); }
+    .ps-stat:last-child { border-right: none; }
+    .ps-stat b { display: block; font-size: 12px; color: #dbe3f6; }
+    .ps-stat small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; letter-spacing: .5px; }
+    .ps-desc { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
+    .ps-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ps-links a { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; border-radius: 10px; background: rgba(117,144,255,.1); border: 1px solid rgba(117,144,255,.2); color: #c6d2ff; font-size: 10px; font-weight: 700; text-decoration: none; transition: background .2s; }
+    .ps-links a:hover { background: rgba(117,144,255,.2); }
+    .ps-links a.primary { grid-column: 1 / -1; background: linear-gradient(110deg, #657fff, #795ce8); border: 0; color: #fff; }
+
+    /* ================= CHAT AI ================= */
     .chat-clear-btn { margin-left: auto; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.03); color: var(--muted); cursor: pointer; flex: 0 0 auto; transition: color .15s, background .15s; }
     .chat-clear-btn:hover { color: #c5cee4; background: rgba(255,255,255,.07); }
     .chat-clear-btn svg { width: 15px; height: 15px; }
@@ -242,6 +273,7 @@
       .tool-card-icon { width: 38px; height: 38px; border-radius: 12px; }
       .pin-grid, .hm-grid { gap: 7px; }
       .chat-messages { max-height: 50vh; }
+      .ps-links { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -279,13 +311,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>5 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Deployer · Chat AI</small>
+            <b>6 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>5</b><small>Aktif</small></div>
+          <div><b>6</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -297,7 +329,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 5 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 6 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -324,6 +356,15 @@
         <span class="tool-card-body">
           <b>HappyMod Search &amp; DL</b>
           <small>APK &amp; MOD</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="playstore" type="button" role="tab" aria-selected="false" aria-controls="panel-playstore">
+        <span class="tool-card-icon"><i data-lucide="play-circle"></i></span>
+        <span class="tool-card-body">
+          <b>Play Store Scraper</b>
+          <small>Cari &amp; detail aplikasi</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -602,6 +643,74 @@
       </div>
     </section>
 
+    <!-- ================= PLAY STORE PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-playstore" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="play-circle"></i></span>
+        <div>
+          <h3>Play Store Scraper</h3>
+          <p>Cari dan lihat detail aplikasi Google Play.</p>
+        </div>
+      </div>
+
+      <div class="ps-segmented">
+        <button type="button" class="ps-seg-btn active" data-psmode="search">
+          <i data-lucide="search"></i> Cari
+        </button>
+        <button type="button" class="ps-seg-btn" data-psmode="detail">
+          <i data-lucide="link"></i> Detail URL
+        </button>
+      </div>
+
+      <form id="psSearchForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="psQuery">Nama Aplikasi</label>
+          <div class="input-wrap">
+            <i data-lucide="search"></i>
+            <input id="psQuery" type="text" placeholder="Contoh: WhatsApp" autocomplete="off" spellcheck="false">
+            <button class="input-clear hidden" id="psQueryClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Cari aplikasi dari katalog Play Store.</small>
+        </div>
+        <button class="tool-action" id="psSearchSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Cari Aplikasi</span>
+        </button>
+      </form>
+
+      <form id="psDetailForm" class="tool-form hidden" novalidate>
+        <div class="field">
+          <label for="psAppId">App ID atau URL Play Store</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="psAppId" type="text" placeholder="com.whatsapp atau link play store" autocomplete="off" spellcheck="false">
+            <button class="input-clear hidden" id="psAppIdClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="tool-action" id="psDetailSubmit" type="submit">
+          <i data-lucide="file-search"></i>
+          <span>Lihat Detail</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="psLoading">
+        <span class="spinner"></span>
+        <p id="psLoadingText">Memproses…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="psError">
+        <i data-lucide="alert-circle"></i>
+        <p id="psErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="ps-grid hidden" id="psResults"></div>
+      <div class="ps-detail-card hidden" id="psDetailCard"></div>
+    </section>
+
     <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
@@ -756,6 +865,7 @@
       <p><b>TikTok:</b> tempel link video untuk versi tanpa watermark.</p>
       <p><b>Pinterest:</b> mode Cari untuk eksplorasi, mode Unduh untuk pin URL.</p>
       <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app.</p>
+      <p><b>Play Store:</b> Cari aplikasi atau paste link Play Store untuk melihat detail lengkap.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
@@ -868,6 +978,7 @@
       tiktok: $('#panel-tiktok'),
       pinterest: $('#panel-pinterest'),
       happymod: $('#panel-happymod'),
+      playstore: $('#panel-playstore'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
     };
@@ -1607,118 +1718,220 @@
     });
 
     /* ============================================================
-       DEPLOYER VERCEL
+       PLAYSTORE
+       ============================================================ */
+    const psDom = {
+      segBtns: $$('.ps-seg-btn'),
+      searchForm: $('#psSearchForm'),
+      detailForm: $('#psDetailForm'),
+      query: $('#psQuery'),
+      queryClear: $('#psQueryClear'),
+      searchSubmit: $('#psSearchSubmit'),
+      appId: $('#psAppId'),
+      appIdClear: $('#psAppIdClear'),
+      detailSubmit: $('#psDetailSubmit'),
+      loading: $('#psLoading'),
+      loadingText: $('#psLoadingText'),
+      error: $('#psError'),
+      errorText: $('#psErrorText'),
+      results: $('#psResults'),
+      detailCard: $('#psDetailCard'),
+    };
+    const psState = { mode: 'search', loading: false };
+
+    function psSetMode(mode) {
+      psState.mode = mode;
+      psDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.psmode === mode));
+      if (mode === 'search') { show(psDom.searchForm); hide(psDom.detailForm); }
+      else { hide(psDom.searchForm); show(psDom.detailForm); }
+      hide(psDom.error); hide(psDom.results); hide(psDom.detailCard);
+    }
+
+    async function playstoreApi(action, payload) {
+      const res = await fetch('/api/playstore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...payload }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.status) {
+        throw new Error(data.error || 'Gagal mengambil data dari Play Store.');
+      }
+      return data;
+    }
+
+    function renderPsResults(apps) {
+      psDom.results.innerHTML = '';
+      if (!apps || apps.length === 0) {
+        psDom.results.innerHTML = '<div class="pin-empty">Aplikasi tidak ditemukan.</div>';
+        show(psDom.results);
+        return;
+      }
+      apps.forEach((app) => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'ps-card';
+        card.innerHTML = `
+          <img class="ps-card-icon" src="${escapeHtml(app.icon)}" alt="${escapeHtml(app.title)}" loading="lazy">
+          <div class="ps-card-body">
+            <b>${escapeHtml(app.title)}</b>
+            <small>${escapeHtml(app.developer.name)}</small>
+            <div class="ps-card-stats">
+              <span><i data-lucide="star" style="fill:#f5b85c;stroke:none;"></i> ${escapeHtml(app.scoreText)}</span>
+              <span><i data-lucide="download"></i> ${escapeHtml(app.installs)}</span>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', () => showPsDetail(app));
+        psDom.results.appendChild(card);
+      });
+      show(psDom.results);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function showPsDetail(app) {
+      hide(psDom.results);
+      psDom.detailCard.innerHTML = `
+        <div class="ps-header" style="background-image: url('${escapeHtml(app.headerImage || app.icon)}');"></div>
+        <div class="ps-head-content">
+          <img class="ps-detail-icon" src="${escapeHtml(app.icon)}" alt="${escapeHtml(app.title)}">
+          <div class="ps-head-info">
+            <h3>${escapeHtml(app.title)}</h3>
+            <small>${escapeHtml(app.developer.name)}</small>
+          </div>
+        </div>
+        <div class="ps-detail-body">
+          <div class="ps-stats-row">
+            <div class="ps-stat"><b>${escapeHtml(app.scoreText)}</b><small>Rating</small></div>
+            <div class="ps-stat"><b>${escapeHtml(app.installs)}</b><small>Instal</small></div>
+            <div class="ps-stat"><b>${escapeHtml(app.size || '-')}</b><small>Ukuran</small></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted);">
+            <span><b>Versi:</b> ${escapeHtml(app.version)}</span>
+            <span><b>Kategori:</b> ${escapeHtml(app.genre)}</span>
+          </div>
+          <p class="ps-desc">${escapeHtml(app.description)}</p>
+          <div class="ps-links">
+            <a class="primary" href="${escapeHtml(app.links.playStore)}" target="_blank" rel="noopener"><i data-lucide="play"></i> Play Store</a>
+            <a href="${escapeHtml(app.links.apkPure)}" target="_blank" rel="noopener"><i data-lucide="download"></i> APKPure</a>
+            <a href="${escapeHtml(app.links.apkCombo)}" target="_blank" rel="noopener"><i data-lucide="download"></i> APKCombo</a>
+          </div>
+          <button class="ghost-btn" onclick="document.getElementById('psDetailCard').classList.add('hidden'); document.getElementById('psResults').classList.remove('hidden');">
+            <i data-lucide="arrow-left"></i> Kembali
+          </button>
+        </div>
+      `;
+      show(psDom.detailCard);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    psDom.segBtns.forEach((btn) => btn.addEventListener('click', () => psSetMode(btn.dataset.psmode)));
+    if (psDom.query) psDom.query.addEventListener('input', () => { psDom.queryClear.classList.toggle('hidden', psDom.query.value.length === 0); hide(psDom.error); });
+    if (psDom.queryClear) psDom.queryClear.addEventListener('click', () => { psDom.query.value = ''; psDom.queryClear.classList.add('hidden'); psDom.query.focus(); });
+    if (psDom.appId) psDom.appId.addEventListener('input', () => { psDom.appIdClear.classList.toggle('hidden', psDom.appId.value.length === 0); hide(psDom.error); });
+    if (psDom.appIdClear) psDom.appIdClear.addEventListener('click', () => { psDom.appId.value = ''; psDom.appIdClear.classList.add('hidden'); psDom.appId.focus(); });
+
+    if (psDom.searchForm) {
+      psDom.searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (psState.loading) return;
+        const query = psDom.query.value.trim();
+        if (!query) return toast('Kata kunci wajib diisi.', 'error');
+
+        psState.loading = true;
+        hide(psDom.error); hide(psDom.detailCard); hide(psDom.results);
+        show(psDom.loading); psDom.loadingText.textContent = 'Mencari aplikasi...';
+        psDom.searchSubmit.disabled = true; psDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
+
+        try {
+          const data = await playstoreApi('search', { query });
+          hide(psDom.loading); renderPsResults(data.results);
+          toast(`${data.total} hasil ditemukan.`, 'success');
+        } catch (err) {
+          hide(psDom.loading); show(psDom.error); psDom.errorText.textContent = err.message;
+        } finally {
+          psState.loading = false;
+          psDom.searchSubmit.disabled = false; psDom.searchSubmit.querySelector('span').textContent = 'Cari Aplikasi';
+        }
+      });
+    }
+
+    if (psDom.detailForm) {
+      psDom.detailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (psState.loading) return;
+        const appId = psDom.appId.value.trim();
+        if (!appId) return toast('App ID atau URL wajib diisi.', 'error');
+
+        psState.loading = true;
+        hide(psDom.error); hide(psDom.results); hide(psDom.detailCard);
+        show(psDom.loading); psDom.loadingText.textContent = 'Mengambil detail aplikasi...';
+        psDom.detailSubmit.disabled = true; psDom.detailSubmit.querySelector('span').textContent = 'Memproses…';
+
+        try {
+          const data = await playstoreApi('detail', { appId });
+          hide(psDom.loading); showPsDetail(data.data);
+          toast('Detail aplikasi dimuat.', 'success');
+        } catch (err) {
+          hide(psDom.loading); show(psDom.error); psDom.errorText.textContent = err.message;
+        } finally {
+          psState.loading = false;
+          psDom.detailSubmit.disabled = false; psDom.detailSubmit.querySelector('span').textContent = 'Lihat Detail';
+        }
+      });
+    }
+
+    /* ============================================================
+       DEPLOYER
        ============================================================ */
     const depDom = {
-      form: $('#deployForm'),
-      name: $('#depName'),
-      tabs: $$('.dep-tab'),
-      pasteArea: $('#depPasteArea'),
-      fileArea: $('#depFileArea'),
-      htmlCode: $('#depHtmlCode'),
-      htmlFile: $('#depHtmlFile'),
-      htmlFileName: $('#depHtmlFileName'),
-      iconFile: $('#depIconFile'),
-      iconFileName: $('#depIconFileName'),
-      submit: $('#deploySubmit'),
-      loading: $('#deployLoading'),
-      error: $('#deployError'),
-      errorText: $('#deployErrorText'),
-      result: $('#deployResult'),
-      link: $('#deployLink'),
+      form: $('#deployForm'), name: $('#depName'), tabs: $$('.dep-tab'),
+      pasteArea: $('#depPasteArea'), fileArea: $('#depFileArea'), htmlCode: $('#depHtmlCode'),
+      htmlFile: $('#depHtmlFile'), htmlFileName: $('#depHtmlFileName'), iconFile: $('#depIconFile'),
+      iconFileName: $('#depIconFileName'), submit: $('#deploySubmit'), loading: $('#deployLoading'),
+      error: $('#deployError'), errorText: $('#deployErrorText'), result: $('#deployResult'), link: $('#deployLink'),
     };
-    
     const depState = { mode: 'paste', loading: false };
 
     function setDepMode(mode) {
       depState.mode = mode;
       depDom.tabs.forEach(t => t.classList.toggle('active', t.dataset.deptab === mode));
-      if (mode === 'paste') {
-        show(depDom.pasteArea);
-        hide(depDom.fileArea);
-      } else {
-        hide(depDom.pasteArea);
-        show(depDom.fileArea);
-      }
+      if (mode === 'paste') { show(depDom.pasteArea); hide(depDom.fileArea); }
+      else { hide(depDom.pasteArea); show(depDom.fileArea); }
     }
 
-    depDom.tabs.forEach(tab => {
-      tab.addEventListener('click', () => setDepMode(tab.dataset.deptab));
-    });
-
-    // File label binding
-    if (depDom.htmlFile) {
-      depDom.htmlFile.addEventListener('change', () => {
-        const f = depDom.htmlFile.files?.[0];
-        if (depDom.htmlFileName) depDom.htmlFileName.textContent = f ? f.name : 'Belum ada file dipilih';
-      });
-    }
-    if (depDom.iconFile) {
-      depDom.iconFile.addEventListener('change', () => {
-        const f = depDom.iconFile.files?.[0];
-        if (depDom.iconFileName) depDom.iconFileName.textContent = f ? f.name : 'PNG atau ICO';
-      });
-    }
+    depDom.tabs.forEach(tab => tab.addEventListener('click', () => setDepMode(tab.dataset.deptab)));
+    if (depDom.htmlFile) depDom.htmlFile.addEventListener('change', () => { const f = depDom.htmlFile.files?.[0]; if (depDom.htmlFileName) depDom.htmlFileName.textContent = f ? f.name : 'Belum ada file dipilih'; });
+    if (depDom.iconFile) depDom.iconFile.addEventListener('change', () => { const f = depDom.iconFile.files?.[0]; if (depDom.iconFileName) depDom.iconFileName.textContent = f ? f.name : 'PNG atau ICO'; });
 
     if (depDom.form) {
       depDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (depState.loading) return;
-
         const projectName = depDom.name.value.trim();
         if (!projectName) return toast('Nama website wajib diisi.', 'error');
 
         let htmlContent = '';
-        if (depState.mode === 'paste') {
-          htmlContent = depDom.htmlCode.value.trim();
-          if (!htmlContent) return toast('Kode HTML tidak boleh kosong.', 'error');
-        } else {
-          const file = depDom.htmlFile.files?.[0];
-          if (!file) return toast('Pilih file HTML terlebih dahulu.', 'error');
-          htmlContent = await file.text();
-        }
+        if (depState.mode === 'paste') { htmlContent = depDom.htmlCode.value.trim(); if (!htmlContent) return toast('Kode HTML tidak boleh kosong.', 'error'); }
+        else { const file = depDom.htmlFile.files?.[0]; if (!file) return toast('Pilih file HTML terlebih dahulu.', 'error'); htmlContent = await file.text(); }
 
         let iconBase64 = null;
         const icon = depDom.iconFile.files?.[0];
-        if (icon) {
-          iconBase64 = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.readAsDataURL(icon);
-          });
-        }
+        if (icon) { iconBase64 = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(icon); }); }
 
-        depState.loading = true;
-        depDom.submit.disabled = true;
+        depState.loading = true; depDom.submit.disabled = true;
         hide(depDom.error); hide(depDom.result); show(depDom.loading);
 
         try {
-          const res = await fetch('/api/deploy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ projectName, htmlContent, iconBase64 }),
-          });
-          
+          const res = await fetch('/api/deploy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectName, htmlContent, iconBase64 }) });
           const data = await res.json();
-          
-          if (!res.ok || !data.success) {
-            throw new Error(data.error || 'Gagal melakukan deploy.');
-          }
-
-          hide(depDom.loading);
-          show(depDom.result);
-          depDom.link.href = data.url;
+          if (!res.ok || !data.success) throw new Error(data.error || 'Gagal melakukan deploy.');
+          hide(depDom.loading); show(depDom.result); depDom.link.href = data.url;
           toast('Website berhasil di-deploy!', 'success');
-          
         } catch (err) {
-          hide(depDom.loading);
-          show(depDom.error);
-          depDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          hide(depDom.loading); show(depDom.error); depDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
           toast('Deploy gagal.', 'error');
-        } finally {
-          depState.loading = false;
-          depDom.submit.disabled = false;
-        }
+        } finally { depState.loading = false; depDom.submit.disabled = false; }
       });
     }
 
@@ -1726,79 +1939,55 @@
        CHAT AI
        ============================================================ */
     const CHAT_API_BASE = '/api/chat';
-
-    const chatDom = {
-      form: $('#chatForm'), input: $('#chatInput'), send: $('#chatSend'), clear: $('#chatClear'),
-      messages: $('#chatMessages'), empty: $('#chatEmpty'), suggestions: $('#chatSuggestions'),
-    };
+    const chatDom = { form: $('#chatForm'), input: $('#chatInput'), send: $('#chatSend'), clear: $('#chatClear'), messages: $('#chatMessages'), empty: $('#chatEmpty'), suggestions: $('#chatSuggestions') };
     const chatState = { history: [], loading: false };
 
     function chatScrollToBottom() { if (chatDom.messages) chatDom.messages.scrollTop = chatDom.messages.scrollHeight; }
     function chatAutoResize() { const el = chatDom.input; if (!el) return; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
     function chatHideEmpty() { if (chatDom.empty) chatDom.empty.style.display = 'none'; if (chatDom.suggestions) chatDom.suggestions.style.display = 'none'; }
     function chatAppendMessage(role, text) {
-      const msg = document.createElement('div');
-      msg.className = 'chat-msg ' + role;
-      const avatarIcon = role === 'user' ? 'user' : 'bot';
-      msg.innerHTML = '<div class="chat-avatar"><i data-lucide="' + avatarIcon + '"></i></div><div class="chat-bubble">' + escapeHtml(text || '') + '</div>';
-      chatDom.messages.appendChild(msg);
-      if (window.lucide) window.lucide.createIcons();
-      chatScrollToBottom();
+      const msg = document.createElement('div'); msg.className = 'chat-msg ' + role;
+      msg.innerHTML = '<div class="chat-avatar"><i data-lucide="' + (role === 'user' ? 'user' : 'bot') + '"></i></div><div class="chat-bubble">' + escapeHtml(text || '') + '</div>';
+      chatDom.messages.appendChild(msg); if (window.lucide) window.lucide.createIcons(); chatScrollToBottom();
       return msg.querySelector('.chat-bubble');
     }
     function chatAppendTyping() {
-      const msg = document.createElement('div');
-      msg.className = 'chat-msg assistant'; msg.id = 'chat-typing-indicator';
+      const msg = document.createElement('div'); msg.className = 'chat-msg assistant'; msg.id = 'chat-typing-indicator';
       msg.innerHTML = '<div class="chat-avatar"><i data-lucide="bot"></i></div><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
-      chatDom.messages.appendChild(msg);
-      if (window.lucide) window.lucide.createIcons();
-      chatScrollToBottom();
+      chatDom.messages.appendChild(msg); if (window.lucide) window.lucide.createIcons(); chatScrollToBottom();
     }
     function chatRemoveTyping() { const el = document.getElementById('chat-typing-indicator'); if (el) el.remove(); }
 
     async function chatSendMessage(text) {
       if (!text || chatState.loading) return;
       chatHideEmpty(); chatState.loading = true; if (chatDom.send) chatDom.send.disabled = true;
-      chatState.history.push({ role: 'user', content: text });
-      chatAppendMessage('user', text);
+      chatState.history.push({ role: 'user', content: text }); chatAppendMessage('user', text);
       if (chatDom.input) { chatDom.input.value = ''; chatAutoResize(); }
       chatAppendTyping();
 
       try {
-        const res = await fetch(CHAT_API_BASE, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: chatState.history, stream: true }),
-        });
-
+        const res = await fetch(CHAT_API_BASE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: chatState.history, stream: true }) });
         if (!res.ok) {
           let errMsg = 'HTTP ' + res.status;
           try { const j = await res.json(); if (j.error) errMsg = j.error; if (j.detail) errMsg += ': ' + j.detail; } catch (_) {}
           throw new Error(errMsg);
         }
-
         chatRemoveTyping();
-        const bubble = chatAppendMessage('assistant', '');
-        let assistantText = '';
+        const bubble = chatAppendMessage('assistant', ''); let assistantText = '';
         const contentType = res.headers.get('content-type') || '';
-
         if (contentType.includes('application/json')) {
-          const json = await res.json();
-          assistantText = json.choices?.[0]?.message?.content || '';
-          bubble.textContent = assistantText || '(Tidak ada balasan)';
-          chatScrollToBottom();
+          const json = await res.json(); assistantText = json.choices?.[0]?.message?.content || '';
+          bubble.textContent = assistantText || '(Tidak ada balasan)'; chatScrollToBottom();
         } else if (res.body && res.body.getReader) {
           const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
           while (true) {
             const { done, value } = await reader.read(); if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n'); buffer = lines.pop() || '';
+            buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop() || '';
             for (const rawLine of lines) {
               const line = rawLine.trim(); if (!line || !line.startsWith('data:')) continue;
               const dataStr = line.slice(5).trim(); if (dataStr === '[DONE]') continue;
               try {
-                const j = JSON.parse(dataStr);
-                const delta = j.choices?.[0]?.delta?.content || '';
+                const j = JSON.parse(dataStr); const delta = j.choices?.[0]?.delta?.content || '';
                 if (delta) { assistantText += delta; bubble.textContent = assistantText; chatScrollToBottom(); }
               } catch (_) {}
             }
@@ -1807,10 +1996,8 @@
         } else { throw new Error('Format respons tidak didukung'); }
         if (assistantText) chatState.history.push({ role: 'assistant', content: assistantText });
       } catch (err) {
-        chatRemoveTyping();
-        const bubble = chatAppendMessage('assistant', '');
-        bubble.textContent = '⚠ Gagal memuat balasan: ' + (err.message || 'Unknown error');
-        bubble.style.color = '#ff9e9e';
+        chatRemoveTyping(); const bubble = chatAppendMessage('assistant', '');
+        bubble.textContent = '⚠ Gagal memuat balasan: ' + (err.message || 'Unknown error'); bubble.style.color = '#ff9e9e';
       } finally {
         chatState.loading = false; if (chatDom.send) chatDom.send.disabled = false; if (chatDom.input) chatDom.input.focus();
       }
@@ -1823,13 +2010,9 @@
     }
     if (chatDom.clear) chatDom.clear.addEventListener('click', () => {
       chatState.history = [];
-      if (chatDom.messages) {
-        chatDom.messages.innerHTML = '';
-        if (chatDom.empty) { chatDom.messages.appendChild(chatDom.empty); chatDom.empty.style.display = ''; }
-      }
+      if (chatDom.messages) { chatDom.messages.innerHTML = ''; if (chatDom.empty) { chatDom.messages.appendChild(chatDom.empty); chatDom.empty.style.display = ''; } }
       if (chatDom.suggestions) chatDom.suggestions.style.display = '';
-      if (window.lucide) window.lucide.createIcons();
-      toast('Chat di-reset.', 'info');
+      if (window.lucide) window.lucide.createIcons(); toast('Chat di-reset.', 'info');
     });
     if (chatDom.suggestions) chatDom.suggestions.querySelectorAll('button').forEach((btn) => {
       btn.addEventListener('click', () => { const text = btn.dataset.suggest || btn.textContent.trim(); if (text) chatSendMessage(text); });
@@ -1863,6 +2046,7 @@
       setActiveTool('tiktok');
       pinSetMode('search');
       hmSetMode('search');
+      psSetMode('search');
       chatAutoResize();
     }
 
