@@ -14,8 +14,8 @@
   <script>document.documentElement.classList.add('auth-pending');</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth-guard.js" defer></script>
-  <!-- Ganti CDN Lucide ke jsDelivr biar lebih stabil -->
-  <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+  <!-- CDN Lucide yang bener -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <!-- JSZip Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -1263,7 +1263,7 @@
         if (key === name) show(panel);
         else hide(panel);
       });
-      if (window.lucide) window.lucide.createIcons(); // Ensure icons render on switch
+      if (window.lucide) window.lucide.createIcons(); // Paksa render ulang ikon saat ganti tab
     }
 
     toolCards.forEach((card) => {
@@ -2725,12 +2725,7 @@
        INIT
        ============================================================ */
     function init() {
-      if (window.lucide) {
-        window.lucide.createIcons();
-        // Fallback untuk memastikan ikon di-render setelah DOM stabil
-        setTimeout(() => window.lucide.createIcons(), 500);
-      }
-      
+      if (window.lucide) window.lucide.createIcons();
       renderHistory();
       pinRenderHistory();
       hmRenderHistory();
@@ -2748,6 +2743,24 @@
     } else {
       init();
     }
+  })();
+
+  /* ============================================================
+     WATCHDOG ICON LUCIDE
+     Memastikan ikon tetap muncul di panel yang baru dibuka
+     ============================================================ */
+  (function iconWatchdog() {
+    let attempts = 0;
+    const MAX_ATTEMPTS = 30;
+    const tick = setInterval(() => {
+      attempts++;
+      const orphans = document.querySelectorAll('i[data-lucide]');
+      if (orphans.length > 0 && window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+      if (orphans.length === 0 && attempts > 2) clearInterval(tick);
+      if (attempts >= MAX_ATTEMPTS) clearInterval(tick);
+    }, 500);
   })();
   </script>
 </body>
