@@ -1,9 +1,9 @@
 {
-  "name": "web2apk-by-fastdev",
+  "name": "web2apk",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "dependencies": {
-    "busboy": "^1.6.0"
+    "busboy": "^1.6.0",
+    "google-play-scraper": "^10.0.2"
   }
 }
