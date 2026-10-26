@@ -1,7 +1,7 @@
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '10mb', // Biar aman kalau file HTML-nya lumayan besar
+      sizeLimit: '10mb',
     },
   },
 };
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, error: 'Nama project dan file HTML wajib diisi.' });
   }
 
-  // 1. Format nama project (Vercel hanya izinkan huruf kecil, angka, dan strip)
+  // Format nama project
   const cleanName = projectName
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, '-')
@@ -30,11 +30,11 @@ export default async function handler(req, res) {
     .replace(/^-|-$/g, '');
 
   if (cleanName.length < 3) {
-    return res.status(400).json({ success: false, error: 'Nama project minimal 3 karakter dan hanya boleh huruf/angka.' });
+    return res.status(400).json({ success: false, error: 'Nama project minimal 3 karakter dan hanya boleh huruf/angka/strip.' });
   }
 
   try {
-    // 2. Buat Project Baru di Vercel
+    // 1. Buat Project Baru
     const createProjectRes = await fetch('https://api.vercel.com/v9/projects', {
       method: 'POST',
       headers: {
@@ -46,12 +46,12 @@ export default async function handler(req, res) {
 
     const projectData = await createProjectRes.json();
 
-    // Kalau error 409 (Conflict), artinya nama project udah dipake
+    // Abaikan error kalau project sudah ada (409)
     if (!createProjectRes.ok && projectData.error?.code !== 'project_already_exists') {
       throw new Error(projectData.error?.message || 'Gagal membuat project baru.');
     }
 
-    // 3. Siapkan file yang mau di-deploy
+    // 2. Siapkan file
     const files = [
       {
         file: 'index.html',
@@ -59,9 +59,8 @@ export default async function handler(req, res) {
       },
     ];
 
-    // Kalau ada icon, masukin ke folder public/favicon.ico dan favicon.png
     if (iconBase64) {
-      const base64Data = iconBase64.split(',')[1] || iconBase64; // Hapus prefix data:image/...
+      const base64Data = iconBase64.split(',')[1] || iconBase64;
       files.push({
         file: 'favicon.ico',
         data: base64Data,
@@ -74,7 +73,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4. Proses Deployment
+    // 3. Proses Deployment
     const deployRes = await fetch('https://api.vercel.com/v13/deployments', {
       method: 'POST',
       headers: {
@@ -84,9 +83,9 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         name: cleanName,
         files: files,
-        target: 'production',
+        target: 'production', // Set sebagai production
         projectSettings: {
-          framework: null, // Static HTML
+          framework: null,
           buildCommand: null,
           outputDirectory: null,
         },
@@ -99,10 +98,11 @@ export default async function handler(req, res) {
       throw new Error(deployData.error?.message || 'Gagal melakukan deployment.');
     }
 
-    // 5. Kembalikan URL live
+    // 4. Return URL Bersih
     return res.status(200).json({
       success: true,
-      url: `https://${deployData.url}`,
+      // INI BAGIAN YANG DIPERBAIKI: Pakai cleanName
+      url: `https://${cleanName}.vercel.app`, 
       projectName: cleanName,
       message: 'Website berhasil di-deploy!',
     });
