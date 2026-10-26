@@ -14,9 +14,7 @@
   <script>document.documentElement.classList.add('auth-pending');</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth-guard.js" defer></script>
-  <!-- CDN Lucide yang bener -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- JSZip Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
@@ -115,6 +113,34 @@
 
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
+
+    /* ================= AM FINDER ================= */
+    .am-video-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .am-cover { width: 100%; height: 160px; object-fit: cover; background: #131b2e; }
+    .am-video-body { padding: 14px; display: grid; gap: 10px; }
+    .am-video-title { margin: 0; font-size: 13px; color: #fff; line-height: 1.4; }
+    .am-video-desc { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .am-author-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+    .am-author-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(160,177,219,.2); background: #131b2e; }
+    .am-author-info { display: grid; gap: 2px; }
+    .am-author-info b { font-size: 11px; color: #dbe3f6; }
+    .am-author-info small { font-size: 9px; color: var(--muted); }
+    .am-stats-row { display: flex; gap: 8px; margin-top: 6px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px 0; }
+    .am-stat { flex: 1; text-align: center; }
+    .am-stat b { display: block; font-size: 12px; color: #fff; }
+    .am-stat small { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    
+    .am-preset-list { display: grid; gap: 8px; margin-top: 8px; }
+    .am-preset-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
+    .am-preset-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #131b2e; flex: 0 0 auto; }
+    .am-preset-info { flex: 1; min-width: 0; display: grid; gap: 2px; }
+    .am-preset-info b { font-size: 11px; color: #dbe3f6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .am-preset-info small { font-size: 9px; color: var(--muted); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .am-preset-badge { font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 4px; background: rgba(105,228,177,.15); color: #8ee8c3; }
+    .am-preset-badge.xml { background: rgba(245,184,92,.15); color: #f5b85c; }
+    .am-preset-btn { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; background: rgba(117,144,255,.1); color: #9eafff; text-decoration: none; border: 1px solid rgba(117,144,255,.2); flex: 0 0 auto; transition: background .2s; }
+    .am-preset-btn:hover { background: rgba(117,144,255,.2); }
+    .am-preset-btn svg { width: 14px; height: 14px; }
 
     /* ================= YOUTUBE ================= */
     .yt-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
@@ -364,13 +390,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>9 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google Search · YouTube · Deployer · Chat AI</small>
+            <b>10 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google · YouTube · AM Finder · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>9</b><small>Aktif</small></div>
+          <div><b>10</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -382,7 +408,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 9 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 10 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -445,6 +471,15 @@
         <span class="tool-card-body">
           <b>YouTube Downloader</b>
           <small>Cari &amp; unduh video/audio</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="amfinder" type="button" role="tab" aria-selected="false" aria-controls="panel-amfinder">
+        <span class="tool-card-icon"><i data-lucide="film"></i></span>
+        <span class="tool-card-body">
+          <b>AM Finder</b>
+          <small>Alight Motion Preset</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -965,6 +1000,47 @@
       <div class="yt-detail hidden" id="ytDetailCard"></div>
     </section>
 
+    <!-- ================= AM FINDER PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-amfinder" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="film"></i></span>
+        <div>
+          <h3>AM Finder</h3>
+          <p>Cari preset Alight Motion (5MB/XML) dari link video.</p>
+        </div>
+      </div>
+
+      <form id="amForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="amUrl">URL Video (TikTok / YT / IG)</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="amUrl" type="url" placeholder="https://www.tiktok.com/..." autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="amUrlClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Sistem akan scan deskripsi, bio, dan komentar untuk mencari preset.</small>
+        </div>
+        <button class="tool-action" id="amSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Cari Preset</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="amLoading">
+        <span class="spinner"></span>
+        <p id="amLoadingText">Memindai komentar & bio… (Bisa ±45 detik)</p>
+      </div>
+
+      <div class="tool-alert hidden" id="amError">
+        <i data-lucide="alert-circle"></i>
+        <p id="amErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="hidden" id="amResult"></div>
+    </section>
+
     <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
@@ -1131,6 +1207,7 @@
       <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
       <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
       <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
+      <p><b>AM Finder:</b> Cari preset Alight Motion (5MB/XML) berdasarkan link video TikTok/YouTube/Instagram.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
@@ -1247,6 +1324,7 @@
       clone: $('#panel-clone'),
       google: $('#panel-google'),
       youtube: $('#panel-youtube'),
+      amfinder: $('#panel-amfinder'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
     };
@@ -1263,7 +1341,7 @@
         if (key === name) show(panel);
         else hide(panel);
       });
-      if (window.lucide) window.lucide.createIcons(); // Paksa render ulang ikon saat ganti tab
+      if (window.lucide) window.lucide.createIcons();
     }
 
     toolCards.forEach((card) => {
@@ -2568,6 +2646,140 @@
     }
 
     /* ============================================================
+       AM FINDER
+       ============================================================ */
+    const amDom = {
+      form: $('#amForm'),
+      url: $('#amUrl'),
+      urlClear: $('#amUrlClear'),
+      submit: $('#amSubmit'),
+      loading: $('#amLoading'),
+      loadingText: $('#amLoadingText'),
+      error: $('#amError'),
+      errorText: $('#amErrorText'),
+      result: $('#amResult'),
+    };
+    const amState = { loading: false };
+
+    if (amDom.url) {
+      amDom.url.addEventListener('input', () => {
+        amDom.urlClear.classList.toggle('hidden', amDom.url.value.length === 0);
+        hide(amDom.error);
+      });
+    }
+    if (amDom.urlClear) {
+      amDom.urlClear.addEventListener('click', () => {
+        amDom.url.value = '';
+        amDom.urlClear.classList.add('hidden');
+        amDom.url.focus();
+      });
+    }
+
+    if (amDom.form) {
+      amDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (amState.loading) return;
+        
+        const url = amDom.url.value.trim();
+        if (!url) return toast('URL wajib diisi.', 'error');
+
+        amState.loading = true;
+        amDom.submit.disabled = true;
+        hide(amDom.error); hide(amDom.result); show(amDom.loading);
+        amDom.submit.querySelector('span').textContent = 'Memproses…';
+
+        try {
+          const res = await fetch('/api/amfinder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+          });
+          
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Gagal mencari preset.');
+
+          hide(amDom.loading);
+          show(amDom.result);
+
+          // Render hasil
+          const { video = {}, author = {}, scanned = {}, presets = [] } = data;
+
+          let presetsHtml = '';
+          if (presets.length === 0) {
+            presetsHtml = '<div class="pin-empty">Tidak ada preset ditemukan di deskripsi, bio, atau komentar.</div>';
+          } else {
+            presets.forEach(p => {
+              const typeLabel = p.type === '5mb' ? '5MB' : 'XML';
+              const badgeClass = p.type === '5mb' ? '' : 'xml';
+              const title = p.title || (p.type === '5mb' ? 'Preset Alight Motion 5MB' : 'Preset XML');
+              const sizeText = p.size ? ` • ${p.size}` : '';
+              
+              presetsHtml += `
+                <div class="am-preset-item">
+                  <img class="am-preset-thumb" src="${escapeHtml(p.thumb || video.cover || '')}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                  <div class="am-preset-info">
+                    <b>${escapeHtml(title)}</b>
+                    <small>
+                      <span class="am-preset-badge ${badgeClass}">${typeLabel}</span>
+                      ${escapeHtml(p.source || 'unknown')}${escapeHtml(sizeText)}
+                    </small>
+                  </div>
+                  <a class="am-preset-btn" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
+                    <i data-lucide="external-link"></i>
+                  </a>
+                </div>
+              `;
+            });
+          }
+
+          amDom.result.innerHTML = `
+            <div class="am-video-card">
+              <img class="am-cover" src="${escapeHtml(video.cover || '')}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+              <div class="am-video-body">
+                <h3 class="am-video-title">${escapeHtml(video.title || 'Unknown Title')}</h3>
+                <p class="am-video-desc">${escapeHtml(video.description || 'Tidak ada deskripsi.')}</p>
+                
+                <div class="am-author-row">
+                  <img class="am-author-avatar" src="${escapeHtml(author.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                  <div class="am-author-info">
+                    <b>${escapeHtml(author.nickname || 'Unknown')}</b>
+                    <small>@${escapeHtml(author.uniqueId || 'user')}</small>
+                  </div>
+                </div>
+                
+                <div class="am-stats-row">
+                  <div class="am-stat"><b>${escapeHtml(formatNumber(video.views) || '-')}</b><small>Views</small></div>
+                  <div class="am-stat"><b>${escapeHtml(formatNumber(video.likes) || '-')}</b><small>Likes</small></div>
+                  <div class="am-stat"><b>${escapeHtml(scanned.comments || 0)}</b><small>Komentar</small></div>
+                  <div class="am-stat"><b>${escapeHtml(scanned.replies || 0)}</b><small>Balasan</small></div>
+                </div>
+
+                <div class="hm-section-label" style="margin-top:8px;">
+                  <i data-lucide="layers"></i> ${presets.length} Preset Ditemukan
+                </div>
+                <div class="am-preset-list">
+                  ${presetsHtml}
+                </div>
+              </div>
+            </div>
+          `;
+
+          if (window.lucide) window.lucide.createIcons();
+          toast('Preset berhasil ditemukan.', 'success');
+        } catch (err) {
+          hide(amDom.loading);
+          show(amDom.error);
+          amDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          toast('Pencarian gagal.', 'error');
+        } finally {
+          amState.loading = false;
+          amDom.submit.disabled = false;
+          amDom.submit.querySelector('span').textContent = 'Cari Preset';
+        }
+      });
+    }
+
+    /* ============================================================
        DEPLOYER
        ============================================================ */
     const depDom = {
@@ -2745,10 +2957,7 @@
     }
   })();
 
-  /* ============================================================
-     WATCHDOG ICON LUCIDE
-     Memastikan ikon tetap muncul di panel yang baru dibuka
-     ============================================================ */
+  /* WATCHDOG ICON LUCIDE */
   (function iconWatchdog() {
     let attempts = 0;
     const MAX_ATTEMPTS = 30;
