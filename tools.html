@@ -115,6 +115,38 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
+    /* ================= YOUTUBE ================= */
+    .yt-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
+    .yt-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .yt-seg-btn svg { width: 14px; height: 14px; }
+    .yt-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    
+    .yt-list { display: grid; gap: 10px; margin-top: 16px; }
+    .yt-card { display: flex; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s; }
+    .yt-card:hover { border-color: rgba(129, 151, 255, .55); }
+    .yt-thumb { position: relative; width: 110px; height: 62px; flex: 0 0 auto; border-radius: 8px; overflow: hidden; background: #131b2e; }
+    .yt-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .yt-duration { position: absolute; bottom: 4px; right: 4px; padding: 1px 4px; border-radius: 4px; background: rgba(4, 8, 16, .8); color: #fff; font-size: 9px; font-weight: 700; }
+    .yt-info { min-width: 0; flex: 1; display: grid; align-content: start; gap: 2px; }
+    .yt-info b { font-size: 11px; line-height: 1.35; color: #dbe3f6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .yt-info small { color: var(--muted); font-size: 9px; }
+    .yt-info span { color: #8ee8c3; font-size: 8.5px; margin-top: 2px; }
+
+    .yt-detail { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .yt-header { position: relative; height: 160px; background-size: cover; background-position: center; }
+    .yt-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,11,21,1), transparent); }
+    .yt-head-content { padding: 16px; position: relative; z-index: 1; margin-top: -40px; }
+    .yt-head-content h3 { margin: 0 0 4px; font-size: 15px; color: #fff; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+    .yt-head-content small { color: var(--blue); font-size: 10.5px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+    .yt-detail-body { padding: 16px; display: grid; gap: 16px; }
+    .yt-downloads { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .yt-dl-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-radius: 10px; background: rgba(117,144,255,.1); border: 1px solid rgba(117,144,255,.2); color: #c6d2ff; text-decoration: none; transition: background .2s; gap: 4px; }
+    .yt-dl-btn:hover { background: rgba(117,144,255,.2); }
+    .yt-dl-btn.primary { background: linear-gradient(110deg, #657fff, #795ce8); border: 0; color: #fff; }
+    .yt-dl-btn span { font-size: 10px; font-weight: 700; }
+    .yt-dl-btn small { font-size: 8px; opacity: .8; }
+    .yt-dl-btn.disabled { opacity: .4; pointer-events: none; }
+
     /* ================= PINTEREST & HAPPYMOD ================= */
     .pin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
     .pin-card { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: #0b1120; overflow: hidden; cursor: pointer; text-align: left; color: inherit; transition: border-color .2s, transform .2s, box-shadow .2s; }
@@ -293,6 +325,7 @@
       .pin-grid, .hm-grid, .gs-img-grid { gap: 7px; }
       .chat-messages { max-height: 50vh; }
       .ps-links { grid-template-columns: 1fr; }
+      .yt-downloads { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -330,13 +363,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>8 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google Search · Deployer · Chat AI</small>
+            <b>9 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google Search · YouTube · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>8</b><small>Aktif</small></div>
+          <div><b>9</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -348,7 +381,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 8 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 9 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -402,6 +435,15 @@
         <span class="tool-card-body">
           <b>Google Search</b>
           <small>Pencarian web &amp; gambar</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="youtube" type="button" role="tab" aria-selected="false" aria-controls="panel-youtube">
+        <span class="tool-card-icon"><i data-lucide="youtube"></i></span>
+        <span class="tool-card-body">
+          <b>YouTube Downloader</b>
+          <small>Cari &amp; unduh video/audio</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -855,6 +897,73 @@
       <div class="gs-img-grid hidden" id="gsImageResults"></div>
     </section>
 
+    <!-- ================= YOUTUBE PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-youtube" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="youtube"></i></span>
+        <div>
+          <h3>YouTube Downloader</h3>
+          <p>Cari video atau unduh via link YouTube.</p>
+        </div>
+      </div>
+
+      <div class="yt-segmented">
+        <button type="button" class="yt-seg-btn active" data-ytmode="search">
+          <i data-lucide="search"></i> Cari Video
+        </button>
+        <button type="button" class="yt-seg-btn" data-ytmode="download">
+          <i data-lucide="link"></i> URL Video
+        </button>
+      </div>
+
+      <form id="ytSearchForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="ytQuery">Kata Kunci</label>
+          <div class="input-wrap">
+            <i data-lucide="search"></i>
+            <input id="ytQuery" type="text" placeholder="Contoh: Lofi hip hop" autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="ytQueryClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="tool-action" id="ytSearchSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Cari Video</span>
+        </button>
+      </form>
+
+      <form id="ytDownloadForm" class="tool-form hidden" novalidate>
+        <div class="field">
+          <label for="ytUrl">Link YouTube</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="ytUrl" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="ytUrlClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="tool-action" id="ytDownloadSubmit" type="submit">
+          <i data-lucide="download"></i>
+          <span>Ambil Link Download</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="ytLoading">
+        <span class="spinner"></span>
+        <p id="ytLoadingText">Memproses…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="ytError">
+        <i data-lucide="alert-circle"></i>
+        <p id="ytErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="yt-list hidden" id="ytResults"></div>
+      <div class="yt-detail hidden" id="ytDetailCard"></div>
+    </section>
+
     <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
@@ -1020,6 +1129,7 @@
       <p><b>Play Store:</b> Cari aplikasi atau paste link Play Store untuk melihat detail lengkap.</p>
       <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
       <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
+      <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
@@ -1135,6 +1245,7 @@
       playstore: $('#panel-playstore'),
       clone: $('#panel-clone'),
       google: $('#panel-google'),
+      youtube: $('#panel-youtube'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
     };
@@ -2272,6 +2383,189 @@
     }
 
     /* ============================================================
+       YOUTUBE SEARCH & DOWNLOAD
+       ============================================================ */
+    const ytDom = {
+      segBtns: $$('.yt-seg-btn'),
+      searchForm: $('#ytSearchForm'),
+      query: $('#ytQuery'),
+      queryClear: $('#ytQueryClear'),
+      searchSubmit: $('#ytSearchSubmit'),
+      dlForm: $('#ytDownloadForm'),
+      url: $('#ytUrl'),
+      urlClear: $('#ytUrlClear'),
+      dlSubmit: $('#ytDownloadSubmit'),
+      loading: $('#ytLoading'),
+      loadingText: $('#ytLoadingText'),
+      error: $('#ytError'),
+      errorText: $('#ytErrorText'),
+      results: $('#ytResults'),
+      detailCard: $('#ytDetailCard'),
+    };
+    const ytState = { mode: 'search', loading: false };
+
+    function ytSetMode(mode) {
+      ytState.mode = mode;
+      ytDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.ytmode === mode));
+      if (mode === 'search') { show(ytDom.searchForm); hide(ytDom.dlForm); }
+      else { hide(ytDom.searchForm); show(ytDom.dlForm); }
+      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
+    }
+
+    ytDom.segBtns.forEach((btn) => btn.addEventListener('click', () => ytSetMode(btn.dataset.ytmode)));
+    
+    if (ytDom.query) ytDom.query.addEventListener('input', () => { ytDom.queryClear.classList.toggle('hidden', ytDom.query.value.length === 0); hide(ytDom.error); });
+    if (ytDom.queryClear) ytDom.queryClear.addEventListener('click', () => { ytDom.query.value = ''; ytDom.queryClear.classList.add('hidden'); ytDom.query.focus(); });
+    
+    if (ytDom.url) ytDom.url.addEventListener('input', () => { ytDom.urlClear.classList.toggle('hidden', ytDom.url.value.length === 0); hide(ytDom.error); });
+    if (ytDom.urlClear) ytDom.urlClear.addEventListener('click', () => { ytDom.url.value = ''; ytDom.urlClear.classList.add('hidden'); ytDom.url.focus(); });
+
+    function showYtDetail(data) {
+      hide(ytDom.results);
+      ytDom.detailCard.innerHTML = `
+        <div class="yt-header" style="background-image: url('${escapeHtml(data.thumbnail)}');"></div>
+        <div class="yt-head-content">
+          <h3>${escapeHtml(data.title)}</h3>
+          <small>Video ID: ${escapeHtml(data.videoId)}</small>
+        </div>
+        <div class="yt-detail-body">
+          <div class="hm-section-label"><i data-lucide="video"></i> Video (MP4)</div>
+          <div class="yt-downloads">
+            ${data.mp4.map(v => v.url ? `
+              <a class="yt-dl-btn primary" href="${escapeHtml(v.url)}" target="_blank">
+                <i data-lucide="download" style="width:18px;height:18px;"></i>
+                <span>${v.quality}</span>
+                <small>${v.size || 'Unknown size'}</small>
+              </a>
+            ` : `
+              <div class="yt-dl-btn disabled">
+                <i data-lucide="x" style="width:18px;height:18px;"></i>
+                <span>${v.quality}</span>
+                <small>Tidak tersedia</small>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="hm-section-label" style="margin-top:8px;"><i data-lucide="music"></i> Audio (MP3)</div>
+          <div class="yt-downloads">
+            ${data.mp3.map(v => v.url ? `
+              <a class="yt-dl-btn secondary" href="${escapeHtml(v.url)}" target="_blank">
+                <i data-lucide="music" style="width:18px;height:18px;"></i>
+                <span>${v.quality}</span>
+                <small>${v.size || 'Unknown size'}</small>
+              </a>
+            ` : `
+              <div class="yt-dl-btn disabled">
+                <i data-lucide="x" style="width:18px;height:18px;"></i>
+                <span>${v.quality}</span>
+                <small>Tidak tersedia</small>
+              </div>
+            `).join('')}
+          </div>
+
+          <button class="ghost-btn" onclick="document.getElementById('ytDetailCard').classList.add('hidden'); document.getElementById('ytResults').classList.remove('hidden');">
+            <i data-lucide="arrow-left"></i> Kembali
+          </button>
+        </div>
+      `;
+      show(ytDom.detailCard);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    async function ytProcessDownload(videoUrl) {
+      if (ytState.loading) return;
+      ytState.loading = true;
+      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
+      show(ytDom.loading); ytDom.loadingText.textContent = 'Mengambil link download… (±10 detik)';
+      ytDom.dlSubmit.disabled = true; ytDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
+
+      try {
+        const res = await fetch('/api/youtube', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'download', videoId: videoUrl })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal mendapatkan link download.');
+        
+        hide(ytDom.loading); showYtDetail(data);
+        toast('Link download berhasil dimuat.', 'success');
+      } catch (err) {
+        hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message;
+        toast('Gagal mendapatkan link.', 'error');
+      } finally {
+        ytState.loading = false;
+        ytDom.dlSubmit.disabled = false; ytDom.dlSubmit.querySelector('span').textContent = 'Ambil Link Download';
+      }
+    }
+
+    if (ytDom.searchForm) {
+      ytDom.searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (ytState.loading) return;
+        const query = ytDom.query.value.trim();
+        if (!query) return toast('Kata kunci wajib diisi.', 'error');
+
+        ytState.loading = true;
+        hide(ytDom.error); hide(ytDom.detailCard); hide(ytDom.results);
+        show(ytDom.loading); ytDom.loadingText.textContent = 'Mencari video…';
+        ytDom.searchSubmit.disabled = true; ytDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
+
+        try {
+          const res = await fetch('/api/youtube', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'search', query })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Gagal mencari video.');
+
+          hide(ytDom.loading);
+          ytDom.results.innerHTML = '';
+          
+          if (!data.results || data.results.length === 0) {
+            ytDom.results.innerHTML = '<div class="pin-empty">Video tidak ditemukan.</div>';
+          } else {
+            data.results.forEach(v => {
+              const card = document.createElement('div');
+              card.className = 'yt-card';
+              card.innerHTML = `
+                <div class="yt-thumb">
+                  <img src="${escapeHtml(v.thumbnail)}" alt="${escapeHtml(v.title)}" loading="lazy">
+                  <span class="yt-duration">${escapeHtml(v.duration || '0:00')}</span>
+                </div>
+                <div class="yt-info">
+                  <b>${escapeHtml(v.title)}</b>
+                  <small>${escapeHtml(v.channel.name)}</small>
+                  <span>${escapeHtml(v.views || '0 views')} • ${escapeHtml(v.published || '')}</span>
+                </div>
+              `;
+              card.addEventListener('click', () => ytProcessDownload(v.url));
+              ytDom.results.appendChild(card);
+            });
+          }
+          show(ytDom.results);
+          toast(`${data.results.length} video ditemukan.`, 'success');
+        } catch (err) {
+          hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message;
+          toast('Pencarian gagal.', 'error');
+        } finally {
+          ytState.loading = false;
+          ytDom.searchSubmit.disabled = false; ytDom.searchSubmit.querySelector('span').textContent = 'Cari Video';
+        }
+      });
+    }
+
+    if (ytDom.dlForm) {
+      ytDom.dlForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const url = ytDom.url.value.trim();
+        if (!url) return toast('Link YouTube wajib diisi.', 'error');
+        ytProcessDownload(url);
+      });
+    }
+
+    /* ============================================================
        DEPLOYER
        ============================================================ */
     const depDom = {
@@ -2438,6 +2732,7 @@
       hmSetMode('search');
       psSetMode('search');
       gsSetMode('text');
+      ytSetMode('search');
       chatAutoResize();
     }
 
