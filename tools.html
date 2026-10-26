@@ -114,6 +114,15 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
+    /* ================= IMGBB ================= */
+    .ib-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
+    .ib-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .ib-seg-btn svg { width: 14px; height: 14px; }
+    .ib-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    
+    .ib-select { width: 100%; height: 48px; padding: 0 13px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-size: 12px; outline: none; appearance: none; cursor: pointer; }
+    .ib-select:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
+
     /* ================= AM FINDER ================= */
     .am-video-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .am-cover { width: 100%; height: 160px; object-fit: cover; background: #131b2e; }
@@ -390,13 +399,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>10 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google · YouTube · AM Finder · Deployer · Chat AI</small>
+            <b>11 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone · Google · YouTube · ImgBB · AM Finder · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>10</b><small>Aktif</small></div>
+          <div><b>11</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -408,7 +417,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 10 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 11 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -471,6 +480,15 @@
         <span class="tool-card-body">
           <b>YouTube Downloader</b>
           <small>Cari &amp; unduh video/audio</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="imgbb" type="button" role="tab" aria-selected="false" aria-controls="panel-imgbb">
+        <span class="tool-card-icon"><i data-lucide="upload-cloud"></i></span>
+        <span class="tool-card-body">
+          <b>ImgBB Uploader</b>
+          <small>Upload gambar + custom expired</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -1000,6 +1018,107 @@
       <div class="yt-detail hidden" id="ytDetailCard"></div>
     </section>
 
+    <!-- ================= IMGBB PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-imgbb" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="upload-cloud"></i></span>
+        <div>
+          <h3>ImgBB Uploader</h3>
+          <p>Upload gambar dengan custom masa aktif.</p>
+        </div>
+      </div>
+
+      <div class="ib-segmented">
+        <button type="button" class="ib-seg-btn active" data-ibmode="file">
+          <i data-lucide="file-image"></i> Upload File
+        </button>
+        <button type="button" class="ib-seg-btn" data-ibmode="url">
+          <i data-lucide="link"></i> URL Gambar
+        </button>
+      </div>
+
+      <form id="ibForm" class="tool-form" novalidate>
+        <!-- Mode File -->
+        <div class="field" id="ibFileField">
+          <label for="ibFile">Pilih Gambar</label>
+          <label class="upload-box" for="ibFile">
+            <span class="upload-icon"><i data-lucide="image"></i></span>
+            <span class="upload-copy"><b>Pilih file gambar</b><small id="ibFileName">PNG, JPG, WEBP (Max 3MB)</small></span>
+            <i data-lucide="plus"></i>
+          </label>
+          <input class="file-input" id="ibFile" type="file" accept="image/*">
+        </div>
+
+        <!-- Mode URL -->
+        <div class="field hidden" id="ibUrlField">
+          <label for="ibUrl">URL Gambar</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="ibUrl" type="url" placeholder="https://example.com/gambar.png" autocomplete="off" spellcheck="false">
+            <button class="input-clear hidden" id="ibUrlClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Expiration -->
+        <div class="field">
+          <label for="ibExp">Masa Aktif</label>
+          <select id="ibExp" class="ib-select">
+            <option value="never" selected>Permanen (Never)</option>
+            <option value="5m">5 Menit</option>
+            <option value="15m">15 Menit</option>
+            <option value="30m">30 Menit</option>
+            <option value="1h">1 Jam</option>
+            <option value="3h">3 Jam</option>
+            <option value="6h">6 Jam</option>
+            <option value="12h">12 Jam</option>
+            <option value="1d">1 Hari</option>
+            <option value="3d">3 Hari</option>
+            <option value="1w">1 Minggu</option>
+            <option value="1mo">1 Bulan</option>
+          </select>
+        </div>
+
+        <button class="tool-action" id="ibSubmit" type="submit">
+          <i data-lucide="upload-cloud"></i>
+          <span>Upload ke ImgBB</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="ibLoading">
+        <span class="spinner"></span>
+        <p>Mengunggah gambar…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="ibError">
+        <i data-lucide="alert-circle"></i>
+        <p id="ibErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="tool-result hidden" id="ibResult" style="padding: 20px; text-align: center;">
+        <div class="result-icon" style="margin: 0 auto 14px; border-color: rgba(105, 228, 177, .2); background: rgba(105, 228, 177, .08); color: #78e5b8; width: 55px; height: 55px; display: grid; place-items: center; border-radius: 18px;">
+          <i data-lucide="check-circle-2" style="width: 27px; height: 27px;"></i>
+        </div>
+        <h3 style="margin: 0 0 8px; font-size: 17px; color: #fff;">Upload Berhasil!</h3>
+        <p style="margin: 0 0 16px; color: var(--muted); font-size: 12px;" id="ibMessage">Gambar berhasil diunggah.</p>
+        
+        <img id="ibPreview" src="" alt="Preview" style="width: 100%; max-height: 200px; object-fit: contain; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--line); background: #131b2e;">
+
+        <div class="download-actions">
+          <a class="download-btn" id="ibDirectLink" href="#" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="external-link"></i> Buka Direct Link
+          </a>
+          <a class="download-btn secondary" id="ibViewerLink" href="#" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="link"></i> Buka Viewer
+          </a>
+          <a class="download-btn secondary" id="ibDeleteLink" href="#" target="_blank" rel="noopener noreferrer" style="color: #ff9e9e; border-color: rgba(255,110,110,.2); background: rgba(255,110,110,.06);">
+            <i data-lucide="trash-2"></i> Hapus Gambar
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= AM FINDER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-amfinder" role="tabpanel">
       <div class="panel-heading">
@@ -1164,10 +1283,14 @@
     </section>
 
     <!-- THANKS TO -->
-    <div style="text-align: center; padding: 28px 0 0;">
+    <div style="text-align: center; padding: 28px 0 0; display: grid; gap: 6px;">
       <p style="margin: 0; color: var(--muted); font-size: 10.5px; display: flex; align-items: center; justify-content: center; gap: 5px;">
         <i data-lucide="heart" style="width: 12px; height: 12px; color: #ff6e6e; fill: #ff6e6e;"></i>
         Thanks to <a href="https://codeku.izzcs.my.id" target="_blank" rel="noopener noreferrer" style="color: #9eafff; text-decoration: none; font-weight: 800; letter-spacing: .3px;">codeku.izzcs.my.id</a>
+      </p>
+      <p style="margin: 0; color: var(--muted); font-size: 10.5px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        <i data-lucide="heart" style="width: 12px; height: 12px; color: #ff6e6e; fill: #ff6e6e;"></i>
+        Thanks to <a href="https://vamxapi.my.id" target="_blank" rel="noopener noreferrer" style="color: #9eafff; text-decoration: none; font-weight: 800; letter-spacing: .3px;">vamxapi.my.id</a>
       </p>
     </div>
 
@@ -1207,6 +1330,7 @@
       <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
       <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
       <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
+      <p><b>ImgBB:</b> Upload gambar dari file atau URL dengan masa aktif custom. Direct link siap pakai.</p>
       <p><b>AM Finder:</b> Cari preset Alight Motion (5MB/XML) berdasarkan link video TikTok/YouTube/Instagram.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
@@ -1324,6 +1448,7 @@
       clone: $('#panel-clone'),
       google: $('#panel-google'),
       youtube: $('#panel-youtube'),
+      imgbb: $('#panel-imgbb'),
       amfinder: $('#panel-amfinder'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
@@ -2646,6 +2771,112 @@
     }
 
     /* ============================================================
+       IMGBB UPLOADER
+       ============================================================ */
+    const ibDom = {
+      segBtns: $$('.ib-seg-btn'),
+      form: $('#ibForm'),
+      fileField: $('#ibFileField'),
+      fileInput: $('#ibFile'),
+      fileName: $('#ibFileName'),
+      urlField: $('#ibUrlField'),
+      urlInput: $('#ibUrl'),
+      urlClear: $('#ibUrlClear'),
+      expInput: $('#ibExp'),
+      submit: $('#ibSubmit'),
+      loading: $('#ibLoading'),
+      error: $('#ibError'),
+      errorText: $('#ibErrorText'),
+      result: $('#ibResult'),
+      message: $('#ibMessage'),
+      preview: $('#ibPreview'),
+      directLink: $('#ibDirectLink'),
+      viewerLink: $('#ibViewerLink'),
+      deleteLink: $('#ibDeleteLink'),
+    };
+    const ibState = { mode: 'file', loading: false };
+
+    function ibSetMode(mode) {
+      ibState.mode = mode;
+      ibDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.ibmode === mode));
+      if (mode === 'file') { show(ibDom.fileField); hide(ibDom.urlField); }
+      else { hide(ibDom.fileField); show(ibDom.urlField); }
+      hide(ibDom.error);
+    }
+
+    ibDom.segBtns.forEach((btn) => btn.addEventListener('click', () => ibSetMode(btn.dataset.ibmode)));
+    if (ibDom.urlInput) ibDom.urlInput.addEventListener('input', () => { ibDom.urlClear.classList.toggle('hidden', ibDom.urlInput.value.length === 0); hide(ibDom.error); });
+    if (ibDom.urlClear) ibDom.urlClear.addEventListener('click', () => { ibDom.urlInput.value = ''; ibDom.urlClear.classList.add('hidden'); ibDom.urlInput.focus(); });
+    if (ibDom.fileInput) ibDom.fileInput.addEventListener('change', () => {
+      const f = ibDom.fileInput.files?.[0];
+      if (ibDom.fileName) ibDom.fileName.textContent = f ? f.name : 'PNG, JPG, WEBP (Max 3MB)';
+    });
+
+    if (ibDom.form) {
+      ibDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (ibState.loading) return;
+        
+        let source = '';
+        if (ibState.mode === 'file') {
+          const file = ibDom.fileInput.files?.[0];
+          if (!file) return toast('Pilih file gambar terlebih dahulu.', 'error');
+          if (file.size > 3 * 1024 * 1024) return toast('Ukuran file maksimal 3MB (limit Vercel).', 'error');
+          
+          // Convert to Base64
+          source = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+          });
+        } else {
+          source = ibDom.urlInput.value.trim();
+          if (!source) return toast('URL gambar wajib diisi.', 'error');
+        }
+
+        const expiration = ibDom.expInput.value;
+
+        ibState.loading = true;
+        ibDom.submit.disabled = true;
+        hide(ibDom.error); hide(ibDom.result); show(ibDom.loading);
+        ibDom.submit.querySelector('span').textContent = 'Mengunggah…';
+
+        try {
+          const res = await fetch('/api/imgbb', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: ibState.mode, source, expiration })
+          });
+          
+          const data = await res.json();
+          if (!res.ok || !data.status) throw new Error(data.error || 'Gagal upload ke ImgBB.');
+
+          hide(ibDom.loading);
+          show(ibDom.result);
+
+          ibDom.message.textContent = `Berhasil diunggah! Masa aktif: ${data.expirationCode}`;
+          ibDom.preview.src = data.directUrl;
+          
+          ibDom.directLink.href = data.directUrl;
+          ibDom.viewerLink.href = data.viewerUrl;
+          ibDom.deleteLink.href = data.deleteUrl;
+          
+          toast('Upload berhasil!', 'success');
+
+        } catch (err) {
+          hide(ibDom.loading);
+          show(ibDom.error);
+          ibDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          toast('Upload gagal.', 'error');
+        } finally {
+          ibState.loading = false;
+          ibDom.submit.disabled = false;
+          ibDom.submit.querySelector('span').textContent = 'Upload ke ImgBB';
+        }
+      });
+    }
+
+    /* ============================================================
        AM FINDER
        ============================================================ */
     const amDom = {
@@ -2947,6 +3178,7 @@
       psSetMode('search');
       gsSetMode('text');
       ytSetMode('search');
+      ibSetMode('file');
       chatAutoResize();
     }
 
