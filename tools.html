@@ -230,6 +230,23 @@
     .ps-links a:hover { background: rgba(117,144,255,.2); }
     .ps-links a.primary { grid-column: 1 / -1; background: linear-gradient(110deg, #657fff, #795ce8); border: 0; color: #fff; }
 
+    /* ================= GOOGLE SEARCH ================= */
+    .gs-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
+    .gs-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .gs-seg-btn svg { width: 14px; height: 14px; }
+    .gs-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    
+    .gs-list { display: grid; gap: 10px; margin-top: 16px; }
+    .gs-item { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); }
+    .gs-item a { color: #9eafff; font-size: 13px; font-weight: 600; text-decoration: none; display: block; margin-bottom: 4px; line-height: 1.4; }
+    .gs-item a:hover { text-decoration: underline; }
+    .gs-item small { color: #8ee8c3; font-size: 10px; word-break: break-all; display: block; margin-bottom: 6px; }
+    .gs-item p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .gs-img-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+    .gs-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; background: #131b2e; transition: transform .2s; }
+    .gs-img:hover { transform: scale(1.02); }
+
     /* ================= CHAT AI ================= */
     .chat-clear-btn { margin-left: auto; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.03); color: var(--muted); cursor: pointer; flex: 0 0 auto; transition: color .15s, background .15s; }
     .chat-clear-btn:hover { color: #c5cee4; background: rgba(255,255,255,.07); }
@@ -273,7 +290,7 @@
       .clay-stats b { font-size: 16px; }
       .tool-card { padding: 12px; gap: 10px; }
       .tool-card-icon { width: 38px; height: 38px; border-radius: 12px; }
-      .pin-grid, .hm-grid { gap: 7px; }
+      .pin-grid, .hm-grid, .gs-img-grid { gap: 7px; }
       .chat-messages { max-height: 50vh; }
       .ps-links { grid-template-columns: 1fr; }
     }
@@ -313,13 +330,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>7 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Deployer · Chat AI</small>
+            <b>8 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Google Search · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>7</b><small>Aktif</small></div>
+          <div><b>8</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -331,7 +348,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 7 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 8 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -376,6 +393,15 @@
         <span class="tool-card-body">
           <b>Clone Website</b>
           <small>Clone &amp; simpan jadi ZIP</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="google" type="button" role="tab" aria-selected="false" aria-controls="panel-google">
+        <span class="tool-card-icon"><i data-lucide="search"></i></span>
+        <span class="tool-card-body">
+          <b>Google Search</b>
+          <small>Pencarian web &amp; gambar</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -779,6 +805,56 @@
       </div>
     </section>
 
+    <!-- ================= GOOGLE SEARCH PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-google" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="search"></i></span>
+        <div>
+          <h3>Google Search</h3>
+          <p>Cari informasi atau gambar dari web.</p>
+        </div>
+      </div>
+
+      <div class="gs-segmented">
+        <button type="button" class="gs-seg-btn active" data-gsmode="text">
+          <i data-lucide="globe"></i> Web
+        </button>
+        <button type="button" class="gs-seg-btn" data-gsmode="image">
+          <i data-lucide="image"></i> Gambar
+        </button>
+      </div>
+
+      <form id="gsForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="gsQuery">Kata Kunci</label>
+          <div class="input-wrap">
+            <i data-lucide="search"></i>
+            <input id="gsQuery" type="text" placeholder="Contoh: Resep nasi goreng" autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="gsQueryClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="tool-action" id="gsSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Cari Sekarang</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="gsLoading">
+        <span class="spinner"></span>
+        <p id="gsLoadingText">Mencari…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="gsError">
+        <i data-lucide="alert-circle"></i>
+        <p id="gsErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="gs-list hidden" id="gsTextResults"></div>
+      <div class="gs-img-grid hidden" id="gsImageResults"></div>
+    </section>
+
     <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
@@ -943,6 +1019,7 @@
       <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app.</p>
       <p><b>Play Store:</b> Cari aplikasi atau paste link Play Store untuk melihat detail lengkap.</p>
       <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
+      <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
@@ -1057,6 +1134,7 @@
       happymod: $('#panel-happymod'),
       playstore: $('#panel-playstore'),
       clone: $('#panel-clone'),
+      google: $('#panel-google'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
     };
@@ -2007,7 +2085,6 @@
         cloneDom.submit.querySelector('span').textContent = 'Memproses…';
 
         try {
-          // Tembak API CopyWebsiteTarget
           const API_URL = 'https://copywebsitetarget.netlify.app/api/extract';
           const FALLBACK_API_URL = 'https://copywebsitetarget.netlify.app/.netlify/functions/extract';
           
@@ -2036,7 +2113,6 @@
             throw new Error(data.error || data.message || `Ekstraksi gagal status ${response.status}`);
           }
 
-          // Bikin ZIP pakai JSZip (Client-side)
           const files = Array.isArray(data.files) ? data.files : [];
           const zip = new JSZip();
 
@@ -2048,7 +2124,7 @@
             } else if (file.content !== undefined) {
               zip.file(relPath, file.content);
             } else {
-              zip.file(relPath, ''); // file kosong
+              zip.file(relPath, '');
             }
           });
 
@@ -2058,7 +2134,6 @@
             compressionOptions: { level: 6 }
           });
 
-          // Simpan ke Object URL untuk di-download
           const downloadUrl = URL.createObjectURL(zipBlob);
           const safeDomain = (data.domain || 'website').replace(/[^a-zA-Z0-9.-]/g, '_');
           const zipFileName = `${safeDomain}_dump.zip`;
@@ -2069,7 +2144,6 @@
           cloneDom.message.textContent = `Website ${safeDomain} berhasil dikloning.`;
           cloneDom.fileCount.textContent = data.totalFiles || files.length;
           
-          // Format Size
           const totalBytes = data.totalSize || 0;
           const sizeMB = (totalBytes / (1024 * 1024)).toFixed(2);
           cloneDom.size.textContent = `${sizeMB} MB`;
@@ -2088,6 +2162,111 @@
           cloneState.loading = false;
           cloneDom.submit.disabled = false;
           cloneDom.submit.querySelector('span').textContent = 'Clone Website';
+        }
+      });
+    }
+
+    /* ============================================================
+       GOOGLE SEARCH
+       ============================================================ */
+    const gsDom = {
+      segBtns: $$('.gs-seg-btn'),
+      form: $('#gsForm'),
+      query: $('#gsQuery'),
+      queryClear: $('#gsQueryClear'),
+      submit: $('#gsSubmit'),
+      loading: $('#gsLoading'),
+      loadingText: $('#gsLoadingText'),
+      error: $('#gsError'),
+      errorText: $('#gsErrorText'),
+      textResults: $('#gsTextResults'),
+      imageResults: $('#gsImageResults'),
+    };
+    const gsState = { mode: 'text', loading: false };
+
+    function gsSetMode(mode) {
+      gsState.mode = mode;
+      gsDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.gsmode === mode));
+      hide(gsDom.error); hide(gsDom.textResults); hide(gsDom.imageResults);
+    }
+
+    gsDom.segBtns.forEach((btn) => btn.addEventListener('click', () => gsSetMode(btn.dataset.gsmode)));
+    if (gsDom.query) gsDom.query.addEventListener('input', () => { gsDom.queryClear.classList.toggle('hidden', gsDom.query.value.length === 0); hide(gsDom.error); });
+    if (gsDom.queryClear) gsDom.queryClear.addEventListener('click', () => { gsDom.query.value = ''; gsDom.queryClear.classList.add('hidden'); gsDom.query.focus(); });
+
+    if (gsDom.form) {
+      gsDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (gsState.loading) return;
+        
+        const query = gsDom.query.value.trim();
+        if (!query) return toast('Kata kunci wajib diisi.', 'error');
+
+        gsState.loading = true;
+        hide(gsDom.error); hide(gsDom.textResults); hide(gsDom.imageResults);
+        show(gsDom.loading); gsDom.loadingText.textContent = 'Mencari…';
+        gsDom.submit.disabled = true; gsDom.submit.querySelector('span').textContent = 'Mencari…';
+
+        try {
+          const res = await fetch('/api/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, type: gsState.mode })
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Gagal mencari.');
+
+          hide(gsDom.loading);
+
+          if (gsState.mode === 'text') {
+            gsDom.textResults.innerHTML = '';
+            const results = data.results || [];
+            if (results.length === 0) {
+              gsDom.textResults.innerHTML = '<div class="pin-empty">Hasil tidak ditemukan.</div>';
+            } else {
+              results.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gs-item';
+                div.innerHTML = `
+                  <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a>
+                  <small>${escapeHtml(item.url)}</small>
+                  ${item.snippet ? `<p>${escapeHtml(item.snippet)}</p>` : ''}
+                `;
+                gsDom.textResults.appendChild(div);
+              });
+            }
+            show(gsDom.textResults);
+            toast(`${results.length} hasil ditemukan.`, 'success');
+          } else {
+            gsDom.imageResults.innerHTML = '';
+            const images = data.results || [];
+            if (images.length === 0) {
+              gsDom.imageResults.innerHTML = '<div class="pin-empty" style="grid-column: 1/-1;">Gambar tidak ditemukan.</div>';
+            } else {
+              images.forEach(url => {
+                const img = document.createElement('img');
+                img.className = 'gs-img';
+                img.src = url;
+                img.loading = 'lazy';
+                img.referrerPolicy = 'no-referrer';
+                img.onerror = () => img.style.display = 'none';
+                img.addEventListener('click', () => window.open(url, '_blank'));
+                gsDom.imageResults.appendChild(img);
+              });
+            }
+            show(gsDom.imageResults);
+            toast(`${images.length} gambar ditemukan.`, 'success');
+          }
+        } catch (err) {
+          hide(gsDom.loading);
+          show(gsDom.error);
+          gsDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          toast('Pencarian gagal.', 'error');
+        } finally {
+          gsState.loading = false;
+          gsDom.submit.disabled = false;
+          gsDom.submit.querySelector('span').textContent = 'Cari Sekarang';
         }
       });
     }
@@ -2258,6 +2437,7 @@
       pinSetMode('search');
       hmSetMode('search');
       psSetMode('search');
+      gsSetMode('text');
       chatAutoResize();
     }
 
