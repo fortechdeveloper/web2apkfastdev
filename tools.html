@@ -15,6 +15,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth-guard.js" defer></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- JSZip Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
     .auth-guard { position: fixed; inset: 0; z-index: 9999; display: none; place-items: center; padding: 20px; background: #090d18; text-align: center; }
@@ -311,13 +313,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>6 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Deployer · Chat AI</small>
+            <b>7 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone Web · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>6</b><small>Aktif</small></div>
+          <div><b>7</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -329,7 +331,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 6 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 7 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -365,6 +367,15 @@
         <span class="tool-card-body">
           <b>Play Store Scraper</b>
           <small>Cari &amp; detail aplikasi</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="clone" type="button" role="tab" aria-selected="false" aria-controls="panel-clone">
+        <span class="tool-card-icon"><i data-lucide="copy"></i></span>
+        <span class="tool-card-body">
+          <b>Clone Website</b>
+          <small>Clone &amp; simpan jadi ZIP</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -711,6 +722,63 @@
       <div class="ps-detail-card hidden" id="psDetailCard"></div>
     </section>
 
+    <!-- ================= CLONE WEBSITE PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-clone" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="copy"></i></span>
+        <div>
+          <h3>Clone Website</h3>
+          <p>Clone HTML/CSS/JS dan simpan jadi ZIP.</p>
+        </div>
+      </div>
+
+      <form id="cloneForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="cloneUrl">URL Target</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="cloneUrl" type="url" placeholder="https://example.com" autocomplete="off" spellcheck="false" inputmode="url" required>
+            <button class="input-clear hidden" id="cloneUrlClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Masukkan URL website yang ingin di-clone.</small>
+        </div>
+
+        <button class="tool-action" id="cloneSubmit" type="submit">
+          <i data-lucide="copy"></i>
+          <span>Clone Website</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="cloneLoading">
+        <span class="spinner"></span>
+        <p>Mengekstrak file website… (Bisa memakan waktu)</p>
+      </div>
+
+      <div class="tool-alert hidden" id="cloneError">
+        <i data-lucide="alert-circle"></i>
+        <p id="cloneErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="tool-result hidden" id="cloneResult" style="padding: 20px; text-align: center;">
+        <div class="result-icon" style="margin: 0 auto 14px; border-color: rgba(105, 228, 177, .2); background: rgba(105, 228, 177, .08); color: #78e5b8; width: 55px; height: 55px; display: grid; place-items: center; border-radius: 18px;">
+          <i data-lucide="check-circle-2" style="width: 27px; height: 27px;"></i>
+        </div>
+        <h3 style="margin: 0 0 8px; font-size: 17px; color: #fff;">Clone Berhasil!</h3>
+        <p style="margin: 0 0 16px; color: var(--muted); font-size: 12px;" id="cloneMessage">File website berhasil diekstrak.</p>
+        
+        <div class="ps-stats-row" style="margin-bottom: 16px; border-top: none;">
+          <div class="ps-stat"><b id="cloneFileCount">0</b><small>Files</small></div>
+          <div class="ps-stat"><b id="cloneSize">0 MB</b><small>Total Size</small></div>
+        </div>
+
+        <a class="download-btn" id="cloneDownloadLink" href="#" download style="display: inline-flex;">
+          <i data-lucide="download"></i> Unduh File ZIP
+        </a>
+      </div>
+    </section>
+
     <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
@@ -874,6 +942,7 @@
       <p><b>Pinterest:</b> mode Cari untuk eksplorasi, mode Unduh untuk pin URL.</p>
       <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app.</p>
       <p><b>Play Store:</b> Cari aplikasi atau paste link Play Store untuk melihat detail lengkap.</p>
+      <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
       <button class="tool-action" id="closeHelpBottom" type="button">Mengerti</button>
@@ -987,6 +1056,7 @@
       pinterest: $('#panel-pinterest'),
       happymod: $('#panel-happymod'),
       playstore: $('#panel-playstore'),
+      clone: $('#panel-clone'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
     };
@@ -1885,6 +1955,139 @@
         } finally {
           psState.loading = false;
           psDom.detailSubmit.disabled = false; psDom.detailSubmit.querySelector('span').textContent = 'Lihat Detail';
+        }
+      });
+    }
+
+    /* ============================================================
+       CLONE WEBSITE
+       ============================================================ */
+    const cloneDom = {
+      form: $('#cloneForm'),
+      url: $('#cloneUrl'),
+      urlClear: $('#cloneUrlClear'),
+      submit: $('#cloneSubmit'),
+      loading: $('#cloneLoading'),
+      error: $('#cloneError'),
+      errorText: $('#cloneErrorText'),
+      result: $('#cloneResult'),
+      message: $('#cloneMessage'),
+      fileCount: $('#cloneFileCount'),
+      size: $('#cloneSize'),
+      downloadLink: $('#cloneDownloadLink'),
+    };
+    const cloneState = { loading: false };
+
+    if (cloneDom.url) {
+      cloneDom.url.addEventListener('input', () => {
+        cloneDom.urlClear.classList.toggle('hidden', cloneDom.url.value.length === 0);
+        hide(cloneDom.error);
+      });
+    }
+    if (cloneDom.urlClear) {
+      cloneDom.urlClear.addEventListener('click', () => {
+        cloneDom.url.value = '';
+        cloneDom.urlClear.classList.add('hidden');
+        cloneDom.url.focus();
+      });
+    }
+
+    if (cloneDom.form) {
+      cloneDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (cloneState.loading) return;
+        
+        let targetUrl = cloneDom.url.value.trim();
+        if (!targetUrl) return toast('URL target wajib diisi.', 'error');
+        if (!/^https?:\/\//i.test(targetUrl)) targetUrl = `https://${targetUrl}`;
+
+        cloneState.loading = true;
+        cloneDom.submit.disabled = true;
+        hide(cloneDom.error); hide(cloneDom.result); show(cloneDom.loading);
+        cloneDom.submit.querySelector('span').textContent = 'Memproses…';
+
+        try {
+          // Tembak API CopyWebsiteTarget
+          const API_URL = 'https://copywebsitetarget.netlify.app/api/extract';
+          const FALLBACK_API_URL = 'https://copywebsitetarget.netlify.app/.netlify/functions/extract';
+          
+          const payload = JSON.stringify({ url: targetUrl });
+          const headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': UA,
+            'Origin': 'https://copywebsitetarget.netlify.app',
+            'Referer': 'https://copywebsitetarget.netlify.app/'
+          };
+
+          let response = await fetch(API_URL, { method: 'POST', headers, body: payload });
+          if (response.status === 404) {
+            response = await fetch(FALLBACK_API_URL, { method: 'POST', headers, body: payload });
+          }
+
+          const rawText = await response.text();
+          let data;
+          try {
+            data = JSON.parse(rawText);
+          } catch (_) {
+            throw new Error(`Gagal memproses respons server (${response.status}): ${rawText.slice(0, 100)}`);
+          }
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || data.message || `Ekstraksi gagal status ${response.status}`);
+          }
+
+          // Bikin ZIP pakai JSZip (Client-side)
+          const files = Array.isArray(data.files) ? data.files : [];
+          const zip = new JSZip();
+
+          files.forEach((file) => {
+            const relPath = file.path || file.name || 'file.bin';
+            if (file.isBinary && file.dataUrl) {
+              const base64Data = file.dataUrl.split(',')[1] || '';
+              zip.file(relPath, base64Data, { base64: true });
+            } else if (file.content !== undefined) {
+              zip.file(relPath, file.content);
+            } else {
+              zip.file(relPath, ''); // file kosong
+            }
+          });
+
+          const zipBlob = await zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 }
+          });
+
+          // Simpan ke Object URL untuk di-download
+          const downloadUrl = URL.createObjectURL(zipBlob);
+          const safeDomain = (data.domain || 'website').replace(/[^a-zA-Z0-9.-]/g, '_');
+          const zipFileName = `${safeDomain}_dump.zip`;
+
+          hide(cloneDom.loading);
+          show(cloneDom.result);
+          
+          cloneDom.message.textContent = `Website ${safeDomain} berhasil dikloning.`;
+          cloneDom.fileCount.textContent = data.totalFiles || files.length;
+          
+          // Format Size
+          const totalBytes = data.totalSize || 0;
+          const sizeMB = (totalBytes / (1024 * 1024)).toFixed(2);
+          cloneDom.size.textContent = `${sizeMB} MB`;
+
+          cloneDom.downloadLink.href = downloadUrl;
+          cloneDom.downloadLink.setAttribute('download', zipFileName);
+          
+          toast('Clone berhasil! Silakan unduh file ZIP.', 'success');
+
+        } catch (err) {
+          hide(cloneDom.loading);
+          show(cloneDom.error);
+          cloneDom.errorText.textContent = err.message || 'Terjadi kesalahan saat mengekstrak website.';
+          toast('Clone gagal.', 'error');
+        } finally {
+          cloneState.loading = false;
+          cloneDom.submit.disabled = false;
+          cloneDom.submit.querySelector('span').textContent = 'Clone Website';
         }
       });
     }
