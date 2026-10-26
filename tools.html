@@ -14,7 +14,8 @@
   <script>document.documentElement.classList.add('auth-pending');</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth-guard.js" defer></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Ganti CDN Lucide ke jsDelivr biar lebih stabil -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
   <!-- JSZip Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -1262,6 +1263,7 @@
         if (key === name) show(panel);
         else hide(panel);
       });
+      if (window.lucide) window.lucide.createIcons(); // Ensure icons render on switch
     }
 
     toolCards.forEach((card) => {
@@ -2723,7 +2725,12 @@
        INIT
        ============================================================ */
     function init() {
-      if (window.lucide) window.lucide.createIcons();
+      if (window.lucide) {
+        window.lucide.createIcons();
+        // Fallback untuk memastikan ikon di-render setelah DOM stabil
+        setTimeout(() => window.lucide.createIcons(), 500);
+      }
+      
       renderHistory();
       pinRenderHistory();
       hmRenderHistory();
