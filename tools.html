@@ -114,14 +114,43 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
-    /* ================= IMGBB ================= */
-    .ib-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
-    .ib-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
-    .ib-seg-btn svg { width: 14px; height: 14px; }
-    .ib-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    /* ================= TIKTOK STALKER ================= */
+    .ts-profile-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
+    .ts-header { position: relative; height: 100px; background: linear-gradient(to bottom, rgba(117,144,255,.2), transparent); }
+    .ts-avatar-wrap { position: absolute; bottom: -30px; left: 20px; padding: 3px; background: #0b1120; border-radius: 50%; }
+    .ts-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; background: #131b2e; border: 2px solid rgba(255,255,255,.1); }
+    .ts-body { padding: 40px 16px 16px; display: grid; gap: 12px; }
+    .ts-name-row { display: flex; align-items: center; gap: 6px; }
+    .ts-name-row h3 { margin: 0; font-size: 16px; color: #fff; }
+    .ts-name-row svg { width: 14px; height: 14px; color: #4da6ff; fill: #4da6ff; }
+    .ts-username { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
     
-    .ib-select { width: 100%; height: 48px; padding: 0 13px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-size: 12px; outline: none; appearance: none; cursor: pointer; }
-    .ib-select:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
+    .ts-bio { margin: 0; color: #cfd8ee; font-size: 11.5px; line-height: 1.5; white-space: pre-wrap; }
+    .ts-link { color: var(--blue); font-size: 10.5px; text-decoration: none; word-break: break-all; }
+    .ts-link:hover { text-decoration: underline; }
+
+    .ts-region-box { padding: 12px; border-radius: 12px; border: 1px solid rgba(117,144,255,.15); background: rgba(117,144,255,.05); display: grid; gap: 10px; }
+    .ts-region-title { display: flex; align-items: center; gap: 6px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
+    .ts-region-title svg { width: 14px; height: 14px; }
+    .ts-region-main { display: flex; align-items: center; gap: 10px; }
+    .ts-flag { font-size: 32px; line-height: 1; }
+    .ts-country { display: grid; gap: 2px; }
+    .ts-country b { font-size: 14px; color: #fff; }
+    .ts-country small { font-size: 9.5px; color: var(--muted); }
+    .ts-region-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; border-top: 1px solid rgba(117,144,255,.15); padding-top: 10px; margin-top: 6px; }
+    .ts-region-col { display: grid; gap: 2px; text-align: center; }
+    .ts-region-col small { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+    .ts-region-col b { font-size: 10px; color: #dbe3f6; }
+
+    .ts-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .ts-stat { padding: 10px 4px; border-radius: 10px; background: rgba(5,9,18,.4); border: 1px solid var(--line); text-align: center; display: grid; gap: 2px; }
+    .ts-stat b { font-size: 12px; color: #fff; }
+    .ts-stat small { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .3px; }
+
+    .ts-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ts-meta-item { padding: 8px 10px; border-radius: 8px; background: rgba(5,9,18,.4); border: 1px solid var(--line); display: grid; gap: 2px; }
+    .ts-meta-item small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; }
+    .ts-meta-item b { font-size: 10.5px; color: #dbe3f6; }
 
     /* ================= AM FINDER ================= */
     .am-video-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
@@ -182,6 +211,15 @@
     .yt-dl-btn span { font-size: 10px; font-weight: 700; }
     .yt-dl-btn small { font-size: 8px; opacity: .8; }
     .yt-dl-btn.disabled { opacity: .4; pointer-events: none; }
+
+    /* ================= IMGBB ================= */
+    .ib-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
+    .ib-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .ib-seg-btn svg { width: 14px; height: 14px; }
+    .ib-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
+    
+    .ib-select { width: 100%; height: 48px; padding: 0 13px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-size: 12px; outline: none; appearance: none; cursor: pointer; }
+    .ib-select:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
 
     /* ================= PINTEREST & HAPPYMOD ================= */
     .pin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
@@ -362,6 +400,7 @@
       .chat-messages { max-height: 50vh; }
       .ps-links { grid-template-columns: 1fr; }
       .yt-downloads { grid-template-columns: 1fr; }
+      .ts-region-details { grid-template-columns: 1fr; gap: 8px; }
     }
   </style>
 </head>
@@ -399,13 +438,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>11 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone · Google · YouTube · ImgBB · AM Finder · Deployer · Chat AI</small>
+            <b>12 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · Play Store · Clone · Google · YouTube · ImgBB · TikTok Stalker · AM Finder · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>11</b><small>Aktif</small></div>
+          <div><b>12</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -417,7 +456,7 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 11 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 12 AKTIF</span>
     </div>
 
     <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
@@ -489,6 +528,15 @@
         <span class="tool-card-body">
           <b>ImgBB Uploader</b>
           <small>Upload gambar + custom expired</small>
+        </span>
+        <span class="tool-card-badge">AKTIF</span>
+      </button>
+
+      <button class="tool-card" data-tool="tiktokstalker" type="button" role="tab" aria-selected="false" aria-controls="panel-tiktokstalker">
+        <span class="tool-card-icon"><i data-lucide="crosshair"></i></span>
+        <span class="tool-card-body">
+          <b>TikTok Stalker</b>
+          <small>Profil &amp; Region stalker</small>
         </span>
         <span class="tool-card-badge">AKTIF</span>
       </button>
@@ -1038,7 +1086,6 @@
       </div>
 
       <form id="ibForm" class="tool-form" novalidate>
-        <!-- Mode File -->
         <div class="field" id="ibFileField">
           <label for="ibFile">Pilih Gambar</label>
           <label class="upload-box" for="ibFile">
@@ -1049,7 +1096,6 @@
           <input class="file-input" id="ibFile" type="file" accept="image/*">
         </div>
 
-        <!-- Mode URL -->
         <div class="field hidden" id="ibUrlField">
           <label for="ibUrl">URL Gambar</label>
           <div class="input-wrap">
@@ -1061,7 +1107,6 @@
           </div>
         </div>
 
-        <!-- Expiration -->
         <div class="field">
           <label for="ibExp">Masa Aktif</label>
           <select id="ibExp" class="ib-select">
@@ -1117,6 +1162,48 @@
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- ================= TIKTOK STALKER PANEL ================= -->
+    <section class="panel tool-panel hidden" id="panel-tiktokstalker" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="crosshair"></i></span>
+        <div>
+          <h3>TikTok Stalker</h3>
+          <p>Cek profil dan region akun TikTok.</p>
+        </div>
+      </div>
+
+      <form id="tsForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="tsUsername">Username TikTok</label>
+          <div class="input-wrap">
+            <i data-lucide="user"></i>
+            <input id="tsUsername" type="text" placeholder="Contoh: @khaby.lame" autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="tsClear" type="button" aria-label="Bersihkan">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <small class="field-hint">Bisa pakai @ atau tanpa @.</small>
+        </div>
+
+        <button class="tool-action" id="tsSubmit" type="submit">
+          <i data-lucide="search"></i>
+          <span>Stalk Akun</span>
+        </button>
+      </form>
+
+      <div class="tool-state hidden" id="tsLoading">
+        <span class="spinner"></span>
+        <p id="tsLoadingText">Mencari akun…</p>
+      </div>
+
+      <div class="tool-alert hidden" id="tsError">
+        <i data-lucide="alert-circle"></i>
+        <p id="tsErrorText">Terjadi kesalahan.</p>
+      </div>
+
+      <div class="hidden" id="tsResult"></div>
     </section>
 
     <!-- ================= AM FINDER PANEL ================= -->
@@ -1331,6 +1418,7 @@
       <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
       <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
       <p><b>ImgBB:</b> Upload gambar dari file atau URL dengan masa aktif custom. Direct link siap pakai.</p>
+      <p><b>TikTok Stalker:</b> Cari tahu profil lengkap, statistik, dan region akun TikTok.</p>
       <p><b>AM Finder:</b> Cari preset Alight Motion (5MB/XML) berdasarkan link video TikTok/YouTube/Instagram.</p>
       <p><b>Deployer:</b> Hosting HTML langsung ke Vercel dengan custom nama web dan icon.</p>
       <p><b>Chat AI:</b> asisten AI yang bisa ditanya apa saja.</p>
@@ -1449,6 +1537,7 @@
       google: $('#panel-google'),
       youtube: $('#panel-youtube'),
       imgbb: $('#panel-imgbb'),
+      tiktokstalker: $('#panel-tiktokstalker'),
       amfinder: $('#panel-amfinder'),
       deployer: $('#panel-deployer'),
       chat: $('#panel-chat'),
@@ -2823,7 +2912,6 @@
           if (!file) return toast('Pilih file gambar terlebih dahulu.', 'error');
           if (file.size > 3 * 1024 * 1024) return toast('Ukuran file maksimal 3MB (limit Vercel).', 'error');
           
-          // Convert to Base64
           source = await new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = (e) => resolve(e.target.result);
@@ -2872,6 +2960,175 @@
           ibState.loading = false;
           ibDom.submit.disabled = false;
           ibDom.submit.querySelector('span').textContent = 'Upload ke ImgBB';
+        }
+      });
+    }
+
+    /* ============================================================
+       TIKTOK STALKER
+       ============================================================ */
+    const tsDom = {
+      form: $('#tsForm'),
+      username: $('#tsUsername'),
+      clear: $('#tsClear'),
+      submit: $('#tsSubmit'),
+      loading: $('#tsLoading'),
+      loadingText: $('#tsLoadingText'),
+      error: $('#tsError'),
+      errorText: $('#tsErrorText'),
+      result: $('#tsResult'),
+    };
+    const tsState = { loading: false };
+
+    function getFlagEmoji(countryCode) {
+      if (!countryCode || countryCode.length !== 2) return '🌐';
+      const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
+    }
+
+    if (tsDom.username) {
+      tsDom.username.addEventListener('input', () => {
+        tsDom.clear.classList.toggle('hidden', tsDom.username.value.length === 0);
+        hide(tsDom.error);
+      });
+    }
+    if (tsDom.clear) {
+      tsDom.clear.addEventListener('click', () => {
+        tsDom.username.value = '';
+        tsDom.clear.classList.add('hidden');
+        tsDom.username.focus();
+      });
+    }
+
+    if (tsDom.form) {
+      tsDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (tsState.loading) return;
+        
+        const username = tsDom.username.value.trim();
+        if (!username) return toast('Username wajib diisi.', 'error');
+
+        tsState.loading = true;
+        tsDom.submit.disabled = true;
+        hide(tsDom.error); hide(tsDom.result); show(tsDom.loading);
+        tsDom.submit.querySelector('span').textContent = 'Memproses…';
+        tsDom.loadingText.textContent = 'Mencari akun TikTok…';
+
+        try {
+          const res = await fetch('/api/tikip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username })
+          });
+          
+          const data = await res.json();
+          if (!res.ok || data.status === 'error') throw new Error(data.error || 'Gagal mengambil data.');
+
+          hide(tsDom.loading);
+          show(tsDom.result);
+
+          const u = data.data.user;
+          const region = data.data.region;
+          const stats = data.data.stats;
+          const avatar = data.data.avatar;
+
+          let likes = stats.likes || 0;
+          if (typeof likes === 'number' && likes < 0) likes = likes >>> 0;
+
+          const regionFlag = getFlagEmoji(region.code);
+          const currentFlag = getFlagEmoji(region.current_region.code);
+          const regFlag = getFlagEmoji(region.registered_region.code);
+          const lockFlag = getFlagEmoji(region.locked_region.code);
+
+          const createdDate = u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+
+          tsDom.result.innerHTML = `
+            <div class="ts-profile-card">
+              <div class="ts-header"></div>
+              <div class="ts-avatar-wrap">
+                <img class="ts-avatar" src="${escapeHtml(avatar.hd || avatar.medium || '')}" alt="" referrerpolicy="no-referrer">
+              </div>
+              <div class="ts-body">
+                <div>
+                  <div class="ts-name-row">
+                    <h3>${escapeHtml(u.nickname || 'Unknown')}</h3>
+                    ${u.verified ? '<i data-lucide="badge-check"></i>' : ''}
+                  </div>
+                  <span class="ts-username">@${escapeHtml(u.username || '')}</span>
+                </div>
+                
+                <p class="ts-bio">${escapeHtml(u.bio || 'Tidak ada bio.')}</p>
+                ${u.bio_link ? `<a class="ts-link" href="${escapeHtml(u.bio_link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(u.bio_link)}</a>` : ''}
+
+                <div class="ts-region-box">
+                  <div class="ts-region-title"><i data-lucide="map-pin"></i> Region Akun</div>
+                  <div class="ts-region-main">
+                    <span class="ts-flag">${regionFlag}</span>
+                    <div class="ts-country">
+                      <b>${escapeHtml(region.country || 'Unknown')}</b>
+                      <small>Kode Region: ${escapeHtml(region.code || '-')}</small>
+                    </div>
+                  </div>
+                  <div class="ts-region-details">
+                    <div class="ts-region-col">
+                      <small>Current</small>
+                      <b>${currentFlag} ${escapeHtml(region.current_region.code || '-')}</b>
+                    </div>
+                    <div class="ts-region-col">
+                      <small>Registered</small>
+                      <b>${regFlag} ${escapeHtml(region.registered_region.code || '-')}</b>
+                    </div>
+                    <div class="ts-region-col">
+                      <small>Locked</small>
+                      <b>${lockFlag} ${escapeHtml(region.locked_region.code || '-')}</b>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ts-stats-grid">
+                  <div class="ts-stat"><b>${formatNumber(stats.followers)}</b><small>Followers</small></div>
+                  <div class="ts-stat"><b>${formatNumber(stats.following)}</b><small>Following</small></div>
+                  <div class="ts-stat"><b>${formatNumber(likes)}</b><small>Likes</small></div>
+                  <div class="ts-stat"><b>${formatNumber(stats.videos)}</b><small>Videos</small></div>
+                </div>
+
+                <div class="ts-meta-grid">
+                  <div class="ts-meta-item">
+                    <small>Dibuat Pada</small>
+                    <b>${createdDate}</b>
+                  </div>
+                  <div class="ts-meta-item">
+                    <small>Status Akun</small>
+                    <b>${u.private ? 'Private' : 'Public'}</b>
+                  </div>
+                  <div class="ts-meta-item">
+                    <small>Bahasa</small>
+                    <b>${escapeHtml(u.language || '-')}</b>
+                  </div>
+                  <div class="ts-meta-item">
+                    <small>SecUID</small>
+                    <b style="font-size:9px;">${escapeHtml(u.sec_uid || '-')}</b>
+                  </div>
+                </div>
+
+                <a class="download-btn" href="${escapeHtml(u.profile_url)}" target="_blank" rel="noopener noreferrer" style="margin-top:4px;">
+                  <i data-lucide="external-link"></i> Buka Profil TikTok
+                </a>
+              </div>
+            </div>
+          `;
+
+          if (window.lucide) window.lucide.createIcons();
+          toast('Data berhasil ditemukan.', 'success');
+        } catch (err) {
+          hide(tsDom.loading);
+          show(tsDom.error);
+          tsDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          toast('Pencarian gagal.', 'error');
+        } finally {
+          tsState.loading = false;
+          tsDom.submit.disabled = false;
+          tsDom.submit.querySelector('span').textContent = 'Stalk Akun';
         }
       });
     }
