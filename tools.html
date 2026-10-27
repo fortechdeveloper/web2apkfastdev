@@ -3022,23 +3022,23 @@
           });
           
           const data = await res.json();
-          if (!res.ok || data.status === 'error') throw new Error(data.error || 'Gagal mengambil data.');
+          if (!res.ok || data.error) throw new Error(data.error || 'Gagal mengambil data.');
 
           hide(tsDom.loading);
           show(tsDom.result);
 
-          const u = data.data.user;
-          const region = data.data.region;
-          const stats = data.data.stats;
-          const avatar = data.data.avatar;
+          const u = data.user;
+          const region = data.region;
+          const stats = data.stats;
+          const avatar = data.avatar;
 
           let likes = stats.likes || 0;
           if (typeof likes === 'number' && likes < 0) likes = likes >>> 0;
 
           const regionFlag = getFlagEmoji(region.code);
-          const currentFlag = getFlagEmoji(region.current_region.code);
-          const regFlag = getFlagEmoji(region.registered_region.code);
-          const lockFlag = getFlagEmoji(region.locked_region.code);
+          const currentFlag = getFlagEmoji(region.current_region);
+          const regFlag = getFlagEmoji(region.registered_region);
+          const lockFlag = getFlagEmoji(region.locked_region);
 
           const createdDate = u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '-';
 
@@ -3072,15 +3072,15 @@
                   <div class="ts-region-details">
                     <div class="ts-region-col">
                       <small>Current</small>
-                      <b>${currentFlag} ${escapeHtml(region.current_region.code || '-')}</b>
+                      <b>${currentFlag} ${escapeHtml(region.current_region || '-')}</b>
                     </div>
                     <div class="ts-region-col">
                       <small>Registered</small>
-                      <b>${regFlag} ${escapeHtml(region.registered_region.code || '-')}</b>
+                      <b>${regFlag} ${escapeHtml(region.registered_region || '-')}</b>
                     </div>
                     <div class="ts-region-col">
                       <small>Locked</small>
-                      <b>${lockFlag} ${escapeHtml(region.locked_region.code || '-')}</b>
+                      <b>${lockFlag} ${escapeHtml(region.locked_region || '-')}</b>
                     </div>
                   </div>
                 </div>
