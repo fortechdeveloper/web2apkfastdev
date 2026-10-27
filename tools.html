@@ -30,12 +30,7 @@
     .tools-hero { padding-bottom: 22px; }
     .tools-hero h1 span { color: var(--cyan); }
 
-    .clay-card {
-      margin-top: 20px; padding: 18px; border-radius: 24px;
-      border: 1px solid rgba(160, 177, 219, .14);
-      background: radial-gradient(ellipse at 20% 0%, rgba(117, 144, 255, .16), transparent 55%), linear-gradient(145deg, rgba(28, 38, 62, .96), rgba(15, 22, 38, .96));
-      box-shadow: 0 22px 45px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -3px 10px rgba(0, 0, 0, .35);
-    }
+    .clay-card { margin-top: 20px; padding: 18px; border-radius: 24px; border: 1px solid rgba(160, 177, 219, .14); background: radial-gradient(ellipse at 20% 0%, rgba(117, 144, 255, .16), transparent 55%), linear-gradient(145deg, rgba(28, 38, 62, .96), rgba(15, 22, 38, .96)); box-shadow: 0 22px 45px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -3px 10px rgba(0, 0, 0, .35); }
     .clay-row { display: flex; align-items: center; gap: 12px; }
     .clay-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: rgba(112, 137, 255, .12); color: #9eafff; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(92,95,231,.15); }
     .clay-icon svg { width: 20px; height: 20px; }
@@ -46,105 +41,22 @@
     .clay-stats b { display: block; font-size: 18px; letter-spacing: -.5px; }
     .clay-stats small { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* ===== CATEGORY + TOOL TABS (sticky wrapper) ===== */
-    .tool-tabs-wrap {
-      position: sticky;
-      top: 0;
-      z-index: 12;
-      margin: 0 -16px 12px;
-      padding: 10px 0 10px;
-      background: rgba(9, 13, 24, .94);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(160, 177, 219, .06);
-    }
+    .tool-tabs-wrap { position: sticky; top: 0; z-index: 12; margin: 0 -16px 12px; padding: 10px 0 10px; background: rgba(9, 13, 24, .94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(160, 177, 219, .06); }
 
-    .category-tabs {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding: 2px 16px 10px;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      border-bottom: 1px solid rgba(160, 177, 219, .08);
-      margin-bottom: 10px;
-    }
+    .category-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 16px 10px; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; border-bottom: 1px solid rgba(160, 177, 219, .08); margin-bottom: 10px; }
     .category-tabs::-webkit-scrollbar { display: none; }
-    .category-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      flex: 0 0 auto;
-      height: 30px;
-      padding: 0 11px;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      background: transparent;
-      color: #7d8aa6;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .7px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-    }
+    .category-tab { display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; height: 30px; padding: 0 11px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #7d8aa6; font-size: 10px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: background .2s ease, border-color .2s ease, color .2s ease; }
     .category-tab:hover { color: #b8c4df; background: rgba(255,255,255,.03); }
-    .category-tab.active {
-      background: rgba(117, 144, 255, .1);
-      border-color: rgba(117, 144, 255, .3);
-      color: #9eafff;
-    }
-    .category-tab .cat-count {
-      font-size: 8.5px;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(160, 177, 219, .12);
-      color: #9eafff;
-      letter-spacing: .3px;
-    }
+    .category-tab.active { background: rgba(117, 144, 255, .1); border-color: rgba(117, 144, 255, .3); color: #9eafff; }
+    .category-tab .cat-count { font-size: 8.5px; padding: 1px 5px; border-radius: 4px; background: rgba(160, 177, 219, .12); color: #9eafff; letter-spacing: .3px; }
 
-    .tool-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 16px;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      scroll-behavior: smooth;
-      scroll-snap-type: x proximity;
-      -webkit-overflow-scrolling: touch;
-    }
+    .tool-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 16px; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
     .tool-tabs::-webkit-scrollbar { display: none; }
-    .tool-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      flex: 0 0 auto;
-      height: 40px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: rgba(20, 28, 47, .92);
-      color: #8d9ab6;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
-      scroll-snap-align: start;
-    }
+    .tool-tab { display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto; height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 20px; background: rgba(20, 28, 47, .92); color: #8d9ab6; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease; scroll-snap-align: start; }
     .tool-tab svg { width: 15px; height: 15px; flex: 0 0 auto; }
     .tool-tab:hover { border-color: rgba(129, 151, 255, .4); color: #c5cee4; }
     .tool-tab:active { transform: scale(.96); }
-    .tool-tab.active {
-      background: linear-gradient(135deg, rgba(104, 126, 255, .28), rgba(134, 100, 245, .18));
-      border-color: rgba(129, 151, 255, .55);
-      color: #dce3ff;
-      box-shadow: 0 4px 14px rgba(92, 95, 231, .2);
-    }
+    .tool-tab.active { background: linear-gradient(135deg, rgba(104, 126, 255, .28), rgba(134, 100, 245, .18)); border-color: rgba(129, 151, 255, .55); color: #dce3ff; box-shadow: 0 4px 14px rgba(92, 95, 231, .2); }
     .tool-tab.active svg { color: #b8c5ff; }
     .tool-tab[data-hidden="1"] { display: none; }
 
@@ -197,6 +109,32 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
+    /* ===== UC DRIVE ===== */
+    .uc-summary { padding: 14px; border-bottom: 1px solid var(--line); }
+    .uc-summary-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .uc-summary-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #131b2e; border: 1px solid var(--line); flex: 0 0 auto; }
+    .uc-summary-title { flex: 1; min-width: 0; }
+    .uc-summary-title b { display: block; font-size: 13px; color: #fff; word-break: break-word; line-height: 1.35; }
+    .uc-summary-title small { color: var(--muted); font-size: 10px; }
+    .uc-summary-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .uc-summary-stats div { text-align: center; }
+    .uc-summary-stats b { display: block; font-size: 14px; color: #fff; }
+    .uc-summary-stats small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; letter-spacing: .4px; }
+    .uc-file-list { padding: 12px; display: grid; gap: 8px; max-height: 60vh; overflow-y: auto; }
+    .uc-file-list::-webkit-scrollbar { width: 4px; }
+    .uc-file-list::-webkit-scrollbar-thumb { background: rgba(160,177,219,.2); border-radius: 2px; }
+    .uc-file { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(7,11,21,.35); }
+    .uc-file-thumb { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; background: #131b2e; flex: 0 0 auto; display: grid; place-items: center; color: #6b7a99; border: 1px solid var(--line); }
+    .uc-file-thumb svg { width: 20px; height: 20px; }
+    .uc-file-info { flex: 1; min-width: 0; display: grid; gap: 3px; }
+    .uc-file-info b { font-size: 11px; color: #dbe3f6; word-break: break-word; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .uc-file-info small { color: var(--muted); font-size: 9px; }
+    .uc-file-btn { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(110deg, #667fff, #8563e9); color: #fff; text-decoration: none; flex: 0 0 auto; transition: opacity .2s; }
+    .uc-file-btn:hover { opacity: .85; }
+    .uc-file-btn svg { width: 15px; height: 15px; }
+    .uc-file-btn.disabled { background: rgba(117,144,255,.08); color: var(--muted); pointer-events: none; }
+    .uc-empty { padding: 30px 14px; text-align: center; color: var(--muted); font-size: 11px; }
+
     .ts-profile-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .ts-header { position: relative; height: 100px; background: linear-gradient(to bottom, rgba(117,144,255,.2), transparent); }
     .ts-avatar-wrap { position: absolute; bottom: -30px; left: 20px; padding: 3px; background: #0b1120; border-radius: 50%; }
@@ -206,11 +144,9 @@
     .ts-name-row h3 { margin: 0; font-size: 16px; color: #fff; }
     .ts-name-row svg { width: 14px; height: 14px; color: #4da6ff; fill: #4da6ff; }
     .ts-username { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
-
     .ts-bio { margin: 0; color: #cfd8ee; font-size: 11.5px; line-height: 1.5; white-space: pre-wrap; }
     .ts-link { color: var(--blue); font-size: 10.5px; text-decoration: none; word-break: break-all; }
     .ts-link:hover { text-decoration: underline; }
-
     .ts-region-box { padding: 12px; border-radius: 12px; border: 1px solid rgba(117,144,255,.15); background: rgba(117,144,255,.05); display: grid; gap: 10px; }
     .ts-region-title { display: flex; align-items: center; gap: 6px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
     .ts-region-title svg { width: 14px; height: 14px; }
@@ -223,12 +159,10 @@
     .ts-region-col { display: grid; gap: 2px; text-align: center; }
     .ts-region-col small { color: var(--muted); font-size: 8px; text-transform: uppercase; }
     .ts-region-col b { font-size: 10px; color: #dbe3f6; }
-
     .ts-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .ts-stat { padding: 10px 4px; border-radius: 10px; background: rgba(5,9,18,.4); border: 1px solid var(--line); text-align: center; display: grid; gap: 2px; }
     .ts-stat b { font-size: 12px; color: #fff; }
     .ts-stat small { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .3px; }
-
     .ts-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .ts-meta-item { padding: 8px 10px; border-radius: 8px; background: rgba(5,9,18,.4); border: 1px solid var(--line); display: grid; gap: 2px; }
     .ts-meta-item small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; }
@@ -248,7 +182,6 @@
     .am-stat { flex: 1; text-align: center; }
     .am-stat b { display: block; font-size: 12px; color: #fff; }
     .am-stat small { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-
     .am-preset-list { display: grid; gap: 8px; margin-top: 8px; }
     .am-preset-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
     .am-preset-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #131b2e; flex: 0 0 auto; }
@@ -265,7 +198,6 @@
     .yt-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .yt-seg-btn svg { width: 14px; height: 14px; }
     .yt-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-
     .yt-list { display: grid; gap: 10px; margin-top: 16px; }
     .yt-card { display: flex; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s; }
     .yt-card:hover { border-color: rgba(129, 151, 255, .55); }
@@ -276,7 +208,6 @@
     .yt-info b { font-size: 11px; line-height: 1.35; color: #dbe3f6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .yt-info small { color: var(--muted); font-size: 9px; }
     .yt-info span { color: #8ee8c3; font-size: 8.5px; margin-top: 2px; }
-
     .yt-detail { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .yt-header { position: relative; height: 160px; background-size: cover; background-position: center; }
     .yt-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,11,21,1), transparent); }
@@ -296,7 +227,6 @@
     .ib-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .ib-seg-btn svg { width: 14px; height: 14px; }
     .ib-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-
     .ib-select { width: 100%; height: 48px; padding: 0 13px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-size: 12px; outline: none; appearance: none; cursor: pointer; }
     .ib-select:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
 
@@ -311,7 +241,6 @@
     .pin-card-meta b { font-size: 9.5px; line-height: 1.4; color: #cfd8ee; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .pin-card-meta small { color: var(--muted); font-size: 8.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .pin-empty { grid-column: 1 / -1; padding: 30px 14px; text-align: center; color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 14px; }
-
     .pin-preview { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .pin-preview-media { position: relative; max-height: 62vh; background: #050810; display: grid; place-items: center; overflow: hidden; }
     .pin-preview-media img, .pin-preview-media video { display: block; width: 100%; height: auto; max-height: 62vh; object-fit: contain; background: #050810; }
@@ -333,7 +262,6 @@
     .hm-card-body b { font-size: 10.5px; line-height: 1.35; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .hm-card-body small { color: var(--muted); font-size: 9px; display: flex; align-items: center; gap: 3px; }
     .hm-card-body small svg { width: 10px; height: 10px; }
-
     .hm-detail { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .hm-detail-head { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-bottom: 1px solid var(--line); }
     .hm-detail-icon { width: 64px; height: 64px; border-radius: 15px; background: #131b2e; overflow: hidden; flex: 0 0 auto; border: 1px solid var(--line); }
@@ -380,7 +308,6 @@
     .ps-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .ps-seg-btn svg { width: 14px; height: 14px; }
     .ps-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-
     .ps-grid { display: grid; gap: 10px; margin-top: 16px; }
     .ps-card { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s, transform .2s; }
     .ps-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); }
@@ -391,7 +318,6 @@
     .ps-card-stats { display: flex; gap: 8px; margin-top: 2px; font-size: 9px; color: #8ee8c3; font-weight: 700; }
     .ps-card-stats span { display: flex; align-items: center; gap: 3px; }
     .ps-card-stats svg { width: 10px; height: 10px; }
-
     .ps-detail-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .ps-header { position: relative; height: 120px; background-size: cover; background-position: center; }
     .ps-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,11,21,1), transparent); }
@@ -416,14 +342,12 @@
     .gs-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .gs-seg-btn svg { width: 14px; height: 14px; }
     .gs-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-
     .gs-list { display: grid; gap: 10px; margin-top: 16px; }
     .gs-item { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); }
     .gs-item a { color: #9eafff; font-size: 13px; font-weight: 600; text-decoration: none; display: block; margin-bottom: 4px; line-height: 1.4; }
     .gs-item a:hover { text-decoration: underline; }
     .gs-item small { color: #8ee8c3; font-size: 10px; word-break: break-all; display: block; margin-bottom: 6px; }
     .gs-item p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
     .gs-img-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
     .gs-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; background: #131b2e; transition: transform .2s; }
     .gs-img:hover { transform: scale(1.02); }
@@ -522,13 +446,13 @@
         <div class="clay-row">
           <span class="clay-icon"><i data-lucide="zap"></i></span>
           <div>
-            <b>12 tools tersedia</b>
-            <small>TikTok · Pinterest · HappyMod · Play Store · Clone · Google · YouTube · ImgBB · TikTok Stalker · AM Finder · Deployer · Chat AI</small>
+            <b>13 tools tersedia</b>
+            <small>TikTok · Pinterest · HappyMod · YouTube · UC Drive · Google · Play Store · Clone · ImgBB · TikTok Stalker · AM Finder · Deployer · Chat AI</small>
           </div>
         </div>
         <div class="clay-divider"></div>
         <div class="clay-stats">
-          <div><b>12</b><small>Aktif</small></div>
+          <div><b>13</b><small>Aktif</small></div>
           <div><b>2</b><small>Mode</small></div>
           <div><b>∞</b><small>Gratis</small></div>
         </div>
@@ -540,16 +464,16 @@
         <span class="eyebrow">UTILITY</span>
         <h2>Pilih tool</h2>
       </div>
-      <span class="version-chip"><span class="live-dot"></span> 12 AKTIF</span>
+      <span class="version-chip"><span class="live-dot"></span> 13 AKTIF</span>
     </div>
 
     <div class="tool-tabs-wrap">
       <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Kategori tool">
         <button class="category-tab active" data-category="all" type="button" role="tab" aria-selected="true">
-          Semua <span class="cat-count">12</span>
+          Semua <span class="cat-count">13</span>
         </button>
         <button class="category-tab" data-category="downloader" type="button" role="tab" aria-selected="false">
-          Downloader <span class="cat-count">4</span>
+          Downloader <span class="cat-count">5</span>
         </button>
         <button class="category-tab" data-category="search" type="button" role="tab" aria-selected="false">
           Search <span class="cat-count">2</span>
@@ -574,6 +498,9 @@
         </button>
         <button class="tool-tab" data-tool="youtube" data-category="downloader" type="button" role="tab" aria-selected="false" aria-controls="panel-youtube">
           <i data-lucide="youtube"></i><span>YouTube</span>
+        </button>
+        <button class="tool-tab" data-tool="uc" data-category="downloader" type="button" role="tab" aria-selected="false" aria-controls="panel-uc">
+          <i data-lucide="hard-drive"></i><span>UC Drive</span>
         </button>
         <button class="tool-tab" data-tool="google" data-category="search" type="button" role="tab" aria-selected="false" aria-controls="panel-google">
           <i data-lucide="search"></i><span>Google</span>
@@ -761,6 +688,82 @@
       </div>
     </section>
 
+    <section class="panel tool-panel hidden" id="panel-youtube" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="youtube"></i></span>
+        <div><h3>YouTube Downloader</h3><p>Cari video atau unduh via link YouTube.</p></div>
+      </div>
+
+      <div class="yt-segmented">
+        <button type="button" class="yt-seg-btn active" data-ytmode="search"><i data-lucide="search"></i> Cari Video</button>
+        <button type="button" class="yt-seg-btn" data-ytmode="download"><i data-lucide="link"></i> URL Video</button>
+      </div>
+
+      <form id="ytSearchForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="ytQuery">Kata Kunci</label>
+          <div class="input-wrap">
+            <i data-lucide="search"></i>
+            <input id="ytQuery" type="text" placeholder="Contoh: Lofi hip hop" autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="ytQueryClear" type="button" aria-label="Bersihkan"><i data-lucide="x"></i></button>
+          </div>
+        </div>
+        <button class="tool-action" id="ytSearchSubmit" type="submit"><i data-lucide="search"></i><span>Cari Video</span></button>
+      </form>
+
+      <form id="ytDownloadForm" class="tool-form hidden" novalidate>
+        <div class="field">
+          <label for="ytUrl">Link YouTube</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="ytUrl" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false" required>
+            <button class="input-clear hidden" id="ytUrlClear" type="button" aria-label="Bersihkan"><i data-lucide="x"></i></button>
+          </div>
+        </div>
+        <button class="tool-action" id="ytDownloadSubmit" type="submit"><i data-lucide="download"></i><span>Ambil Link Download</span></button>
+      </form>
+
+      <div class="tool-state hidden" id="ytLoading"><span class="spinner"></span><p id="ytLoadingText">Memproses…</p></div>
+      <div class="tool-alert hidden" id="ytError"><i data-lucide="alert-circle"></i><p id="ytErrorText">Terjadi kesalahan.</p></div>
+      <div class="yt-list hidden" id="ytResults"></div>
+      <div class="yt-detail hidden" id="ytDetailCard"></div>
+    </section>
+
+    <section class="panel tool-panel hidden" id="panel-uc" role="tabpanel">
+      <div class="panel-heading">
+        <span class="section-icon"><i data-lucide="hard-drive"></i></span>
+        <div><h3>UC Drive Downloader</h3><p>Ambil file dari UC Drive Share link.</p></div>
+      </div>
+
+      <form id="ucForm" class="tool-form" novalidate>
+        <div class="field">
+          <label for="ucUrl">Link UC Drive</label>
+          <div class="input-wrap">
+            <i data-lucide="link"></i>
+            <input id="ucUrl" type="url" placeholder="https://drive.ucweb.com/s/..." autocomplete="off" spellcheck="false" inputmode="url" required>
+            <button class="input-clear hidden" id="ucUrlClear" type="button" aria-label="Bersihkan"><i data-lucide="x"></i></button>
+          </div>
+          <small class="field-hint">Mendukung link <b>drive.ucweb.com/s/...</b> atau <b>uc-share.com/s/...</b>.</small>
+        </div>
+
+        <div class="field">
+          <label for="ucPasscode">Passcode <span class="optional">OPSIONAL</span></label>
+          <div class="input-wrap">
+            <i data-lucide="key-round"></i>
+            <input id="ucPasscode" type="text" placeholder="Kosongkan jika tidak ada" autocomplete="off" spellcheck="false" maxlength="32">
+          </div>
+          <small class="field-hint">Isi jika share link memerlukan kata sandi.</small>
+        </div>
+
+        <button class="tool-action" id="ucSubmit" type="submit"><i data-lucide="download"></i><span>Ambil Data</span></button>
+      </form>
+
+      <div class="tool-state hidden" id="ucLoading"><span class="spinner"></span><p>Mengambil data dari UC Drive…</p></div>
+      <div class="tool-alert hidden" id="ucError"><i data-lucide="alert-circle"></i><p id="ucErrorText">Terjadi kesalahan.</p></div>
+
+      <div class="hidden" id="ucResult"></div>
+    </section>
+
     <section class="panel tool-panel hidden" id="panel-playstore" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="play-circle"></i></span>
@@ -864,47 +867,6 @@
       <div class="tool-alert hidden" id="gsError"><i data-lucide="alert-circle"></i><p id="gsErrorText">Terjadi kesalahan.</p></div>
       <div class="gs-list hidden" id="gsTextResults"></div>
       <div class="gs-img-grid hidden" id="gsImageResults"></div>
-    </section>
-
-    <section class="panel tool-panel hidden" id="panel-youtube" role="tabpanel">
-      <div class="panel-heading">
-        <span class="section-icon"><i data-lucide="youtube"></i></span>
-        <div><h3>YouTube Downloader</h3><p>Cari video atau unduh via link YouTube.</p></div>
-      </div>
-
-      <div class="yt-segmented">
-        <button type="button" class="yt-seg-btn active" data-ytmode="search"><i data-lucide="search"></i> Cari Video</button>
-        <button type="button" class="yt-seg-btn" data-ytmode="download"><i data-lucide="link"></i> URL Video</button>
-      </div>
-
-      <form id="ytSearchForm" class="tool-form" novalidate>
-        <div class="field">
-          <label for="ytQuery">Kata Kunci</label>
-          <div class="input-wrap">
-            <i data-lucide="search"></i>
-            <input id="ytQuery" type="text" placeholder="Contoh: Lofi hip hop" autocomplete="off" spellcheck="false" required>
-            <button class="input-clear hidden" id="ytQueryClear" type="button" aria-label="Bersihkan"><i data-lucide="x"></i></button>
-          </div>
-        </div>
-        <button class="tool-action" id="ytSearchSubmit" type="submit"><i data-lucide="search"></i><span>Cari Video</span></button>
-      </form>
-
-      <form id="ytDownloadForm" class="tool-form hidden" novalidate>
-        <div class="field">
-          <label for="ytUrl">Link YouTube</label>
-          <div class="input-wrap">
-            <i data-lucide="link"></i>
-            <input id="ytUrl" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false" required>
-            <button class="input-clear hidden" id="ytUrlClear" type="button" aria-label="Bersihkan"><i data-lucide="x"></i></button>
-          </div>
-        </div>
-        <button class="tool-action" id="ytDownloadSubmit" type="submit"><i data-lucide="download"></i><span>Ambil Link Download</span></button>
-      </form>
-
-      <div class="tool-state hidden" id="ytLoading"><span class="spinner"></span><p id="ytLoadingText">Memproses…</p></div>
-      <div class="tool-alert hidden" id="ytError"><i data-lucide="alert-circle"></i><p id="ytErrorText">Terjadi kesalahan.</p></div>
-      <div class="yt-list hidden" id="ytResults"></div>
-      <div class="yt-detail hidden" id="ytDetailCard"></div>
     </section>
 
     <section class="panel tool-panel hidden" id="panel-imgbb" role="tabpanel">
@@ -1144,10 +1106,11 @@
       <p><b>TikTok:</b> tempel link video untuk versi tanpa watermark.</p>
       <p><b>Pinterest:</b> mode Cari untuk eksplorasi, mode Unduh untuk pin URL.</p>
       <p><b>HappyMod:</b> mode Cari untuk katalog MOD, mode URL untuk detail app.</p>
+      <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
+      <p><b>UC Drive:</b> Paste link UC Drive share, isi passcode jika diperlukan, lalu ambil daftar file + link video.</p>
       <p><b>Play Store:</b> Cari aplikasi atau paste link Play Store untuk melihat detail lengkap.</p>
       <p><b>Clone Website:</b> Paste URL, tunggu proses ekstrak, lalu download file ZIP berisi HTML/CSS/JS.</p>
       <p><b>Google Search:</b> Cari informasi web atau gambar dengan hasil yang relevan.</p>
-      <p><b>YouTube:</b> Cari video atau paste URL YouTube untuk mendapatkan link download MP4/MP3.</p>
       <p><b>ImgBB:</b> Upload gambar dari file atau URL dengan masa aktif custom. Direct link siap pakai.</p>
       <p><b>TikTok Stalker:</b> Cari tahu profil lengkap, statistik, dan region akun TikTok.</p>
       <p><b>AM Finder:</b> Cari preset Alight Motion (5MB/XML) berdasarkan link video TikTok/YouTube/Instagram.</p>
@@ -1232,19 +1195,17 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
     }
 
-    /* ============================================================
-       CATEGORY + TOOL SWITCHING
-       ============================================================ */
     const categoryTabs = $$('.category-tab');
     const toolCards = $$('.tool-tab');
     const panels = {
       tiktok: $('#panel-tiktok'),
       pinterest: $('#panel-pinterest'),
       happymod: $('#panel-happymod'),
+      youtube: $('#panel-youtube'),
+      uc: $('#panel-uc'),
       playstore: $('#panel-playstore'),
       clone: $('#panel-clone'),
       google: $('#panel-google'),
-      youtube: $('#panel-youtube'),
       imgbb: $('#panel-imgbb'),
       tiktokstalker: $('#panel-tiktokstalker'),
       amfinder: $('#panel-amfinder'),
@@ -1252,30 +1213,22 @@
       chat: $('#panel-chat'),
     };
 
-    let activeCategory = 'all';
-
     function setActiveCategory(cat) {
-      activeCategory = cat;
       categoryTabs.forEach((btn) => {
         const active = btn.dataset.category === cat;
         btn.classList.toggle('active', active);
         btn.setAttribute('aria-selected', active ? 'true' : 'false');
       });
-
       toolCards.forEach((card) => {
         const cardCat = card.dataset.category || 'all';
         const visible = cat === 'all' || cardCat === cat;
         card.dataset.hidden = visible ? '0' : '1';
       });
-
       const currentActive = toolCards.find((c) => c.classList.contains('active'));
       const currentHidden = !currentActive || currentActive.dataset.hidden === '1';
-
       if (currentHidden) {
         const firstVisible = toolCards.find((c) => c.dataset.hidden !== '1');
-        if (firstVisible) {
-          setActiveTool(firstVisible.dataset.tool);
-        }
+        if (firstVisible) setActiveTool(firstVisible.dataset.tool);
       } else {
         const tabsWrap = $('#toolTabs');
         if (tabsWrap) { try { tabsWrap.scrollTo({ left: 0, behavior: 'smooth' }); } catch (_) {} }
@@ -1942,6 +1895,201 @@
       finally { hmState.loading = false; hmHideLoading(); hmDom.dlSubmit.disabled = false; hmDom.dlSubmit.querySelector('span').textContent = 'Ambil info'; }
     });
 
+    /* YOUTUBE */
+    const ytDom = {
+      segBtns: $$('.yt-seg-btn'), searchForm: $('#ytSearchForm'),
+      query: $('#ytQuery'), queryClear: $('#ytQueryClear'), searchSubmit: $('#ytSearchSubmit'),
+      dlForm: $('#ytDownloadForm'), url: $('#ytUrl'), urlClear: $('#ytUrlClear'), dlSubmit: $('#ytDownloadSubmit'),
+      loading: $('#ytLoading'), loadingText: $('#ytLoadingText'), error: $('#ytError'), errorText: $('#ytErrorText'),
+      results: $('#ytResults'), detailCard: $('#ytDetailCard'),
+    };
+    const ytState = { mode: 'search', loading: false };
+
+    function ytSetMode(mode) {
+      ytState.mode = mode;
+      ytDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.ytmode === mode));
+      if (mode === 'search') { show(ytDom.searchForm); hide(ytDom.dlForm); }
+      else { hide(ytDom.searchForm); show(ytDom.dlForm); }
+      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
+    }
+    ytDom.segBtns.forEach((btn) => btn.addEventListener('click', () => ytSetMode(btn.dataset.ytmode)));
+    if (ytDom.query) ytDom.query.addEventListener('input', () => { ytDom.queryClear.classList.toggle('hidden', ytDom.query.value.length === 0); hide(ytDom.error); });
+    if (ytDom.queryClear) ytDom.queryClear.addEventListener('click', () => { ytDom.query.value = ''; ytDom.queryClear.classList.add('hidden'); ytDom.query.focus(); });
+    if (ytDom.url) ytDom.url.addEventListener('input', () => { ytDom.urlClear.classList.toggle('hidden', ytDom.url.value.length === 0); hide(ytDom.error); });
+    if (ytDom.urlClear) ytDom.urlClear.addEventListener('click', () => { ytDom.url.value = ''; ytDom.urlClear.classList.add('hidden'); ytDom.url.focus(); });
+
+    function showYtDetail(data) {
+      hide(ytDom.results);
+      ytDom.detailCard.innerHTML = '<div class="yt-header" style="background-image: url(\'' + escapeHtml(data.thumbnail) + '\');"></div>' +
+        '<div class="yt-head-content"><h3>' + escapeHtml(data.title) + '</h3><small>Video ID: ' + escapeHtml(data.videoId) + '</small></div>' +
+        '<div class="yt-detail-body"><div class="hm-section-label"><i data-lucide="video"></i> Video (MP4)</div>' +
+        '<div class="yt-downloads">' + data.mp4.map(v => v.url ? '<a class="yt-dl-btn primary" href="' + escapeHtml(v.url) + '" target="_blank"><i data-lucide="download" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>' + (v.size || 'Unknown size') + '</small></a>' : '<div class="yt-dl-btn disabled"><i data-lucide="x" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>Tidak tersedia</small></div>').join('') + '</div>' +
+        '<div class="hm-section-label" style="margin-top:8px;"><i data-lucide="music"></i> Audio (MP3)</div>' +
+        '<div class="yt-downloads">' + data.mp3.map(v => v.url ? '<a class="yt-dl-btn secondary" href="' + escapeHtml(v.url) + '" target="_blank"><i data-lucide="music" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>' + (v.size || 'Unknown size') + '</small></a>' : '<div class="yt-dl-btn disabled"><i data-lucide="x" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>Tidak tersedia</small></div>').join('') + '</div>' +
+        '<button class="ghost-btn" onclick="document.getElementById(\'ytDetailCard\').classList.add(\'hidden\'); document.getElementById(\'ytResults\').classList.remove(\'hidden\');"><i data-lucide="arrow-left"></i> Kembali</button></div>';
+      show(ytDom.detailCard); if (window.lucide) window.lucide.createIcons();
+    }
+    async function ytProcessDownload(videoUrl) {
+      if (ytState.loading) return;
+      ytState.loading = true;
+      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
+      show(ytDom.loading); ytDom.loadingText.textContent = 'Mengambil link download… (±10 detik)';
+      ytDom.dlSubmit.disabled = true; ytDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
+      try {
+        const res = await fetch('/api/youtube', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'download', videoId: videoUrl }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal mendapatkan link download.');
+        hide(ytDom.loading); showYtDetail(data);
+        toast('Link download berhasil dimuat.', 'success');
+      } catch (err) { hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message; toast('Gagal mendapatkan link.', 'error'); }
+      finally { ytState.loading = false; ytDom.dlSubmit.disabled = false; ytDom.dlSubmit.querySelector('span').textContent = 'Ambil Link Download'; }
+    }
+    if (ytDom.searchForm) ytDom.searchForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); if (ytState.loading) return;
+      const query = ytDom.query.value.trim();
+      if (!query) return toast('Kata kunci wajib diisi.', 'error');
+      ytState.loading = true; hide(ytDom.error); hide(ytDom.detailCard); hide(ytDom.results);
+      show(ytDom.loading); ytDom.loadingText.textContent = 'Mencari video…';
+      ytDom.searchSubmit.disabled = true; ytDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
+      try {
+        const res = await fetch('/api/youtube', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'search', query }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal mencari video.');
+        hide(ytDom.loading); ytDom.results.innerHTML = '';
+        if (!data.results || data.results.length === 0) { ytDom.results.innerHTML = '<div class="pin-empty">Video tidak ditemukan.</div>'; }
+        else { data.results.forEach(v => { const card = document.createElement('div'); card.className = 'yt-card'; card.innerHTML = '<div class="yt-thumb"><img src="' + escapeHtml(v.thumbnail) + '" alt="' + escapeHtml(v.title) + '" loading="lazy"><span class="yt-duration">' + escapeHtml(v.duration || '0:00') + '</span></div><div class="yt-info"><b>' + escapeHtml(v.title) + '</b><small>' + escapeHtml(v.channel.name) + '</small><span>' + escapeHtml(v.views || '0 views') + ' • ' + escapeHtml(v.published || '') + '</span></div>'; card.addEventListener('click', () => ytProcessDownload(v.url)); ytDom.results.appendChild(card); }); }
+        show(ytDom.results); toast(data.results.length + ' video ditemukan.', 'success');
+      } catch (err) { hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message; toast('Pencarian gagal.', 'error'); }
+      finally { ytState.loading = false; ytDom.searchSubmit.disabled = false; ytDom.searchSubmit.querySelector('span').textContent = 'Cari Video'; }
+    });
+    if (ytDom.dlForm) ytDom.dlForm.addEventListener('submit', (e) => { e.preventDefault(); const url = ytDom.url.value.trim(); if (!url) return toast('Link YouTube wajib diisi.', 'error'); ytProcessDownload(url); });
+
+    /* UC DRIVE */
+    const ucDom = {
+      form: $('#ucForm'), url: $('#ucUrl'), urlClear: $('#ucUrlClear'), passcode: $('#ucPasscode'),
+      submit: $('#ucSubmit'), loading: $('#ucLoading'), error: $('#ucError'), errorText: $('#ucErrorText'),
+      result: $('#ucResult'),
+    };
+    const ucState = { loading: false };
+
+    function ucFormatDate(ts) {
+      if (!ts) return '-';
+      try {
+        const d = new Date(Number(ts) * 1000);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch (_) { return '-'; }
+    }
+
+    function ucRenderResult(data) {
+      if (!ucDom.result) return;
+      const files = Array.isArray(data.files) ? data.files : [];
+      const authorNick = data.author && data.author.nickname ? data.author.nickname : '';
+      const authorAvatar = data.author && data.author.avatar ? data.author.avatar : '';
+
+      let filesHtml = '';
+      if (files.length === 0) {
+        filesHtml = '<div class="uc-empty">Tidak ada file di share ini.</div>';
+      } else {
+        filesHtml = files.map((f) => {
+          const dl = f.download_url || f.stream_url || '';
+          const hasUrl = Boolean(dl);
+          const isVideo = Boolean(f.video) || /\.(mp4|mkv|mov|avi|flv|webm|m4v|3gp)$/i.test(f.file_name || '');
+          const thumb = f.thumbnail
+            ? '<img class="uc-file-thumb" src="' + escapeHtml(f.thumbnail) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'">'
+            : '';
+          const thumbFallback = '<div class="uc-file-thumb" style="' + (thumb ? 'display:none;' : '') + '"><i data-lucide="' + (isVideo ? 'video' : 'file') + '"></i></div>';
+          const btn = hasUrl
+            ? '<a class="uc-file-btn" href="' + escapeHtml(dl) + '" target="_blank" rel="noopener noreferrer" title="Download"><i data-lucide="download"></i></a>'
+            : '<span class="uc-file-btn disabled" title="URL tidak tersedia"><i data-lucide="lock"></i></span>';
+          const meta = [];
+          if (f.size_formatted) meta.push(f.size_formatted);
+          if (f.format_type) meta.push(f.format_type);
+          if (f.video && f.video.resolution) meta.push(f.video.resolution);
+          return '<div class="uc-file">' + thumb + thumbFallback +
+            '<div class="uc-file-info"><b>' + escapeHtml(f.file_name || 'File') + '</b><small>' + escapeHtml(meta.join(' · ') || '—') + '</small></div>' +
+            btn + '</div>';
+        }).join('');
+      }
+
+      ucDom.result.innerHTML =
+        '<div class="tool-result" style="margin-top:16px;">' +
+          '<div class="uc-summary">' +
+            '<div class="uc-summary-head">' +
+              (authorAvatar ? '<img class="uc-summary-avatar" src="' + escapeHtml(authorAvatar) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' : '') +
+              '<div class="uc-summary-title"><b>' + escapeHtml(data.title || 'UC Drive Share') + '</b>' + (authorNick ? '<small>' + escapeHtml(authorNick) + '</small>' : '') + '</div>' +
+            '</div>' +
+            '<div class="uc-summary-stats">' +
+              '<div><b>' + (data.total_files || files.length) + '</b><small>Files</small></div>' +
+              '<div><b>' + escapeHtml(data.total_size_formatted || '0 B') + '</b><small>Total</small></div>' +
+              '<div><b>' + escapeHtml(ucFormatDate(data.expired_at)) + '</b><small>Expires</small></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="uc-file-list">' + filesHtml + '</div>' +
+        '</div>';
+
+      show(ucDom.result);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    if (ucDom.url) {
+      ucDom.url.addEventListener('input', () => {
+        if (ucDom.urlClear) ucDom.urlClear.classList.toggle('hidden', ucDom.url.value.length === 0);
+        hide(ucDom.error);
+      });
+    }
+    if (ucDom.urlClear) {
+      ucDom.urlClear.addEventListener('click', () => {
+        ucDom.url.value = '';
+        ucDom.urlClear.classList.add('hidden');
+        ucDom.url.focus();
+      });
+    }
+
+    if (ucDom.form) {
+      ucDom.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (ucState.loading) return;
+
+        const url = (ucDom.url.value || '').trim();
+        const passcode = (ucDom.passcode && ucDom.passcode.value) ? ucDom.passcode.value.trim() : '';
+
+        if (!url) return toast('Link UC Drive wajib diisi.', 'error');
+
+        ucState.loading = true;
+        ucDom.submit.disabled = true;
+        hide(ucDom.error); hide(ucDom.result); show(ucDom.loading);
+        ucDom.submit.querySelector('span').textContent = 'Memproses…';
+
+        try {
+          const res = await fetch('/api/uc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url, passcode })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data || data.status === false) {
+            const msg = (data && data.error) || 'Gagal mengambil data UC Drive.';
+            throw new Error(msg);
+          }
+
+          hide(ucDom.loading);
+          ucRenderResult(data);
+          toast(data.total_files + ' file ditemukan.', 'success');
+        } catch (err) {
+          hide(ucDom.loading);
+          if (ucDom.errorText) ucDom.errorText.textContent = err.message || 'Terjadi kesalahan.';
+          show(ucDom.error);
+          toast('Gagal mengambil data.', 'error');
+        } finally {
+          ucState.loading = false;
+          ucDom.submit.disabled = false;
+          ucDom.submit.querySelector('span').textContent = 'Ambil Data';
+        }
+      });
+    }
+
     /* PLAYSTORE */
     const psDom = {
       segBtns: $$('.ps-seg-btn'), searchForm: $('#psSearchForm'), detailForm: $('#psDetailForm'),
@@ -2125,75 +2273,6 @@
       } catch (err) { hide(gsDom.loading); show(gsDom.error); gsDom.errorText.textContent = err.message || 'Terjadi kesalahan.'; toast('Pencarian gagal.', 'error'); }
       finally { gsState.loading = false; gsDom.submit.disabled = false; gsDom.submit.querySelector('span').textContent = 'Cari Sekarang'; }
     });
-
-    /* YOUTUBE */
-    const ytDom = {
-      segBtns: $$('.yt-seg-btn'), searchForm: $('#ytSearchForm'),
-      query: $('#ytQuery'), queryClear: $('#ytQueryClear'), searchSubmit: $('#ytSearchSubmit'),
-      dlForm: $('#ytDownloadForm'), url: $('#ytUrl'), urlClear: $('#ytUrlClear'), dlSubmit: $('#ytDownloadSubmit'),
-      loading: $('#ytLoading'), loadingText: $('#ytLoadingText'), error: $('#ytError'), errorText: $('#ytErrorText'),
-      results: $('#ytResults'), detailCard: $('#ytDetailCard'),
-    };
-    const ytState = { mode: 'search', loading: false };
-
-    function ytSetMode(mode) {
-      ytState.mode = mode;
-      ytDom.segBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.ytmode === mode));
-      if (mode === 'search') { show(ytDom.searchForm); hide(ytDom.dlForm); }
-      else { hide(ytDom.searchForm); show(ytDom.dlForm); }
-      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
-    }
-    ytDom.segBtns.forEach((btn) => btn.addEventListener('click', () => ytSetMode(btn.dataset.ytmode)));
-    if (ytDom.query) ytDom.query.addEventListener('input', () => { ytDom.queryClear.classList.toggle('hidden', ytDom.query.value.length === 0); hide(ytDom.error); });
-    if (ytDom.queryClear) ytDom.queryClear.addEventListener('click', () => { ytDom.query.value = ''; ytDom.queryClear.classList.add('hidden'); ytDom.query.focus(); });
-    if (ytDom.url) ytDom.url.addEventListener('input', () => { ytDom.urlClear.classList.toggle('hidden', ytDom.url.value.length === 0); hide(ytDom.error); });
-    if (ytDom.urlClear) ytDom.urlClear.addEventListener('click', () => { ytDom.url.value = ''; ytDom.urlClear.classList.add('hidden'); ytDom.url.focus(); });
-
-    function showYtDetail(data) {
-      hide(ytDom.results);
-      ytDom.detailCard.innerHTML = '<div class="yt-header" style="background-image: url(\'' + escapeHtml(data.thumbnail) + '\');"></div>' +
-        '<div class="yt-head-content"><h3>' + escapeHtml(data.title) + '</h3><small>Video ID: ' + escapeHtml(data.videoId) + '</small></div>' +
-        '<div class="yt-detail-body"><div class="hm-section-label"><i data-lucide="video"></i> Video (MP4)</div>' +
-        '<div class="yt-downloads">' + data.mp4.map(v => v.url ? '<a class="yt-dl-btn primary" href="' + escapeHtml(v.url) + '" target="_blank"><i data-lucide="download" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>' + (v.size || 'Unknown size') + '</small></a>' : '<div class="yt-dl-btn disabled"><i data-lucide="x" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>Tidak tersedia</small></div>').join('') + '</div>' +
-        '<div class="hm-section-label" style="margin-top:8px;"><i data-lucide="music"></i> Audio (MP3)</div>' +
-        '<div class="yt-downloads">' + data.mp3.map(v => v.url ? '<a class="yt-dl-btn secondary" href="' + escapeHtml(v.url) + '" target="_blank"><i data-lucide="music" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>' + (v.size || 'Unknown size') + '</small></a>' : '<div class="yt-dl-btn disabled"><i data-lucide="x" style="width:18px;height:18px;"></i><span>' + v.quality + '</span><small>Tidak tersedia</small></div>').join('') + '</div>' +
-        '<button class="ghost-btn" onclick="document.getElementById(\'ytDetailCard\').classList.add(\'hidden\'); document.getElementById(\'ytResults\').classList.remove(\'hidden\');"><i data-lucide="arrow-left"></i> Kembali</button></div>';
-      show(ytDom.detailCard); if (window.lucide) window.lucide.createIcons();
-    }
-    async function ytProcessDownload(videoUrl) {
-      if (ytState.loading) return;
-      ytState.loading = true;
-      hide(ytDom.error); hide(ytDom.results); hide(ytDom.detailCard);
-      show(ytDom.loading); ytDom.loadingText.textContent = 'Mengambil link download… (±10 detik)';
-      ytDom.dlSubmit.disabled = true; ytDom.dlSubmit.querySelector('span').textContent = 'Memproses…';
-      try {
-        const res = await fetch('/api/youtube', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'download', videoId: videoUrl }) });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Gagal mendapatkan link download.');
-        hide(ytDom.loading); showYtDetail(data);
-        toast('Link download berhasil dimuat.', 'success');
-      } catch (err) { hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message; toast('Gagal mendapatkan link.', 'error'); }
-      finally { ytState.loading = false; ytDom.dlSubmit.disabled = false; ytDom.dlSubmit.querySelector('span').textContent = 'Ambil Link Download'; }
-    }
-    if (ytDom.searchForm) ytDom.searchForm.addEventListener('submit', async (e) => {
-      e.preventDefault(); if (ytState.loading) return;
-      const query = ytDom.query.value.trim();
-      if (!query) return toast('Kata kunci wajib diisi.', 'error');
-      ytState.loading = true; hide(ytDom.error); hide(ytDom.detailCard); hide(ytDom.results);
-      show(ytDom.loading); ytDom.loadingText.textContent = 'Mencari video…';
-      ytDom.searchSubmit.disabled = true; ytDom.searchSubmit.querySelector('span').textContent = 'Mencari…';
-      try {
-        const res = await fetch('/api/youtube', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'search', query }) });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Gagal mencari video.');
-        hide(ytDom.loading); ytDom.results.innerHTML = '';
-        if (!data.results || data.results.length === 0) { ytDom.results.innerHTML = '<div class="pin-empty">Video tidak ditemukan.</div>'; }
-        else { data.results.forEach(v => { const card = document.createElement('div'); card.className = 'yt-card'; card.innerHTML = '<div class="yt-thumb"><img src="' + escapeHtml(v.thumbnail) + '" alt="' + escapeHtml(v.title) + '" loading="lazy"><span class="yt-duration">' + escapeHtml(v.duration || '0:00') + '</span></div><div class="yt-info"><b>' + escapeHtml(v.title) + '</b><small>' + escapeHtml(v.channel.name) + '</small><span>' + escapeHtml(v.views || '0 views') + ' • ' + escapeHtml(v.published || '') + '</span></div>'; card.addEventListener('click', () => ytProcessDownload(v.url)); ytDom.results.appendChild(card); }); }
-        show(ytDom.results); toast(data.results.length + ' video ditemukan.', 'success');
-      } catch (err) { hide(ytDom.loading); show(ytDom.error); ytDom.errorText.textContent = err.message; toast('Pencarian gagal.', 'error'); }
-      finally { ytState.loading = false; ytDom.searchSubmit.disabled = false; ytDom.searchSubmit.querySelector('span').textContent = 'Cari Video'; }
-    });
-    if (ytDom.dlForm) ytDom.dlForm.addEventListener('submit', (e) => { e.preventDefault(); const url = ytDom.url.value.trim(); if (!url) return toast('Link YouTube wajib diisi.', 'error'); ytProcessDownload(url); });
 
     /* IMGBB */
     const ibDom = {
