@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="auth-guard.css">
   <script>document.documentElement.classList.add('auth-pending');</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="auth-guard.js" defer></script>
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="firebase-auth-guard.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -46,24 +46,57 @@
     .clay-stats b { display: block; font-size: 18px; letter-spacing: -.5px; }
     .clay-stats small { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
 
-    .tool-grid { display: grid; gap: 11px; margin-bottom: 15px; }
-    .tool-card {
-      display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px;
-      border-radius: 18px;
-      background: linear-gradient(145deg, rgba(20, 28, 47, .92), rgba(14, 20, 35, .92));
-      border: 1px solid var(--line);
-      color: var(--text); text-align: left; cursor: pointer;
-      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    .tool-tabs-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 12;
+      margin: 0 -16px 12px;
+      padding: 12px 0;
+      background: rgba(9, 13, 24, .94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(160, 177, 219, .06);
     }
-    .tool-card:active { transform: scale(.99); }
-    .tool-card:hover { transform: translateY(-1px); border-color: rgba(129, 151, 255, .55); box-shadow: 0 0 0 1px rgba(117, 144, 255, .12), 0 12px 28px rgba(92, 95, 231, .1); }
-    .tool-card.active { background: linear-gradient(145deg, rgba(26, 36, 58, .98), rgba(18, 25, 42, .98)); border-color: rgba(129, 151, 255, .55); box-shadow: 0 0 0 1px rgba(117, 144, 255, .12); }
-    .tool-card-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 auto; border-radius: 14px; background: rgba(112, 137, 255, .1); color: #9eafff; }
-    .tool-card-icon svg { width: 20px; height: 20px; }
-    .tool-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
-    .tool-card-body b { font-size: 12px; }
-    .tool-card-body small { color: var(--muted); font-size: 10px; }
-    .tool-card-badge { flex: 0 0 auto; padding: 5px 8px; border-radius: 8px; background: rgba(105, 228, 177, .1); border: 1px solid rgba(105, 228, 177, .2); color: #8ee8c3; font-size: 8px; font-weight: 800; letter-spacing: 1px; }
+    .tool-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 16px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tool-tabs::-webkit-scrollbar { display: none; }
+    .tool-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+      height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(20, 28, 47, .92);
+      color: #8d9ab6;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
+      scroll-snap-align: start;
+    }
+    .tool-tab svg { width: 15px; height: 15px; flex: 0 0 auto; }
+    .tool-tab:hover { border-color: rgba(129, 151, 255, .4); color: #c5cee4; }
+    .tool-tab:active { transform: scale(.96); }
+    .tool-tab.active {
+      background: linear-gradient(135deg, rgba(104, 126, 255, .28), rgba(134, 100, 245, .18));
+      border-color: rgba(129, 151, 255, .55);
+      color: #dce3ff;
+      box-shadow: 0 4px 14px rgba(92, 95, 231, .2);
+    }
+    .tool-tab.active svg { color: #b8c5ff; }
 
     .tool-panel { margin-top: 15px; }
     .tool-panel .panel-heading { margin-bottom: 20px; }
@@ -114,7 +147,6 @@
     .ghost-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; cursor: pointer; }
     .ghost-btn svg { width: 13px; height: 13px; }
 
-    /* ================= TIKTOK STALKER ================= */
     .ts-profile-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .ts-header { position: relative; height: 100px; background: linear-gradient(to bottom, rgba(117,144,255,.2), transparent); }
     .ts-avatar-wrap { position: absolute; bottom: -30px; left: 20px; padding: 3px; background: #0b1120; border-radius: 50%; }
@@ -124,7 +156,7 @@
     .ts-name-row h3 { margin: 0; font-size: 16px; color: #fff; }
     .ts-name-row svg { width: 14px; height: 14px; color: #4da6ff; fill: #4da6ff; }
     .ts-username { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
-    
+
     .ts-bio { margin: 0; color: #cfd8ee; font-size: 11.5px; line-height: 1.5; white-space: pre-wrap; }
     .ts-link { color: var(--blue); font-size: 10.5px; text-decoration: none; word-break: break-all; }
     .ts-link:hover { text-decoration: underline; }
@@ -152,7 +184,6 @@
     .ts-meta-item small { color: var(--muted); font-size: 8.5px; text-transform: uppercase; }
     .ts-meta-item b { font-size: 10.5px; color: #dbe3f6; }
 
-    /* ================= AM FINDER ================= */
     .am-video-card { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: rgba(7, 11, 21, .35); }
     .am-cover { width: 100%; height: 160px; object-fit: cover; background: #131b2e; }
     .am-video-body { padding: 14px; display: grid; gap: 10px; }
@@ -167,7 +198,7 @@
     .am-stat { flex: 1; text-align: center; }
     .am-stat b { display: block; font-size: 12px; color: #fff; }
     .am-stat small { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-    
+
     .am-preset-list { display: grid; gap: 8px; margin-top: 8px; }
     .am-preset-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
     .am-preset-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #131b2e; flex: 0 0 auto; }
@@ -180,12 +211,11 @@
     .am-preset-btn:hover { background: rgba(117,144,255,.2); }
     .am-preset-btn svg { width: 14px; height: 14px; }
 
-    /* ================= YOUTUBE ================= */
     .yt-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .yt-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .yt-seg-btn svg { width: 14px; height: 14px; }
     .yt-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-    
+
     .yt-list { display: grid; gap: 10px; margin-top: 16px; }
     .yt-card { display: flex; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s; }
     .yt-card:hover { border-color: rgba(129, 151, 255, .55); }
@@ -212,16 +242,14 @@
     .yt-dl-btn small { font-size: 8px; opacity: .8; }
     .yt-dl-btn.disabled { opacity: .4; pointer-events: none; }
 
-    /* ================= IMGBB ================= */
     .ib-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .ib-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .ib-seg-btn svg { width: 14px; height: 14px; }
     .ib-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-    
+
     .ib-select { width: 100%; height: 48px; padding: 0 13px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-size: 12px; outline: none; appearance: none; cursor: pointer; }
     .ib-select:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
 
-    /* ================= PINTEREST & HAPPYMOD ================= */
     .pin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
     .pin-card { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: #0b1120; overflow: hidden; cursor: pointer; text-align: left; color: inherit; transition: border-color .2s, transform .2s, box-shadow .2s; }
     .pin-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
@@ -290,7 +318,6 @@
     .hm-note { padding: 10px 11px; border-radius: 10px; border: 1px solid rgba(117,144,255,.14); background: rgba(117,144,255,.05); color: #9baedf; font-size: 9.5px; line-height: 1.6; }
     .hm-note b { color: #b9c7ff; }
 
-    /* ================= DEPLOYER ================= */
     .dep-tabs { display: flex; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .dep-tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .dep-tab svg { width: 14px; height: 14px; }
@@ -299,12 +326,11 @@
     .dep-textarea { width: 100%; min-height: 200px; padding: 12px; border: 1px solid rgba(155,170,210,.13); border-radius: 13px; background: rgba(6, 10, 20, .4); color: var(--text); font-family: 'Courier New', ui-monospace, monospace; font-size: 12px; line-height: 1.6; resize: vertical; outline: none; }
     .dep-textarea:focus { border-color: rgba(126, 150, 255, .65); box-shadow: 0 0 0 3px rgba(115, 139, 255, .08); }
 
-    /* ================= PLAYSTORE ================= */
     .ps-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .ps-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .ps-seg-btn svg { width: 14px; height: 14px; }
     .ps-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-    
+
     .ps-grid { display: grid; gap: 10px; margin-top: 16px; }
     .ps-card { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s, transform .2s; }
     .ps-card:hover { border-color: rgba(129, 151, 255, .55); transform: translateY(-1px); }
@@ -336,12 +362,11 @@
     .ps-links a:hover { background: rgba(117,144,255,.2); }
     .ps-links a.primary { grid-column: 1 / -1; background: linear-gradient(110deg, #657fff, #795ce8); border: 0; color: #fff; }
 
-    /* ================= GOOGLE SEARCH ================= */
     .gs-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 16px; padding: 4px; border: 1px solid rgba(155, 170, 210, .1); border-radius: 13px; background: rgba(5, 9, 18, .45); }
     .gs-seg-btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 39px; padding: 8px 5px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #8491ae; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
     .gs-seg-btn svg { width: 14px; height: 14px; }
     .gs-seg-btn.active { border-color: rgba(143, 159, 255, .16); background: linear-gradient(135deg, rgba(104, 126, 255, .22), rgba(134, 100, 245, .13)); color: #dce3ff; }
-    
+
     .gs-list { display: grid; gap: 10px; margin-top: 16px; }
     .gs-item { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 11, 21, .35); }
     .gs-item a { color: #9eafff; font-size: 13px; font-weight: 600; text-decoration: none; display: block; margin-bottom: 4px; line-height: 1.4; }
@@ -353,7 +378,6 @@
     .gs-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; background: #131b2e; transition: transform .2s; }
     .gs-img:hover { transform: scale(1.02); }
 
-    /* ================= CHAT AI ================= */
     .chat-clear-btn { margin-left: auto; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.03); color: var(--muted); cursor: pointer; flex: 0 0 auto; transition: color .15s, background .15s; }
     .chat-clear-btn:hover { color: #c5cee4; background: rgba(255,255,255,.07); }
     .chat-clear-btn svg { width: 15px; height: 15px; }
@@ -392,10 +416,19 @@
     .chat-send-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
     .chat-send-btn svg { width: 17px; height: 17px; }
 
+    .history-list { display: grid; gap: 8px; }
+    .history-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(7, 11, 21, .35); cursor: pointer; text-align: left; transition: border-color .2s; }
+    .history-item:hover { border-color: rgba(129, 151, 255, .55); }
+    .history-item img { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; flex: 0 0 auto; background: #131b2e; }
+    .history-item div { flex: 1; min-width: 0; display: grid; gap: 2px; }
+    .history-item b { font-size: 10.5px; color: #dbe3f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-item small { font-size: 9px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-item svg { width: 14px; height: 14px; color: var(--muted); flex: 0 0 auto; }
+
     @media (max-width: 380px) {
       .clay-stats b { font-size: 16px; }
-      .tool-card { padding: 12px; gap: 10px; }
-      .tool-card-icon { width: 38px; height: 38px; border-radius: 12px; }
+      .tool-tab { height: 36px; padding: 0 12px; font-size: 10px; }
+      .tool-tab svg { width: 13px; height: 13px; }
       .pin-grid, .hm-grid, .gs-img-grid { gap: 7px; }
       .chat-messages { max-height: 50vh; }
       .ps-links { grid-template-columns: 1fr; }
@@ -459,117 +492,70 @@
       <span class="version-chip"><span class="live-dot"></span> 12 AKTIF</span>
     </div>
 
-    <div class="tool-grid" id="toolGrid" role="tablist" aria-label="Daftar tool">
-      <button class="tool-card active" data-tool="tiktok" type="button" role="tab" aria-selected="true" aria-controls="panel-tiktok">
-        <span class="tool-card-icon"><i data-lucide="music-2"></i></span>
-        <span class="tool-card-body">
-          <b>TikTok Downloader</b>
-          <small>Video tanpa watermark</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+    <div class="tool-tabs-wrap">
+      <div class="tool-tabs" id="toolTabs" role="tablist" aria-label="Daftar tool">
+        <button class="tool-tab active" data-tool="tiktok" type="button" role="tab" aria-selected="true" aria-controls="panel-tiktok">
+          <i data-lucide="music-2"></i>
+          <span>TikTok</span>
+        </button>
 
-      <button class="tool-card" data-tool="pinterest" type="button" role="tab" aria-selected="false" aria-controls="panel-pinterest">
-        <span class="tool-card-icon"><i data-lucide="image"></i></span>
-        <span class="tool-card-body">
-          <b>Pinterest Search &amp; DL</b>
-          <small>Cari &amp; unduh gambar/video</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="pinterest" type="button" role="tab" aria-selected="false" aria-controls="panel-pinterest">
+          <i data-lucide="image"></i>
+          <span>Pinterest</span>
+        </button>
 
-      <button class="tool-card" data-tool="happymod" type="button" role="tab" aria-selected="false" aria-controls="panel-happymod">
-        <span class="tool-card-icon"><i data-lucide="package"></i></span>
-        <span class="tool-card-body">
-          <b>HappyMod Search &amp; DL</b>
-          <small>APK &amp; MOD</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="happymod" type="button" role="tab" aria-selected="false" aria-controls="panel-happymod">
+          <i data-lucide="package"></i>
+          <span>HappyMod</span>
+        </button>
 
-      <button class="tool-card" data-tool="playstore" type="button" role="tab" aria-selected="false" aria-controls="panel-playstore">
-        <span class="tool-card-icon"><i data-lucide="play-circle"></i></span>
-        <span class="tool-card-body">
-          <b>Play Store Scraper</b>
-          <small>Cari &amp; detail aplikasi</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="playstore" type="button" role="tab" aria-selected="false" aria-controls="panel-playstore">
+          <i data-lucide="play-circle"></i>
+          <span>Play Store</span>
+        </button>
 
-      <button class="tool-card" data-tool="clone" type="button" role="tab" aria-selected="false" aria-controls="panel-clone">
-        <span class="tool-card-icon"><i data-lucide="copy"></i></span>
-        <span class="tool-card-body">
-          <b>Clone Website</b>
-          <small>Clone &amp; simpan jadi ZIP</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="clone" type="button" role="tab" aria-selected="false" aria-controls="panel-clone">
+          <i data-lucide="copy"></i>
+          <span>Clone</span>
+        </button>
 
-      <button class="tool-card" data-tool="google" type="button" role="tab" aria-selected="false" aria-controls="panel-google">
-        <span class="tool-card-icon"><i data-lucide="search"></i></span>
-        <span class="tool-card-body">
-          <b>Google Search</b>
-          <small>Pencarian web &amp; gambar</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="google" type="button" role="tab" aria-selected="false" aria-controls="panel-google">
+          <i data-lucide="search"></i>
+          <span>Google</span>
+        </button>
 
-      <button class="tool-card" data-tool="youtube" type="button" role="tab" aria-selected="false" aria-controls="panel-youtube">
-        <span class="tool-card-icon"><i data-lucide="youtube"></i></span>
-        <span class="tool-card-body">
-          <b>YouTube Downloader</b>
-          <small>Cari &amp; unduh video/audio</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="youtube" type="button" role="tab" aria-selected="false" aria-controls="panel-youtube">
+          <i data-lucide="youtube"></i>
+          <span>YouTube</span>
+        </button>
 
-      <button class="tool-card" data-tool="imgbb" type="button" role="tab" aria-selected="false" aria-controls="panel-imgbb">
-        <span class="tool-card-icon"><i data-lucide="upload-cloud"></i></span>
-        <span class="tool-card-body">
-          <b>ImgBB Uploader</b>
-          <small>Upload gambar + custom expired</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="imgbb" type="button" role="tab" aria-selected="false" aria-controls="panel-imgbb">
+          <i data-lucide="upload-cloud"></i>
+          <span>ImgBB</span>
+        </button>
 
-      <button class="tool-card" data-tool="tiktokstalker" type="button" role="tab" aria-selected="false" aria-controls="panel-tiktokstalker">
-        <span class="tool-card-icon"><i data-lucide="crosshair"></i></span>
-        <span class="tool-card-body">
-          <b>TikTok Stalker</b>
-          <small>Profil &amp; Region stalker</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="tiktokstalker" type="button" role="tab" aria-selected="false" aria-controls="panel-tiktokstalker">
+          <i data-lucide="crosshair"></i>
+          <span>Stalker</span>
+        </button>
 
-      <button class="tool-card" data-tool="amfinder" type="button" role="tab" aria-selected="false" aria-controls="panel-amfinder">
-        <span class="tool-card-icon"><i data-lucide="film"></i></span>
-        <span class="tool-card-body">
-          <b>AM Finder</b>
-          <small>Alight Motion Preset</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="amfinder" type="button" role="tab" aria-selected="false" aria-controls="panel-amfinder">
+          <i data-lucide="film"></i>
+          <span>AM Finder</span>
+        </button>
 
-      <button class="tool-card" data-tool="deployer" type="button" role="tab" aria-selected="false" aria-controls="panel-deployer">
-        <span class="tool-card-icon"><i data-lucide="rocket"></i></span>
-        <span class="tool-card-body">
-          <b>Deploy Vercel</b>
-          <small>Hosting HTML instan</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="deployer" type="button" role="tab" aria-selected="false" aria-controls="panel-deployer">
+          <i data-lucide="rocket"></i>
+          <span>Deployer</span>
+        </button>
 
-      <button class="tool-card" data-tool="chat" type="button" role="tab" aria-selected="false" aria-controls="panel-chat">
-        <span class="tool-card-icon"><i data-lucide="message-square"></i></span>
-        <span class="tool-card-body">
-          <b>Chat AI</b>
-          <small>Asisten cerdas tanpa batas</small>
-        </span>
-        <span class="tool-card-badge">AKTIF</span>
-      </button>
+        <button class="tool-tab" data-tool="chat" type="button" role="tab" aria-selected="false" aria-controls="panel-chat">
+          <i data-lucide="message-square"></i>
+          <span>Chat AI</span>
+        </button>
+      </div>
     </div>
 
-    <!-- ================= TIKTOK PANEL ================= -->
     <section class="panel tool-panel" id="panel-tiktok" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="music-2"></i></span>
@@ -654,7 +640,6 @@
       </div>
     </section>
 
-    <!-- ================= PINTEREST PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-pinterest" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="image"></i></span>
@@ -750,7 +735,6 @@
       </div>
     </section>
 
-    <!-- ================= HAPPYMOD PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-happymod" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="package"></i></span>
@@ -824,7 +808,6 @@
       </div>
     </section>
 
-    <!-- ================= PLAY STORE PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-playstore" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="play-circle"></i></span>
@@ -892,7 +875,6 @@
       <div class="ps-detail-card hidden" id="psDetailCard"></div>
     </section>
 
-    <!-- ================= CLONE WEBSITE PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-clone" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="copy"></i></span>
@@ -937,7 +919,7 @@
         </div>
         <h3 style="margin: 0 0 8px; font-size: 17px; color: #fff;">Clone Berhasil!</h3>
         <p style="margin: 0 0 16px; color: var(--muted); font-size: 12px;" id="cloneMessage">File website berhasil diekstrak.</p>
-        
+
         <div class="ps-stats-row" style="margin-bottom: 16px; border-top: none;">
           <div class="ps-stat"><b id="cloneFileCount">0</b><small>Files</small></div>
           <div class="ps-stat"><b id="cloneSize">0 MB</b><small>Total Size</small></div>
@@ -949,7 +931,6 @@
       </div>
     </section>
 
-    <!-- ================= GOOGLE SEARCH PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-google" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="search"></i></span>
@@ -999,7 +980,6 @@
       <div class="gs-img-grid hidden" id="gsImageResults"></div>
     </section>
 
-    <!-- ================= YOUTUBE PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-youtube" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="youtube"></i></span>
@@ -1066,7 +1046,6 @@
       <div class="yt-detail hidden" id="ytDetailCard"></div>
     </section>
 
-    <!-- ================= IMGBB PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-imgbb" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="upload-cloud"></i></span>
@@ -1147,7 +1126,7 @@
         </div>
         <h3 style="margin: 0 0 8px; font-size: 17px; color: #fff;">Upload Berhasil!</h3>
         <p style="margin: 0 0 16px; color: var(--muted); font-size: 12px;" id="ibMessage">Gambar berhasil diunggah.</p>
-        
+
         <img id="ibPreview" src="" alt="Preview" style="width: 100%; max-height: 200px; object-fit: contain; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--line); background: #131b2e;">
 
         <div class="download-actions">
@@ -1164,7 +1143,6 @@
       </div>
     </section>
 
-    <!-- ================= TIKTOK STALKER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-tiktokstalker" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="crosshair"></i></span>
@@ -1206,7 +1184,6 @@
       <div class="hidden" id="tsResult"></div>
     </section>
 
-    <!-- ================= AM FINDER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-amfinder" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="film"></i></span>
@@ -1236,7 +1213,7 @@
 
       <div class="tool-state hidden" id="amLoading">
         <span class="spinner"></span>
-        <p id="amLoadingText">Memindai komentar & bio… (Bisa ±45 detik)</p>
+        <p id="amLoadingText">Memindai komentar &amp; bio… (Bisa ±45 detik)</p>
       </div>
 
       <div class="tool-alert hidden" id="amError">
@@ -1247,7 +1224,6 @@
       <div class="hidden" id="amResult"></div>
     </section>
 
-    <!-- ================= DEPLOYER PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-deployer" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="rocket"></i></span>
@@ -1277,11 +1253,11 @@
               <i data-lucide="file-code-2"></i> Pilih File
             </button>
           </div>
-          
+
           <div id="depPasteArea">
             <textarea id="depHtmlCode" class="dep-textarea" placeholder="<html>&#10;<body>&#10;  <h1>Hello World</h1>&#10;</body>&#10;</html>"></textarea>
           </div>
-          
+
           <div id="depFileArea" class="hidden">
             <label class="upload-box" for="depHtmlFile">
               <span class="upload-icon"><i data-lucide="upload"></i></span>
@@ -1330,7 +1306,6 @@
       </div>
     </section>
 
-    <!-- ================= CHAT AI PANEL ================= -->
     <section class="panel tool-panel hidden" id="panel-chat" role="tabpanel">
       <div class="panel-heading">
         <span class="section-icon"><i data-lucide="message-square"></i></span>
@@ -1369,7 +1344,6 @@
       </div>
     </section>
 
-    <!-- THANKS TO -->
     <div style="text-align: center; padding: 28px 0 0; display: grid; gap: 6px;">
       <p style="margin: 0; color: var(--muted); font-size: 10.5px; display: flex; align-items: center; justify-content: center; gap: 5px;">
         <i data-lucide="heart" style="width: 12px; height: 12px; color: #ff6e6e; fill: #ff6e6e;"></i>
@@ -1389,25 +1363,15 @@
   </main>
 
   <nav class="bottom-nav" aria-label="Navigasi utama">
-    <a href="index.html" class="nav-item">
-      <i data-lucide="hammer"></i><span>Build</span>
-    </a>
-    <a href="tools.html" class="nav-item active" aria-current="page">
-      <i data-lucide="wrench"></i><span>Tools</span>
-    </a>
-    <a href="pricing.html" class="nav-item">
-      <i data-lucide="shield-check"></i><span>Akses</span>
-    </a>
-    <a href="akun.html" class="nav-item">
-      <i data-lucide="user-round"></i><span>Akun</span>
-    </a>
+    <a href="index.html" class="nav-item"><i data-lucide="hammer"></i><span>Build</span></a>
+    <a href="tools.html" class="nav-item active" aria-current="page"><i data-lucide="wrench"></i><span>Tools</span></a>
+    <a href="pricing.html" class="nav-item"><i data-lucide="shield-check"></i><span>Akses</span></a>
+    <a href="akun.html" class="nav-item"><i data-lucide="user-round"></i><span>Akun</span></a>
   </nav>
 
   <div class="modal-backdrop hidden" id="helpModal">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup">
-        <i data-lucide="x"></i>
-      </button>
+      <button class="modal-close" id="closeHelp" type="button" aria-label="Tutup"><i data-lucide="x"></i></button>
       <span class="section-icon"><i data-lucide="circle-help"></i></span>
       <h3 id="helpTitle">Bantuan Tools</h3>
       <p><b>TikTok:</b> tempel link video untuk versi tanpa watermark.</p>
@@ -1499,7 +1463,7 @@
           const text = await res.text();
           if (text && text.length > 200) return { text, url: res.url || url };
         }
-      } catch (_) { /* fallback */ }
+      } catch (_) { }
 
       for (const proxy of PROXIES) {
         try {
@@ -1507,7 +1471,7 @@
           if (!res.ok) continue;
           const text = await res.text();
           if (text && text.length > 200) return { text, url };
-        } catch (_) { /* next */ }
+        } catch (_) { }
       }
 
       throw new Error('Gagal mengambil halaman. Server target mungkin memblokir. Coba lagi nanti.');
@@ -1524,10 +1488,7 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
     }
 
-    /* ============================================================
-       TOOL SWITCHING
-       ============================================================ */
-    const toolCards = $$('.tool-card');
+    const toolCards = $$('.tool-tab');
     const panels = {
       tiktok: $('#panel-tiktok'),
       pinterest: $('#panel-pinterest'),
@@ -1544,10 +1505,12 @@
     };
 
     function setActiveTool(name) {
+      let activeTab = null;
       toolCards.forEach((card) => {
         const active = card.dataset.tool === name;
         card.classList.toggle('active', active);
         card.setAttribute('aria-selected', active ? 'true' : 'false');
+        if (active) activeTab = card;
       });
       Object.keys(panels).forEach((key) => {
         const panel = panels[key];
@@ -1555,6 +1518,13 @@
         if (key === name) show(panel);
         else hide(panel);
       });
+      if (activeTab) {
+        try {
+          activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } catch (_) {
+          try { activeTab.scrollIntoView(); } catch (__) { }
+        }
+      }
       if (window.lucide) window.lucide.createIcons();
     }
 
@@ -1589,7 +1559,7 @@
     }
     function writeHistory(arr) {
       try { localStorage.setItem(TT_HISTORY_KEY, JSON.stringify(arr.slice(0, TT_HISTORY_MAX))); }
-      catch (_) {}
+      catch (_) { }
     }
     function addToHistory(entry) {
       const list = readHistory().filter((x) => x.id !== entry.id);
@@ -1720,7 +1690,7 @@
     }
     function pinWriteHistory(arr) {
       try { localStorage.setItem(PIN_HISTORY_KEY, JSON.stringify(arr.slice(0, PIN_HISTORY_MAX))); }
-      catch (_) {}
+      catch (_) { }
     }
     function pinAddToHistory(entry) {
       const list = pinReadHistory().filter((x) => x.id !== entry.id);
@@ -1796,12 +1766,12 @@
         card.type = 'button'; card.className = 'pin-card';
         card.innerHTML =
           '<div class="pin-card-thumb">' +
-            '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
-            '<span class="pin-card-type"><i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR') + '</span>' +
+          '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+          '<span class="pin-card-type"><i data-lucide="' + (isVideo ? 'video' : 'image') + '"></i> ' + (isVideo ? 'VIDEO' : 'GAMBAR') + '</span>' +
           '</div>' +
           '<div class="pin-card-meta">' +
-            '<b>' + escapeHtml(item.title || 'Tanpa judul') + '</b>' +
-            '<small>' + escapeHtml(item.pinner?.username ? '@' + item.pinner.username : 'Pinterest') + '</small>' +
+          '<b>' + escapeHtml(item.title || 'Tanpa judul') + '</b>' +
+          '<small>' + escapeHtml(item.pinner?.username ? '@' + item.pinner.username : 'Pinterest') + '</small>' +
           '</div>';
         card.addEventListener('click', () => pinShowPreviewFromData(item));
         pinDom.results.appendChild(card);
@@ -1927,7 +1897,7 @@
     const hmState = { mode: 'search', loading: false, searchResults: [] };
 
     function hmReadHistory() { try { return JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]') || []; } catch (_) { return []; } }
-    function hmWriteHistory(arr) { try { localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(arr.slice(0, HM_HISTORY_MAX))); } catch (_) {} }
+    function hmWriteHistory(arr) { try { localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(arr.slice(0, HM_HISTORY_MAX))); } catch (_) { } }
     function hmAddToHistory(entry) { const list = hmReadHistory().filter((x) => x.id !== entry.id); list.unshift(entry); hmWriteHistory(list); hmRenderHistory(); }
     function hmRenderHistory() {
       if (!hmDom.historyList || !hmDom.historyField) return;
@@ -1980,7 +1950,7 @@
           const rating = ratingEl ? ratingEl.textContent.trim() : null;
           if (title && link) results.push({ title, rating, icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_TO + icon) : null, url: link.startsWith('http') ? link : HM_BASE_TO + link });
         });
-      } catch (_) {}
+      } catch (_) { }
       if (results.length === 0) {
         try {
           const { text } = await fetchViaProxy(HM_BASE_NET + '/search.html?q=' + encodeURIComponent(q));
@@ -1996,7 +1966,7 @@
             const rating = ratingEl ? ratingEl.textContent.trim() : null;
             if (title && link && !link.includes('download.html')) results.push({ title, rating, icon: icon ? (icon.startsWith('http') ? icon : HM_BASE_NET + icon) : null, url: link.startsWith('http') ? link : HM_BASE_NET + link });
           });
-        } catch (_) {}
+        } catch (_) { }
       }
       const seen = new Set();
       const filtered = [];
@@ -2051,7 +2021,7 @@
               if (!modFeatures && item.description) modFeatures = item.description;
             }
           }
-        } catch (_) {}
+        } catch (_) { }
       });
       if (!title) { const h1 = doc.querySelector('h1'); title = (h1 ? h1.textContent.trim() : '') || (doc.title || '').replace(/\s*\|.*$/, '').trim(); }
       if (!icon) { const img = doc.querySelector('img[alt*="Icon" i], img.lazy, .list-icon img, .pdt-app-img img'); icon = img ? (img.getAttribute('data-src') || img.getAttribute('data-original') || img.getAttribute('src')) : null; }
@@ -2108,7 +2078,7 @@
           const list = (json && json.datalist && json.datalist.list) || [];
           if (packageName) { const exact = list.find((x) => x.package === packageName && x.file && x.file.path); if (exact) return exact.file.path; }
           if (list[0] && list[0].file && list[0].file.path) return list[0].file.path;
-        } catch (_) {}
+        } catch (_) { }
       }
       return null;
     }
@@ -2126,7 +2096,7 @@
       const info = parseHappyDetail(detailRes.text, targetUrl);
       const dlPageUrl = isDirectDownloadPage ? targetUrl : detailUrl.replace(/\/+$/, '') + '/download.html';
       let dlData = { openAppData: null, pdtId: null, clientApk: HM_CLIENT_APK, versions: [] };
-      try { const dlRes = await fetchViaProxy(dlPageUrl); dlData = parseHappyDownloadPage(dlRes.text, detailUrl, baseDomain); } catch (_) {}
+      try { const dlRes = await fetchViaProxy(dlPageUrl); dlData = parseHappyDownloadPage(dlRes.text, detailUrl, baseDomain); } catch (_) { }
       const slugMatch = targetUrl.match(/happymod\.(?:net|to)\/([^/]+)/);
       const slug = slugMatch ? slugMatch[1] : '';
       const candidates = [];
@@ -2152,10 +2122,10 @@
       head.innerHTML =
         '<div class="hm-detail-icon">' + (data.icon ? '<img src="' + escapeHtml(data.icon) + '" alt="" referrerpolicy="no-referrer" loading="lazy">' : '') + '</div>' +
         '<div class="hm-detail-meta">' +
-          '<h3>' + escapeHtml(data.title || 'Unknown App') + '</h3>' +
-          (data.developer ? '<small><i data-lucide="user"></i> ' + escapeHtml(data.developer) + '</small>' : '') +
-          (data.rating ? '<small><i data-lucide="star"></i> ' + escapeHtml(String(data.rating)) + ' rating</small>' : '') +
-          (data.package ? '<small><i data-lucide="package"></i> ' + escapeHtml(data.package) + '</small>' : '') +
+        '<h3>' + escapeHtml(data.title || 'Unknown App') + '</h3>' +
+        (data.developer ? '<small><i data-lucide="user"></i> ' + escapeHtml(data.developer) + '</small>' : '') +
+        (data.rating ? '<small><i data-lucide="star"></i> ' + escapeHtml(String(data.rating)) + ' rating</small>' : '') +
+        (data.package ? '<small><i data-lucide="package"></i> ' + escapeHtml(data.package) + '</small>' : '') +
         '</div>';
       hmDom.detail.appendChild(head);
       const body = document.createElement('div');
@@ -2282,21 +2252,11 @@
        PLAYSTORE
        ============================================================ */
     const psDom = {
-      segBtns: $$('.ps-seg-btn'),
-      searchForm: $('#psSearchForm'),
-      detailForm: $('#psDetailForm'),
-      query: $('#psQuery'),
-      queryClear: $('#psQueryClear'),
-      searchSubmit: $('#psSearchSubmit'),
-      appId: $('#psAppId'),
-      appIdClear: $('#psAppIdClear'),
-      detailSubmit: $('#psDetailSubmit'),
-      loading: $('#psLoading'),
-      loadingText: $('#psLoadingText'),
-      error: $('#psError'),
-      errorText: $('#psErrorText'),
-      results: $('#psResults'),
-      detailCard: $('#psDetailCard'),
+      segBtns: $$('.ps-seg-btn'), searchForm: $('#psSearchForm'), detailForm: $('#psDetailForm'),
+      query: $('#psQuery'), queryClear: $('#psQueryClear'), searchSubmit: $('#psSearchSubmit'),
+      appId: $('#psAppId'), appIdClear: $('#psAppIdClear'), detailSubmit: $('#psDetailSubmit'),
+      loading: $('#psLoading'), loadingText: $('#psLoadingText'), error: $('#psError'), errorText: $('#psErrorText'),
+      results: $('#psResults'), detailCard: $('#psDetailCard'),
     };
     const psState = { mode: 'search', loading: false };
 
@@ -2446,18 +2406,10 @@
        CLONE WEBSITE
        ============================================================ */
     const cloneDom = {
-      form: $('#cloneForm'),
-      url: $('#cloneUrl'),
-      urlClear: $('#cloneUrlClear'),
-      submit: $('#cloneSubmit'),
-      loading: $('#cloneLoading'),
-      error: $('#cloneError'),
-      errorText: $('#cloneErrorText'),
-      result: $('#cloneResult'),
-      message: $('#cloneMessage'),
-      fileCount: $('#cloneFileCount'),
-      size: $('#cloneSize'),
-      downloadLink: $('#cloneDownloadLink'),
+      form: $('#cloneForm'), url: $('#cloneUrl'), urlClear: $('#cloneUrlClear'), submit: $('#cloneSubmit'),
+      loading: $('#cloneLoading'), error: $('#cloneError'), errorText: $('#cloneErrorText'),
+      result: $('#cloneResult'), message: $('#cloneMessage'), fileCount: $('#cloneFileCount'),
+      size: $('#cloneSize'), downloadLink: $('#cloneDownloadLink'),
     };
     const cloneState = { loading: false };
 
@@ -2479,7 +2431,7 @@
       cloneDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (cloneState.loading) return;
-        
+
         let targetUrl = cloneDom.url.value.trim();
         if (!targetUrl) return toast('URL target wajib diisi.', 'error');
         if (!/^https?:\/\//i.test(targetUrl)) targetUrl = `https://${targetUrl}`;
@@ -2492,7 +2444,7 @@
         try {
           const API_URL = 'https://copywebsitetarget.netlify.app/api/extract';
           const FALLBACK_API_URL = 'https://copywebsitetarget.netlify.app/.netlify/functions/extract';
-          
+
           const payload = JSON.stringify({ url: targetUrl });
           const headers = {
             'Content-Type': 'application/json',
@@ -2545,17 +2497,17 @@
 
           hide(cloneDom.loading);
           show(cloneDom.result);
-          
+
           cloneDom.message.textContent = `Website ${safeDomain} berhasil dikloning.`;
           cloneDom.fileCount.textContent = data.totalFiles || files.length;
-          
+
           const totalBytes = data.totalSize || 0;
           const sizeMB = (totalBytes / (1024 * 1024)).toFixed(2);
           cloneDom.size.textContent = `${sizeMB} MB`;
 
           cloneDom.downloadLink.href = downloadUrl;
           cloneDom.downloadLink.setAttribute('download', zipFileName);
-          
+
           toast('Clone berhasil! Silakan unduh file ZIP.', 'success');
 
         } catch (err) {
@@ -2575,17 +2527,10 @@
        GOOGLE SEARCH
        ============================================================ */
     const gsDom = {
-      segBtns: $$('.gs-seg-btn'),
-      form: $('#gsForm'),
-      query: $('#gsQuery'),
-      queryClear: $('#gsQueryClear'),
-      submit: $('#gsSubmit'),
-      loading: $('#gsLoading'),
-      loadingText: $('#gsLoadingText'),
-      error: $('#gsError'),
-      errorText: $('#gsErrorText'),
-      textResults: $('#gsTextResults'),
-      imageResults: $('#gsImageResults'),
+      segBtns: $$('.gs-seg-btn'), form: $('#gsForm'),
+      query: $('#gsQuery'), queryClear: $('#gsQueryClear'), submit: $('#gsSubmit'),
+      loading: $('#gsLoading'), loadingText: $('#gsLoadingText'), error: $('#gsError'), errorText: $('#gsErrorText'),
+      textResults: $('#gsTextResults'), imageResults: $('#gsImageResults'),
     };
     const gsState = { mode: 'text', loading: false };
 
@@ -2603,7 +2548,7 @@
       gsDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (gsState.loading) return;
-        
+
         const query = gsDom.query.value.trim();
         if (!query) return toast('Kata kunci wajib diisi.', 'error');
 
@@ -2677,24 +2622,14 @@
     }
 
     /* ============================================================
-       YOUTUBE SEARCH & DOWNLOAD
+       YOUTUBE
        ============================================================ */
     const ytDom = {
-      segBtns: $$('.yt-seg-btn'),
-      searchForm: $('#ytSearchForm'),
-      query: $('#ytQuery'),
-      queryClear: $('#ytQueryClear'),
-      searchSubmit: $('#ytSearchSubmit'),
-      dlForm: $('#ytDownloadForm'),
-      url: $('#ytUrl'),
-      urlClear: $('#ytUrlClear'),
-      dlSubmit: $('#ytDownloadSubmit'),
-      loading: $('#ytLoading'),
-      loadingText: $('#ytLoadingText'),
-      error: $('#ytError'),
-      errorText: $('#ytErrorText'),
-      results: $('#ytResults'),
-      detailCard: $('#ytDetailCard'),
+      segBtns: $$('.yt-seg-btn'), searchForm: $('#ytSearchForm'),
+      query: $('#ytQuery'), queryClear: $('#ytQueryClear'), searchSubmit: $('#ytSearchSubmit'),
+      dlForm: $('#ytDownloadForm'), url: $('#ytUrl'), urlClear: $('#ytUrlClear'), dlSubmit: $('#ytDownloadSubmit'),
+      loading: $('#ytLoading'), loadingText: $('#ytLoadingText'), error: $('#ytError'), errorText: $('#ytErrorText'),
+      results: $('#ytResults'), detailCard: $('#ytDetailCard'),
     };
     const ytState = { mode: 'search', loading: false };
 
@@ -2707,10 +2642,10 @@
     }
 
     ytDom.segBtns.forEach((btn) => btn.addEventListener('click', () => ytSetMode(btn.dataset.ytmode)));
-    
+
     if (ytDom.query) ytDom.query.addEventListener('input', () => { ytDom.queryClear.classList.toggle('hidden', ytDom.query.value.length === 0); hide(ytDom.error); });
     if (ytDom.queryClear) ytDom.queryClear.addEventListener('click', () => { ytDom.query.value = ''; ytDom.queryClear.classList.add('hidden'); ytDom.query.focus(); });
-    
+
     if (ytDom.url) ytDom.url.addEventListener('input', () => { ytDom.urlClear.classList.toggle('hidden', ytDom.url.value.length === 0); hide(ytDom.error); });
     if (ytDom.urlClear) ytDom.urlClear.addEventListener('click', () => { ytDom.url.value = ''; ytDom.urlClear.classList.add('hidden'); ytDom.url.focus(); });
 
@@ -2739,7 +2674,7 @@
               </div>
             `).join('')}
           </div>
-          
+
           <div class="hm-section-label" style="margin-top:8px;"><i data-lucide="music"></i> Audio (MP3)</div>
           <div class="yt-downloads">
             ${data.mp3.map(v => v.url ? `
@@ -2781,7 +2716,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Gagal mendapatkan link download.');
-        
+
         hide(ytDom.loading); showYtDetail(data);
         toast('Link download berhasil dimuat.', 'success');
       } catch (err) {
@@ -2816,7 +2751,7 @@
 
           hide(ytDom.loading);
           ytDom.results.innerHTML = '';
-          
+
           if (!data.results || data.results.length === 0) {
             ytDom.results.innerHTML = '<div class="pin-empty">Video tidak ditemukan.</div>';
           } else {
@@ -2860,28 +2795,16 @@
     }
 
     /* ============================================================
-       IMGBB UPLOADER
+       IMGBB
        ============================================================ */
     const ibDom = {
-      segBtns: $$('.ib-seg-btn'),
-      form: $('#ibForm'),
-      fileField: $('#ibFileField'),
-      fileInput: $('#ibFile'),
-      fileName: $('#ibFileName'),
-      urlField: $('#ibUrlField'),
-      urlInput: $('#ibUrl'),
-      urlClear: $('#ibUrlClear'),
-      expInput: $('#ibExp'),
-      submit: $('#ibSubmit'),
-      loading: $('#ibLoading'),
-      error: $('#ibError'),
-      errorText: $('#ibErrorText'),
-      result: $('#ibResult'),
-      message: $('#ibMessage'),
-      preview: $('#ibPreview'),
-      directLink: $('#ibDirectLink'),
-      viewerLink: $('#ibViewerLink'),
-      deleteLink: $('#ibDeleteLink'),
+      segBtns: $$('.ib-seg-btn'), form: $('#ibForm'),
+      fileField: $('#ibFileField'), fileInput: $('#ibFile'), fileName: $('#ibFileName'),
+      urlField: $('#ibUrlField'), urlInput: $('#ibUrl'), urlClear: $('#ibUrlClear'),
+      expInput: $('#ibExp'), submit: $('#ibSubmit'),
+      loading: $('#ibLoading'), error: $('#ibError'), errorText: $('#ibErrorText'),
+      result: $('#ibResult'), message: $('#ibMessage'), preview: $('#ibPreview'),
+      directLink: $('#ibDirectLink'), viewerLink: $('#ibViewerLink'), deleteLink: $('#ibDeleteLink'),
     };
     const ibState = { mode: 'file', loading: false };
 
@@ -2905,13 +2828,13 @@
       ibDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (ibState.loading) return;
-        
+
         let source = '';
         if (ibState.mode === 'file') {
           const file = ibDom.fileInput.files?.[0];
           if (!file) return toast('Pilih file gambar terlebih dahulu.', 'error');
           if (file.size > 3 * 1024 * 1024) return toast('Ukuran file maksimal 3MB (limit Vercel).', 'error');
-          
+
           source = await new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = (e) => resolve(e.target.result);
@@ -2935,7 +2858,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: ibState.mode, source, expiration })
           });
-          
+
           const data = await res.json();
           if (!res.ok || !data.status) throw new Error(data.error || 'Gagal upload ke ImgBB.');
 
@@ -2944,11 +2867,11 @@
 
           ibDom.message.textContent = `Berhasil diunggah! Masa aktif: ${data.expirationCode}`;
           ibDom.preview.src = data.directUrl;
-          
+
           ibDom.directLink.href = data.directUrl;
           ibDom.viewerLink.href = data.viewerUrl;
           ibDom.deleteLink.href = data.deleteUrl;
-          
+
           toast('Upload berhasil!', 'success');
 
         } catch (err) {
@@ -2968,14 +2891,8 @@
        TIKTOK STALKER
        ============================================================ */
     const tsDom = {
-      form: $('#tsForm'),
-      username: $('#tsUsername'),
-      clear: $('#tsClear'),
-      submit: $('#tsSubmit'),
-      loading: $('#tsLoading'),
-      loadingText: $('#tsLoadingText'),
-      error: $('#tsError'),
-      errorText: $('#tsErrorText'),
+      form: $('#tsForm'), username: $('#tsUsername'), clear: $('#tsClear'), submit: $('#tsSubmit'),
+      loading: $('#tsLoading'), loadingText: $('#tsLoadingText'), error: $('#tsError'), errorText: $('#tsErrorText'),
       result: $('#tsResult'),
     };
     const tsState = { loading: false };
@@ -3004,7 +2921,7 @@
       tsDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (tsState.loading) return;
-        
+
         const username = tsDom.username.value.trim();
         if (!username) return toast('Username wajib diisi.', 'error');
 
@@ -3020,7 +2937,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username })
           });
-          
+
           const data = await res.json();
           if (!res.ok || data.error) throw new Error(data.error || 'Gagal mengambil data.');
 
@@ -3056,7 +2973,7 @@
                   </div>
                   <span class="ts-username">@${escapeHtml(u.username || '')}</span>
                 </div>
-                
+
                 <p class="ts-bio">${escapeHtml(u.bio || 'Tidak ada bio.')}</p>
                 ${u.bio_link ? `<a class="ts-link" href="${escapeHtml(u.bio_link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(u.bio_link)}</a>` : ''}
 
@@ -3070,18 +2987,9 @@
                     </div>
                   </div>
                   <div class="ts-region-details">
-                    <div class="ts-region-col">
-                      <small>Current</small>
-                      <b>${currentFlag} ${escapeHtml(region.current_region || '-')}</b>
-                    </div>
-                    <div class="ts-region-col">
-                      <small>Registered</small>
-                      <b>${regFlag} ${escapeHtml(region.registered_region || '-')}</b>
-                    </div>
-                    <div class="ts-region-col">
-                      <small>Locked</small>
-                      <b>${lockFlag} ${escapeHtml(region.locked_region || '-')}</b>
-                    </div>
+                    <div class="ts-region-col"><small>Current</small><b>${currentFlag} ${escapeHtml(region.current_region || '-')}</b></div>
+                    <div class="ts-region-col"><small>Registered</small><b>${regFlag} ${escapeHtml(region.registered_region || '-')}</b></div>
+                    <div class="ts-region-col"><small>Locked</small><b>${lockFlag} ${escapeHtml(region.locked_region || '-')}</b></div>
                   </div>
                 </div>
 
@@ -3093,22 +3001,10 @@
                 </div>
 
                 <div class="ts-meta-grid">
-                  <div class="ts-meta-item">
-                    <small>Dibuat Pada</small>
-                    <b>${createdDate}</b>
-                  </div>
-                  <div class="ts-meta-item">
-                    <small>Status Akun</small>
-                    <b>${u.private ? 'Private' : 'Public'}</b>
-                  </div>
-                  <div class="ts-meta-item">
-                    <small>Bahasa</small>
-                    <b>${escapeHtml(u.language || '-')}</b>
-                  </div>
-                  <div class="ts-meta-item">
-                    <small>SecUID</small>
-                    <b style="font-size:9px;">${escapeHtml(u.sec_uid || '-')}</b>
-                  </div>
+                  <div class="ts-meta-item"><small>Dibuat Pada</small><b>${createdDate}</b></div>
+                  <div class="ts-meta-item"><small>Status Akun</small><b>${u.private ? 'Private' : 'Public'}</b></div>
+                  <div class="ts-meta-item"><small>Bahasa</small><b>${escapeHtml(u.language || '-')}</b></div>
+                  <div class="ts-meta-item"><small>SecUID</small><b style="font-size:9px;">${escapeHtml(u.sec_uid || '-')}</b></div>
                 </div>
 
                 <a class="download-btn" href="${escapeHtml(u.profile_url)}" target="_blank" rel="noopener noreferrer" style="margin-top:4px;">
@@ -3137,14 +3033,8 @@
        AM FINDER
        ============================================================ */
     const amDom = {
-      form: $('#amForm'),
-      url: $('#amUrl'),
-      urlClear: $('#amUrlClear'),
-      submit: $('#amSubmit'),
-      loading: $('#amLoading'),
-      loadingText: $('#amLoadingText'),
-      error: $('#amError'),
-      errorText: $('#amErrorText'),
+      form: $('#amForm'), url: $('#amUrl'), urlClear: $('#amUrlClear'), submit: $('#amSubmit'),
+      loading: $('#amLoading'), loadingText: $('#amLoadingText'), error: $('#amError'), errorText: $('#amErrorText'),
       result: $('#amResult'),
     };
     const amState = { loading: false };
@@ -3167,7 +3057,7 @@
       amDom.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (amState.loading) return;
-        
+
         const url = amDom.url.value.trim();
         if (!url) return toast('URL wajib diisi.', 'error');
 
@@ -3182,14 +3072,13 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url })
           });
-          
+
           const data = await res.json();
           if (!res.ok || !data.ok) throw new Error(data.error || 'Gagal mencari preset.');
 
           hide(amDom.loading);
           show(amDom.result);
 
-          // Render hasil
           const { video = {}, author = {}, scanned = {}, presets = [] } = data;
 
           let presetsHtml = '';
@@ -3201,7 +3090,7 @@
               const badgeClass = p.type === '5mb' ? '' : 'xml';
               const title = p.title || (p.type === '5mb' ? 'Preset Alight Motion 5MB' : 'Preset XML');
               const sizeText = p.size ? ` • ${p.size}` : '';
-              
+
               presetsHtml += `
                 <div class="am-preset-item">
                   <img class="am-preset-thumb" src="${escapeHtml(p.thumb || video.cover || '')}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
@@ -3226,7 +3115,7 @@
               <div class="am-video-body">
                 <h3 class="am-video-title">${escapeHtml(video.title || 'Unknown Title')}</h3>
                 <p class="am-video-desc">${escapeHtml(video.description || 'Tidak ada deskripsi.')}</p>
-                
+
                 <div class="am-author-row">
                   <img class="am-author-avatar" src="${escapeHtml(author.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
                   <div class="am-author-info">
@@ -3234,7 +3123,7 @@
                     <small>@${escapeHtml(author.uniqueId || 'user')}</small>
                   </div>
                 </div>
-                
+
                 <div class="am-stats-row">
                   <div class="am-stat"><b>${escapeHtml(formatNumber(video.views) || '-')}</b><small>Views</small></div>
                   <div class="am-stat"><b>${escapeHtml(formatNumber(video.likes) || '-')}</b><small>Likes</small></div>
@@ -3355,7 +3244,7 @@
         const res = await fetch(CHAT_API_BASE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: chatState.history, stream: true }) });
         if (!res.ok) {
           let errMsg = 'HTTP ' + res.status;
-          try { const j = await res.json(); if (j.error) errMsg = j.error; if (j.detail) errMsg += ': ' + j.detail; } catch (_) {}
+          try { const j = await res.json(); if (j.error) errMsg = j.error; if (j.detail) errMsg += ': ' + j.detail; } catch (_) { }
           throw new Error(errMsg);
         }
         chatRemoveTyping();
@@ -3375,7 +3264,7 @@
               try {
                 const j = JSON.parse(dataStr); const delta = j.choices?.[0]?.delta?.content || '';
                 if (delta) { assistantText += delta; bubble.textContent = assistantText; chatScrollToBottom(); }
-              } catch (_) {}
+              } catch (_) { }
             }
           }
           if (!assistantText) bubble.textContent = '(Tidak ada balasan)';
@@ -3446,7 +3335,6 @@
     }
   })();
 
-  /* WATCHDOG ICON LUCIDE */
   (function iconWatchdog() {
     let attempts = 0;
     const MAX_ATTEMPTS = 30;
