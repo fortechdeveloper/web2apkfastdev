@@ -7,9 +7,7 @@
   let toastTimer = null;
   let building = false;
 
-  function refreshIcons() {
-    if (window.lucide) window.lucide.createIcons();
-  }
+  function refreshIcons() { if (window.lucide) window.lucide.createIcons(); }
 
   function toast(message) {
     const element = $("#toast");
@@ -20,9 +18,6 @@
     toastTimer = setTimeout(() => { element.classList.remove("show"); }, 3500);
   }
 
-  // ==========================================
-  // SISTEM BATAS BUILD HARIAN
-  // ==========================================
   function getTodayDateString() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -31,7 +26,7 @@
   function getBuildLimit(plan) {
     if (plan === 'promax') return Infinity;
     if (plan === 'pro') return 5;
-    return 3; // Default free
+    return 3;
   }
 
   function getBuildData() {
@@ -47,46 +42,40 @@
     return data;
   }
 
-  function updateLimitUI() {
+  function updateLimitUI(serverCount) {
     const plan = (window.currentProfile?.role || 'free').toLowerCase();
     const limit = getBuildLimit(plan);
-    const data = getBuildData();
-    
+    const local = getBuildData();
+    const count = (typeof serverCount === 'number') ? serverCount : local.count;
+
     const limitTextEl = $("#limitText");
     const limitChipEl = $("#limitChip");
-
     if (!limitTextEl) return;
 
     if (limit === Infinity) {
       limitTextEl.textContent = "UNLIMITED";
-      if (limitChipEl) limitChipEl.style.borderColor = "rgba(105, 228, 177, 0.3)";
+      if (limitChipEl) {
+        limitChipEl.style.borderColor = "rgba(105, 228, 177, 0.3)";
+        limitChipEl.style.color = "#a0e8ca";
+      }
     } else {
-      const remaining = Math.max(0, limit - data.count);
-      limitTextEl.textContent = `SISA: ${remaining}/${limit}`;
-      
+      const remaining = Math.max(0, limit - count);
       if (remaining === 0) {
         limitTextEl.textContent = `HABIS (0/${limit})`;
-        if (limitChipEl) limitChipEl.style.borderColor = "rgba(255, 110, 110, 0.4)";
-        if (limitChipEl) limitChipEl.style.color = "#ff9e9e";
+        if (limitChipEl) {
+          limitChipEl.style.borderColor = "rgba(255, 110, 110, 0.4)";
+          limitChipEl.style.color = "#ff9e9e";
+        }
       } else {
-        if (limitChipEl) limitChipEl.style.borderColor = "rgba(160, 177, 219, .13)";
-        if (limitChipEl) limitChipEl.style.color = "#a0e8ca";
+        limitTextEl.textContent = `SISA: ${remaining}/${limit}`;
+        if (limitChipEl) {
+          limitChipEl.style.borderColor = "rgba(160, 177, 219, .13)";
+          limitChipEl.style.color = "#a0e8ca";
+        }
       }
     }
   }
 
-  function checkDailyLimit() {
-    const plan = (window.currentProfile?.role || 'free').toLowerCase();
-    const limit = getBuildLimit(plan);
-    const data = getBuildData();
-
-    if (data.count >= limit) return { allowed: false, count: data.count, limit: limit, plan: plan };
-    return { allowed: true, count: data.count, limit: limit, plan: plan, data };
-  }
-
-  // ==========================================
-  // FUNGSI UI STANDAR
-  // ==========================================
   function setSource(type) {
     const isUrl = type === "url";
     $("#sourceType").value = type;
@@ -181,14 +170,11 @@
 
     formData.delete("websiteUrl"); formData.delete("url"); formData.delete("htmlFile"); formData.delete("html"); formData.delete("sourceType");
 
-    if (sourceType === "url") {
-      formData.append("url", websiteUrl);
-    } else if (sourceType === "file") {
+    if (sourceType === "url") formData.append("url", websiteUrl);
+    else if (sourceType === "file") {
       if (!htmlFile) throw new Error("Pilih file HTML terlebih dahulu.");
       formData.append("html", htmlFile, htmlFile.name);
-    } else {
-      throw new Error("Pilih sumber aplikasi yang valid.");
-    }
+    } else throw new Error("Pilih sumber aplikasi yang valid.");
 
     const splashType = $('input[name="splashType"]:checked')?.value || "default";
     formData.delete("splashImage"); formData.delete("splashVideo");
@@ -212,9 +198,6 @@
     return formData;
   }
 
-  // ==========================================
-  // EVENT LISTENERS
-  // ==========================================
   $$("[data-source]").forEach((button) => button.addEventListener("click", () => setSource(button.dataset.source)));
   $$("[data-orientation]").forEach((button) => button.addEventListener("click", () => setOrientation(button.dataset.orientation)));
   $$('input[name="splashType"]').forEach((radio) => radio.addEventListener("change", setSplashFields));
@@ -231,9 +214,8 @@
   helpModal?.addEventListener("click", (event) => { if (event.target === helpModal) closeHelp(); });
   document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeHelp(); });
 
-  // Dengerin event dari auth-guard kalau profile berhasil dimuat
-  window.addEventListener('authready', updateLimitUI);
-  window.addEventListener('authprofile', updateLimitUI);
+  window.addEventListener('authready', () => updateLimitUI());
+  window.addEventListener('authprofile', () => updateLimitUI());
 
   $("#buildForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -246,15 +228,6 @@
     const log = $("#buildLog");
 
     if (!form.reportValidity()) return;
-
-    // --- CEK LIMIT HARIAN ---
-    const limitCheck = checkDailyLimit();
-    if (!limitCheck.allowed) {
-      toast(`Limit build harian habis! Paket ${limitCheck.plan.toUpperCase()} hanya ${limitCheck.limit}x sehari. Upgrade di menu Akses.`);
-      setProgress(0, "Limit tercapai", "Kamu sudah mencapai batas build hari ini. Silakan kembali besok atau upgrade paket.", "Gagal");
-      progress.classList.remove("hidden");
-      return;
-    }
 
     const sourceType = $("#sourceType").value;
     const packageName = $("#packageName").value.trim();
@@ -298,10 +271,29 @@
     setProgress(10, "Menyiapkan build...", "Memvalidasi konfigurasi aplikasi.", "Menyiapkan");
 
     try {
+      // Ambil idToken Firebase
+      let token = null;
+      try {
+        if (window.firebaseAuth && window.firebaseAuth.currentUser) {
+          token = await window.firebaseAuth.currentUser.getIdToken();
+        }
+      } catch (e) { console.warn('Token error:', e); }
+
+      if (!token) {
+        setProgress(100, "Build gagal", "Sesi login tidak ditemukan. Silakan login ulang.", "Gagal");
+        log.textContent = "Sesi login tidak ditemukan.";
+        log.classList.remove("hidden");
+        showResult("Build gagal", "Sesi login tidak ditemukan. Silakan login ulang.", null);
+        toast("Sesi login tidak ditemukan.");
+        building = false; button.disabled = false; refreshIcons();
+        return;
+      }
+
       setProgress(25, "Mengirim konfigurasi...", "Menghubungi server Build APK.", "Mengirim");
 
       const response = await fetch("/api/build", {
         method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
         body: formData
       });
 
@@ -309,6 +301,25 @@
       let data;
       if (contentType.includes("application/json")) data = await response.json();
       else data = await response.text();
+
+      if (response.status === 401) {
+        setProgress(100, "Build gagal", "Sesi tidak valid. Login ulang.", "Gagal");
+        log.textContent = "Sesi tidak valid. Silakan login ulang.";
+        log.classList.remove("hidden");
+        showResult("Build gagal", "Sesi tidak valid.", null);
+        toast("Sesi tidak valid.");
+        return;
+      }
+
+      if (response.status === 429) {
+        const limitMsg = getServerMessage(data, "Limit build harian tercapai.");
+        setProgress(100, "Limit tercapai", limitMsg, "Gagal");
+        log.textContent = limitMsg;
+        log.classList.remove("hidden");
+        showResult("Limit tercapai", limitMsg, null);
+        toast(limitMsg);
+        return;
+      }
 
       if (!response.ok) throw new Error(getServerMessage(data, `Build gagal (HTTP ${response.status}).`));
       if (data && typeof data === "object" && (data.success === false || data.error)) throw new Error(getServerMessage(data, "Server melaporkan build gagal."));
@@ -320,28 +331,28 @@
 
       if (!downloadUrl) throw new Error(message);
 
-      // --- JIKA SUKSES, TAMBAH COUNTER & KIRIM NOTIFIKASI TELEGRAM ---
-      const buildData = limitCheck.data;
-      buildData.count += 1;
-      try { localStorage.setItem('web2apk:build-count:v1', JSON.stringify(buildData)); } catch (e) {}
-      updateLimitUI();
+      // Sync counter ke server (kalau ada)
+      if (data && typeof data._count === 'number') {
+        try {
+          localStorage.setItem('web2apk:build-count:v1', JSON.stringify({ date: getTodayDateString(), count: data._count }));
+        } catch (e) {}
+        updateLimitUI(data._count);
+      } else {
+        const buildData = getBuildData();
+        buildData.count += 1;
+        try { localStorage.setItem('web2apk:build-count:v1', JSON.stringify(buildData)); } catch (e) {}
+        updateLimitUI();
+      }
 
       const creator = window.currentProfile?.username || window.currentUser?.email || 'Unknown';
-      
       fetch('/api/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          type: 'build', 
-          data: { 
-            sourceType: sourceType, 
-            sourceUrl: websiteUrl, 
-            appName: appName, 
-            creator: creator, 
-            packageName: packageName 
-          } 
+        body: JSON.stringify({
+          type: 'build',
+          data: { sourceType, sourceUrl: websiteUrl, appName, creator, packageName }
         })
-      }).catch(console.error);
+      }).catch(() => {});
 
       setProgress(100, "Build selesai!", "APK siap diunduh.", "Selesai");
       showResult("Build berhasil!", message, downloadUrl);
